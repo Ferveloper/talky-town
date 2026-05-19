@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Mis premios</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#574500",
+                    "on-secondary-container": "#725b00",
+                    "surface-tint": "#00668a",
+                    "on-tertiary-fixed-variant": "#07521d",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary": "#286b33",
+                    "surface-container-highest": "#e7e2d9",
+                    "secondary-container": "#fdd34d",
+                    "inverse-on-surface": "#f6f0e7",
+                    "surface-container": "#f3ede4",
+                    "primary-fixed-dim": "#7ad0ff",
+                    "on-tertiary-fixed": "#002107",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#abf4ac",
+                    "surface-dim": "#dfd9d1",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#ffe087",
+                    "on-surface-variant": "#3e484f",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#40c4ff",
+                    "on-primary-fixed-variant": "#004c69",
+                    "primary-fixed": "#c3e8ff",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#90d792",
+                    "surface-container-low": "#f9f3ea",
+                    "secondary-fixed-dim": "#ebc23e",
+                    "on-primary-fixed": "#001e2c",
+                    "surface-variant": "#e7e2d9",
+                    "on-primary-container": "#004e6b",
+                    "tertiary-container": "#82c885",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary": "#735c00",
+                    "on-tertiary-container": "#0a541f",
+                    "on-primary": "#ffffff",
+                    "background": "#fff9f0",
+                    "on-background": "#1d1b16",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#fff9f0",
+                    "primary": "#00668a",
+                    "surface": "#fff9f0",
+                    "inverse-surface": "#32302a",
+                    "on-surface": "#1d1b16",
+                    "outline-variant": "#bdc8d1",
+                    "inverse-primary": "#7ad0ff",
+                    "surface-container-high": "#ede7df",
+                    "outline": "#6e7980"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "24px",
+                    "container-margin": "24px",
+                    "stack-lg": "48px",
+                    "gutter": "16px",
+                    "unit": "8px",
+                    "stack-sm": "12px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Quicksand"],
+                    "label-bold": ["Quicksand"],
+                    "headline-md": ["Quicksand"],
+                    "body-md": ["Quicksand"],
+                    "display-lg-mobile": ["Quicksand"],
+                    "body-lg": ["Quicksand"],
+                    "caption": ["Quicksand"]
+            },
+            "fontSize": {
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-bold": ["16px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "38px", "fontWeight": "700"}],
+                    "body-lg": ["20px", {"lineHeight": "30px", "fontWeight": "500"}],
+                    "caption": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .confetti-bg {
+            background-image: 
+                radial-gradient(circle at 20% 30%, theme('colors.secondary-container') 4px, transparent 4px),
+                radial-gradient(circle at 80% 20%, theme('colors.primary-container') 4px, transparent 4px),
+                radial-gradient(circle at 40% 70%, theme('colors.tertiary-container') 4px, transparent 4px),
+                radial-gradient(circle at 70% 80%, theme('colors.error-container') 4px, transparent 4px),
+                radial-gradient(circle at 10% 80%, theme('colors.primary-fixed') 4px, transparent 4px),
+                radial-gradient(circle at 90% 50%, theme('colors.secondary-fixed') 4px, transparent 4px);
+            background-size: 100px 100px;
+        }
+        
+        /* 3D Button Effect */
+        .btn-3d {
+            box-shadow: 0 4px 0 0 theme('colors.on-primary-fixed-variant');
+        }
+        .btn-3d:active {
+            box-shadow: 0 0px 0 0 theme('colors.on-primary-fixed-variant');
+            transform: translateY(4px);
+        }
+
+        /* 3D Card Effect */
+        .card-3d {
+            box-shadow: 0 4px 0 0 rgba(0,0,0,0.05);
+        }
+        
+        /* Liquid Progress Bar Effect */
+        .progress-liquid {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen pb-32 pt-24 confetti-bg">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-surface border-b-4 border-surface-container-highest shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border-2 border-primary">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A stylized, cheerful cartoon avatar of a young child with a bright smile, wearing a colorful explorer hat. The avatar is designed in a modern, playful vector style with soft shading, set against a solid warm cream background to ensure high contrast and friendliness for a children's language learning app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrhPr4-p6W45rpTt8JCqx97tiaiYN6_kDpn4EHPld1Y_SpLclDgkGld6HUFXojb01pEHT0mbpWKFc4Hb_-gIVipxl_1vpk21zfcO4OeCeIc8xTnMT6aPH4QZVX7DrNBI0xkD86cvDS1g4LH5R2I2SMMho1k-oHjv98WCrHW1JdSbo4BOfza9Dt2NBqJ1oSMn3HRPONlA18QLcsPyW1-hZBPXzPoytNEoz0rkJOvBZ85dCYT5Ppb65nZ3Bz4xj1-S51NKqFJF5QI9iF"/>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight">TalkyTown</h1>
+</div>
+<div class="flex items-center gap-4 text-primary">
+<button aria-label="star" class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-container hover:scale-105 transition-transform active:translate-y-1 duration-100">
+<span class="material-symbols-outlined" style="font-size: 28px;">star</span>
+</button>
+<button aria-label="local_fire_department" class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-container hover:scale-105 transition-transform active:translate-y-1 duration-100">
+<span class="material-symbols-outlined text-secondary-fixed-dim" style="font-size: 28px; font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-4xl mx-auto px-container-margin md:px-8 flex flex-col gap-stack-md">
+<!-- Header Section -->
+<section class="text-center mt-stack-sm flex flex-col items-center">
+<h2 class="font-display-lg text-display-lg text-primary-container drop-shadow-md mb-2">Mis premios</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">¡Mira todo lo que has logrado!</p>
+</section>
+<!-- Status Dashboard -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Level Card -->
+<div class="bg-surface-container-lowest border-2 border-surface-container-highest rounded-xl p-6 card-3d flex items-center gap-6 relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary-container rounded-full opacity-20 blur-xl"></div>
+<div class="w-20 h-20 rounded-full border-4 border-primary-container flex items-center justify-center bg-surface-bright shadow-sm shrink-0">
+<span class="material-symbols-outlined text-primary-container" style="font-size: 40px; font-variation-settings: 'FILL' 1;">explore</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary mb-1">Nivel 2</h3>
+<p class="font-label-bold text-label-bold text-secondary-container bg-on-surface px-3 py-1 rounded-full inline-block">Explorer</p>
+</div>
+</div>
+<!-- Streak Card -->
+<div class="bg-surface-container-lowest border-2 border-surface-container-highest rounded-xl p-6 card-3d flex items-center gap-6">
+<div class="w-20 h-20 rounded-full border-4 border-secondary-container flex items-center justify-center bg-surface-bright shadow-sm shrink-0">
+<span class="material-symbols-outlined text-secondary-fixed-dim" style="font-size: 48px; font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-secondary">3 días</h3>
+<p class="font-body-md text-body-md text-on-surface-variant font-bold">seguidos jugando</p>
+</div>
+</div>
+</section>
+<!-- XP Progress -->
+<section class="bg-surface-container-lowest border-2 border-surface-container-highest rounded-xl p-6 card-3d">
+<div class="flex justify-between items-end mb-4">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+                    Experiencia
+                </h3>
+<span class="font-label-bold text-label-bold text-primary">120 / 200 XP</span>
+</div>
+<div class="h-8 bg-surface-container-highest rounded-full overflow-hidden p-1 border-2 border-surface-dim">
+<div class="h-full bg-tertiary-container rounded-full progress-liquid relative" style="width: 60%;">
+<div class="absolute inset-0 bg-white opacity-20 w-full h-1/2 rounded-t-full"></div>
+</div>
+</div>
+<p class="text-center font-caption text-caption text-on-surface-variant mt-3">¡Solo 80 XP más para el Nivel 3!</p>
+</section>
+<!-- Badges Grid -->
+<section class="mt-stack-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed-dim" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                Tus Insignias
+            </h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+<!-- Badge 1: First Talk -->
+<div class="bg-surface-container-lowest border-2 border-surface-container-highest rounded-xl p-4 card-3d flex flex-col items-center text-center hover:scale-105 transition-transform duration-200 cursor-pointer group">
+<div class="w-16 h-16 mb-3 rounded-full bg-primary-fixed flex items-center justify-center border-4 border-primary-container shadow-sm group-hover:rotate-12 transition-transform">
+<span class="material-symbols-outlined text-primary" style="font-size: 32px; font-variation-settings: 'FILL' 1;">chat_bubble</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface">First Talk</span>
+</div>
+<!-- Badge 2: Animal Explorer -->
+<div class="bg-surface-container-lowest border-2 border-surface-container-highest rounded-xl p-4 card-3d flex flex-col items-center text-center hover:scale-105 transition-transform duration-200 cursor-pointer group">
+<div class="w-16 h-16 mb-3 rounded-full bg-tertiary-fixed flex items-center justify-center border-4 border-tertiary-container shadow-sm group-hover:-rotate-12 transition-transform">
+<span class="material-symbols-outlined text-tertiary" style="font-size: 32px; font-variation-settings: 'FILL' 1;">pets</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface">Animal Explorer</span>
+</div>
+<!-- Badge 3: Brave Speaker -->
+<div class="bg-surface-container-lowest border-2 border-surface-container-highest rounded-xl p-4 card-3d flex flex-col items-center text-center hover:scale-105 transition-transform duration-200 cursor-pointer group">
+<div class="w-16 h-16 mb-3 rounded-full bg-error-container flex items-center justify-center border-4 border-error shadow-sm group-hover:rotate-12 transition-transform">
+<span class="material-symbols-outlined text-error" style="font-size: 32px; font-variation-settings: 'FILL' 1;">campaign</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface">Brave Speaker</span>
+</div>
+<!-- Badge 4: 3 Day Streak -->
+<div class="bg-surface-container-lowest border-2 border-surface-container-highest rounded-xl p-4 card-3d flex flex-col items-center text-center hover:scale-105 transition-transform duration-200 cursor-pointer group">
+<div class="w-16 h-16 mb-3 rounded-full bg-secondary-fixed flex items-center justify-center border-4 border-secondary-container shadow-sm group-hover:-rotate-12 transition-transform">
+<span class="material-symbols-outlined text-secondary" style="font-size: 32px; font-variation-settings: 'FILL' 1;">emoji_events</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface">3 Day Streak</span>
+</div>
+<!-- Locked Badge -->
+<div class="bg-surface-container border-2 border-surface-dim rounded-xl p-4 flex flex-col items-center text-center opacity-70 cursor-not-allowed">
+<div class="w-16 h-16 mb-3 rounded-full bg-surface-dim flex items-center justify-center border-4 border-outline-variant shadow-inner">
+<span class="material-symbols-outlined text-outline" style="font-size: 32px;">question_mark</span>
+</div>
+<span class="font-label-bold text-label-bold text-outline">Próxima meta</span>
+</div>
+<!-- Locked Badge -->
+<div class="bg-surface-container border-2 border-surface-dim rounded-xl p-4 flex flex-col items-center text-center opacity-70 cursor-not-allowed">
+<div class="w-16 h-16 mb-3 rounded-full bg-surface-dim flex items-center justify-center border-4 border-outline-variant shadow-inner">
+<span class="material-symbols-outlined text-outline" style="font-size: 32px;">question_mark</span>
+</div>
+<span class="font-label-bold text-label-bold text-outline">Próxima meta</span>
+</div>
+</div>
+</section>
+<!-- Action Section -->
+<section class="mt-stack-md text-center">
+<button class="bg-primary-container text-on-primary-fixed-variant font-label-bold text-label-bold py-4 px-8 rounded-full uppercase tracking-wider btn-3d transition-all duration-100 hover:bg-primary hover:text-white">
+                Volver a inicio
+            </button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface-container-low rounded-t-lg border-t-4 border-surface-container-highest shadow-[0_-4px_0_0_rgba(0,0,0,0.05)] md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-75 rounded-xl">
+<span class="material-symbols-outlined mb-1">map</span>
+<span class="font-label-bold text-label-bold text-[12px]">Map</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-75 rounded-xl">
+<span class="material-symbols-outlined mb-1">school</span>
+<span class="font-label-bold text-label-bold text-[12px]">Lessons</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-75 rounded-xl">
+<span class="material-symbols-outlined mb-1">forum</span>
+<span class="font-label-bold text-label-bold text-[12px]">Chat</span>
+</button>
+<!-- Active State for Progress/Rewards -->
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 scale-110 shadow-[0_4px_0_0_#004c69] active:scale-95 transition-all duration-75">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+<span class="font-label-bold text-label-bold text-[12px]">Progress</span>
+</button>
+</nav>
+</body></html>

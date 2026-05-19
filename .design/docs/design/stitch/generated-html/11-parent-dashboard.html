@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Panel adulto - TalkyTown</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#dfd9d1",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#7ad0ff",
+                        "surface-container-highest": "#e7e2d9",
+                        "outline-variant": "#bdc8d1",
+                        "on-secondary-fixed-variant": "#574500",
+                        "outline": "#6e7980",
+                        "on-primary-fixed": "#001e2c",
+                        "on-background": "#1d1b16",
+                        "secondary-fixed": "#ffe087",
+                        "primary-fixed-dim": "#7ad0ff",
+                        "primary": "#00668a",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#07521d",
+                        "surface-container": "#f3ede4",
+                        "secondary": "#735c00",
+                        "background": "#fff9f0",
+                        "on-tertiary-container": "#0a541f",
+                        "on-surface": "#1d1b16",
+                        "surface-variant": "#e7e2d9",
+                        "surface-container-high": "#ede7df",
+                        "inverse-surface": "#32302a",
+                        "surface-tint": "#00668a",
+                        "surface": "#fff9f0",
+                        "on-tertiary-fixed": "#002107",
+                        "tertiary-fixed": "#abf4ac",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#fdd34d",
+                        "primary-container": "#40c4ff",
+                        "surface-bright": "#fff9f0",
+                        "secondary-fixed-dim": "#ebc23e",
+                        "surface-container-low": "#f9f3ea",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#3e484f",
+                        "tertiary": "#286b33",
+                        "on-primary-fixed-variant": "#004c69",
+                        "tertiary-fixed-dim": "#90d792",
+                        "tertiary-container": "#82c885",
+                        "on-secondary-fixed": "#241a00",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#c3e8ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#004e6b",
+                        "on-secondary-container": "#725b00",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f6f0e7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "12px",
+                        "gutter": "16px",
+                        "unit": "8px",
+                        "container-margin": "24px",
+                        "stack-md": "24px",
+                        "stack-lg": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Quicksand"],
+                        "caption": ["Quicksand"],
+                        "display-lg-mobile": ["Quicksand"],
+                        "display-lg": ["Quicksand"],
+                        "label-bold": ["Quicksand"],
+                        "body-md": ["Quicksand"],
+                        "body-lg": ["Quicksand"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "caption": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "38px", "fontWeight": "700" }],
+                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-bold": ["16px", { "lineHeight": "24px", "fontWeight": "700" }],
+                        "body-md": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "body-lg": ["20px", { "lineHeight": "30px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-container-low text-on-surface font-body-lg antialiased pb-safe">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-surface shadow-sm border-b-4 border-surface-container-highest">
+<div class="flex items-center gap-gutter">
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight">TalkyTown</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant bg-surface-container py-1 px-3 rounded-full hidden md:inline-block">Panel adulto</span>
+</div>
+<div class="flex items-center gap-gutter">
+<button class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center hover:scale-105 transition-transform text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center hover:scale-105 transition-transform text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+</button>
+<img alt="User profile avatar" class="w-12 h-12 rounded-full border-2 border-primary object-cover" data-alt="A professional headshot of a smiling adult, well-lit against a neutral background. The lighting is soft and flattering, creating a trustworthy and warm appearance. This profile image is designed to fit a clean, light-mode dashboard UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxux-uY0SqdDDxs_T_anz0u9XOzB0InQQgVKuseQooGGJt_lXR064_1a_jLxXo3nx3G8tV1A9btdQKLGqHXUTGbrjBRO7LWMPlHBzmy1hd4Jm1lDPYjIn5HzrDFJeykLpWZG-yC0z_yMV99xOvIQvfAI_IbUaXn5ZXIZ0W7My9ABbniTL-gfXcuV7zO6MayIN0wy2hlaf-WCqj5OYpWJiW38qElP8gos1xDBwOPBrQjIwobLTb9C_8OXeb-IyHB9_rYG5ZBaVls7Xp"/>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-24 px-container-margin md:px-stack-lg max-w-6xl mx-auto min-h-screen flex flex-col gap-stack-md">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-sm mb-stack-sm">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface">Panel adulto</h1>
+<p class="font-headline-md text-headline-md text-on-surface-variant flex items-center gap-2 mt-2">
+<span class="material-symbols-outlined text-primary">face</span>
+                    Progreso de Sofía
+                </p>
+</div>
+<button class="font-label-bold text-label-bold text-primary flex items-center gap-2 hover:bg-surface-container px-4 py-2 rounded-xl transition-colors w-max">
+<span class="material-symbols-outlined">arrow_back</span>
+                Volver a perfiles
+            </button>
+</div>
+<!-- Summary Cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+<div class="bg-surface rounded-DEFAULT p-gutter border-2 border-surface-container-highest shadow-[0_4px_0_0_rgba(0,0,0,0.05)] flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-primary text-4xl mb-2" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-display-lg-mobile text-display-lg-mobile text-on-surface">5</span>
+<span class="font-caption text-caption text-on-surface-variant">Sesiones completadas</span>
+</div>
+<div class="bg-surface rounded-DEFAULT p-gutter border-2 border-surface-container-highest shadow-[0_4px_0_0_rgba(0,0,0,0.05)] flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-secondary-fixed-dim text-4xl mb-2" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-display-lg-mobile text-display-lg-mobile text-on-surface">120</span>
+<span class="font-caption text-caption text-on-surface-variant">XP total</span>
+</div>
+<div class="bg-surface rounded-DEFAULT p-gutter border-2 border-surface-container-highest shadow-[0_4px_0_0_rgba(0,0,0,0.05)] flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-tertiary text-4xl mb-2" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-headline-md text-headline-md text-on-surface mt-2">Explorer</span>
+<span class="font-caption text-caption text-on-surface-variant">Nivel</span>
+</div>
+<div class="bg-surface rounded-DEFAULT p-gutter border-2 border-surface-container-highest shadow-[0_4px_0_0_rgba(0,0,0,0.05)] flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-error text-4xl mb-2" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="font-display-lg-mobile text-display-lg-mobile text-on-surface">3 <span class="font-headline-md text-headline-md">días</span></span>
+<span class="font-caption text-caption text-on-surface-variant">Racha</span>
+</div>
+</div>
+<!-- Learning Progress Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Progress Bar -->
+<div class="md:col-span-2 bg-surface rounded-lg p-stack-md border-2 border-surface-container-highest shadow-[0_4px_0_0_rgba(0,0,0,0.05)] flex flex-col justify-center">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">flag</span>
+                    Misiones completadas
+                </h2>
+<div class="flex justify-between items-end mb-2">
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary">3 <span class="font-body-md text-body-md text-on-surface-variant">de 5</span></span>
+<span class="font-label-bold text-label-bold text-on-surface-variant">Objetivo semanal</span>
+</div>
+<!-- Thick glossy progress bar -->
+<div class="h-6 w-full bg-surface-container rounded-full overflow-hidden border border-surface-container-highest relative">
+<div class="h-full bg-tertiary-container rounded-full w-[60%] relative">
+<!-- Glossy effect -->
+<div class="absolute top-0 left-0 w-full h-1/2 bg-white/30 rounded-t-full"></div>
+</div>
+</div>
+</div>
+<!-- Words Practiced -->
+<div class="bg-surface rounded-lg p-stack-md border-2 border-surface-container-highest shadow-[0_4px_0_0_rgba(0,0,0,0.05)]">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">record_voice_over</span>
+                    Palabras practicadas
+                </h2>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-primary-container text-on-primary-container font-label-bold text-label-bold rounded-full">dog</span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-bold text-label-bold rounded-full">cat</span>
+<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container font-label-bold text-label-bold rounded-full">hello</span>
+<span class="px-3 py-1 bg-error-container text-on-error-container font-label-bold text-label-bold rounded-full">apple</span>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant font-label-bold text-label-bold rounded-full">+12 más</span>
+</div>
+</div>
+<!-- Improvement Area -->
+<div class="md:col-span-3 bg-error-container rounded-lg p-stack-md border-2 border-error/20 shadow-[0_4px_0_0_rgba(0,0,0,0.05)]">
+<div class="flex items-start gap-stack-sm">
+<div class="w-12 h-12 rounded-full bg-error text-on-error flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-2xl">trending_up</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-error-container mb-1">Área de mejora</h2>
+<p class="font-body-md text-body-md text-on-error-container mb-2">Sofía suele cometer este error frecuentemente. La IA hará más énfasis en corregirlo durante las próximas sesiones lúdicas.</p>
+<div class="bg-surface rounded-DEFAULT p-gutter inline-flex items-center gap-4 mt-2 border border-error/10">
+<span class="font-label-bold text-label-bold text-error line-through">"I likes"</span>
+<span class="material-symbols-outlined text-on-surface-variant">arrow_forward</span>
+<span class="font-label-bold text-label-bold text-tertiary">"I like"</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity & Actions -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-stack-lg">
+<!-- Activity List -->
+<div class="md:col-span-2 bg-surface rounded-lg p-stack-md border-2 border-surface-container-highest shadow-[0_4px_0_0_rgba(0,0,0,0.05)]">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">history</span>
+                    Actividad Reciente
+                </h2>
+<div class="flex flex-col gap-unit">
+<div class="flex justify-between items-center p-gutter rounded-DEFAULT hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined">pets</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface">Los animales de la granja</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">Hoy</span>
+</div>
+<div class="flex justify-between items-center p-gutter rounded-DEFAULT hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface">Pedir comida</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">Ayer</span>
+</div>
+<div class="flex justify-between items-center p-gutter rounded-DEFAULT hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined">school</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface">Saludos básicos</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">Hace 2 días</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-stack-sm justify-start">
+<button class="w-full bg-primary text-on-primary font-label-bold text-label-bold uppercase tracking-wider py-4 px-6 rounded-DEFAULT border-b-4 border-on-primary-fixed-variant hover:translate-y-[2px] hover:border-b-2 active:translate-y-[4px] active:border-b-0 transition-all flex items-center justify-center gap-2 shadow-[0_4px_0_0_#004c69]">
+<span class="material-symbols-outlined">smart_toy</span>
+                    Configurar IA
+                </button>
+<button class="w-full bg-surface-container-highest text-on-surface font-label-bold text-label-bold py-4 px-6 rounded-DEFAULT border-b-4 border-outline-variant hover:translate-y-[2px] hover:border-b-2 active:translate-y-[4px] active:border-b-0 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">shield_person</span>
+                    Seguridad y privacidad
+                </button>
+</div>
+</div>
+</main>
+<!-- We omit BottomNavBar since this is a focused adult setting/dashboard, not the primary learning app navigation flow -->
+</body></html>

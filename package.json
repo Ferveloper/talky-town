@@ -1,0 +1,30 @@
+{
+  "name": "talkytown",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TalkyTown — gamified AI language learning web app for children.",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "test": "turbo test",
+    "lint": "turbo lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "turbo typecheck",
+    "db:migrate": "pnpm --filter @talkytown/api db:migrate",
+    "db:seed": "pnpm --filter @talkytown/api db:seed",
+    "db:studio": "pnpm --filter @talkytown/api db:studio",
+    "clean": "turbo clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  }
+}

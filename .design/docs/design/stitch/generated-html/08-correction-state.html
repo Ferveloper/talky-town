@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Gentle Correction</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface-container-lowest": "#ffffff",
+                "tertiary": "#286b33",
+                "surface-container-highest": "#e7e2d9",
+                "secondary-container": "#fdd34d",
+                "inverse-on-surface": "#f6f0e7",
+                "surface-container": "#f3ede4",
+                "primary-fixed-dim": "#7ad0ff",
+                "on-tertiary-fixed": "#002107",
+                "on-error-container": "#93000a",
+                "tertiary-fixed": "#abf4ac",
+                "surface-dim": "#dfd9d1",
+                "on-secondary-fixed-variant": "#574500",
+                "on-secondary-container": "#725b00",
+                "surface-tint": "#00668a",
+                "on-tertiary-fixed-variant": "#07521d",
+                "primary-fixed": "#c3e8ff",
+                "on-error": "#ffffff",
+                "on-tertiary": "#ffffff",
+                "tertiary-fixed-dim": "#90d792",
+                "surface-container-low": "#f9f3ea",
+                "secondary-fixed-dim": "#ebc23e",
+                "on-primary-fixed": "#001e2c",
+                "on-secondary": "#ffffff",
+                "secondary-fixed": "#ffe087",
+                "on-surface-variant": "#3e484f",
+                "error-container": "#ffdad6",
+                "primary-container": "#40c4ff",
+                "on-primary-fixed-variant": "#004c69",
+                "secondary": "#735c00",
+                "on-tertiary-container": "#0a541f",
+                "on-primary": "#ffffff",
+                "background": "#fff9f0",
+                "on-background": "#1d1b16",
+                "error": "#ba1a1a",
+                "surface-variant": "#e7e2d9",
+                "on-primary-container": "#004e6b",
+                "tertiary-container": "#82c885",
+                "on-secondary-fixed": "#241a00",
+                "outline-variant": "#bdc8d1",
+                "inverse-primary": "#7ad0ff",
+                "surface-container-high": "#ede7df",
+                "outline": "#6e7980",
+                "surface-bright": "#fff9f0",
+                "primary": "#00668a",
+                "surface": "#fff9f0",
+                "inverse-surface": "#32302a",
+                "on-surface": "#1d1b16"
+        },
+        "borderRadius": {
+                "DEFAULT": "1rem",
+                "lg": "2rem",
+                "xl": "3rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "stack-lg": "48px",
+                "gutter": "16px",
+                "stack-md": "24px",
+                "container-margin": "24px",
+                "stack-sm": "12px",
+                "unit": "8px"
+        },
+        "fontFamily": {
+                "caption": [
+                        "Quicksand"
+                ],
+                "display-lg-mobile": [
+                        "Quicksand"
+                ],
+                "body-lg": [
+                        "Quicksand"
+                ],
+                "body-md": [
+                        "Quicksand"
+                ],
+                "label-bold": [
+                        "Quicksand"
+                ],
+                "headline-md": [
+                        "Quicksand"
+                ],
+                "display-lg": [
+                        "Quicksand"
+                ]
+        },
+        "fontSize": {
+                "caption": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "display-lg-mobile": [
+                        "32px",
+                        {
+                                "lineHeight": "38px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-lg": [
+                        "20px",
+                        {
+                                "lineHeight": "30px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-md": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "label-bold": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "display-lg": [
+                        "40px",
+                        {
+                                "lineHeight": "48px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+  body {
+    background: radial-gradient(circle at top, #fff9f0 0%, #f3ede4 100%);
+    font-family: 'Quicksand', sans-serif;
+  }
+  .bounce-on-load {
+    animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  .float {
+    animation: floating 3s ease-in-out infinite;
+  }
+  @keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+  .sparkle {
+    animation: twinkle 1.5s infinite alternate;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.5; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
+  }
+</style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col pt-20 pb-safe">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-surface shadow-sm border-b-4 border-surface-container-highest">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[32px] cursor-pointer hover:scale-105 transition-transform" style="font-variation-settings: 'FILL' 1;">close</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center">
+<h1 class="font-headline-md text-headline-md-mobile text-primary tracking-tight">Animal Adventure</h1>
+<!-- XP Progress Bar -->
+<div class="w-48 h-4 bg-surface-container-highest rounded-full overflow-hidden mt-1 relative border-2 border-surface-container-highest shadow-[0_2px_0_0_rgba(0,0,0,0.05)]">
+<div class="h-full bg-tertiary-fixed w-3/4 rounded-full shadow-[inset_0_-2px_0_0_rgba(0,0,0,0.1)] relative">
+<div class="absolute top-0 left-0 w-full h-1/2 bg-white opacity-40 rounded-t-full"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-gutter">
+<span class="material-symbols-outlined text-secondary-fixed-dim text-[28px] hover:scale-105 transition-transform" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col items-center justify-center px-container-margin pt-stack-md pb-stack-lg relative overflow-hidden">
+<!-- Background Decor -->
+<div class="absolute top-10 left-10 text-primary-fixed opacity-50 float material-symbols-outlined text-[64px]">cloud</div>
+<div class="absolute top-32 right-10 text-primary-fixed opacity-50 float material-symbols-outlined text-[48px]" style="animation-delay: 1s;">cloud</div>
+<!-- Luna Avatar -->
+<div class="relative w-48 h-48 mb-stack-md bounce-on-load">
+<div class="absolute inset-0 bg-secondary-fixed rounded-full shadow-[0_8px_0_0_#ebc23e] border-4 border-surface"></div>
+<img alt="Luna the magical white owl with expressive eyes, looking encouraging and happy" class="w-full h-full object-cover rounded-full relative z-10 p-2" src="https://lh3.googleusercontent.com/aida/ADBb0uiKkS7Nai543W0hjfTo4szF9Y-THyBtO2-wAudI2w7SXyIYUuIZUtTY3nOhnUabpqoFYy9kaJfQIR9mtEvh65B6VHcBGteZdB4A6yFBImG3H-D2ucFtSGdr4W6svEmaTP-zKusWaBk1M2dI-_9rj_zUGxwkfxQsXFgaMfb2ulK1PuTN2j30yM5lmqfeCVX4Mh3TDjZjoUjzn6Y58AWHGh822skg6adU6O3iK39rfG_xL2nxu2zKD_VzmSY"/>
+<!-- Chat Bubble -->
+<div class="absolute -top-4 -right-8 bg-surface-container-lowest px-4 py-2 rounded-2xl border-2 border-surface-container-highest shadow-[0_4px_0_0_#e7e2d9] z-20 flex items-center gap-2 transform rotate-3 float">
+<span class="font-label-bold text-label-bold text-on-surface">¡Casi perfecto!</span>
+<span class="material-symbols-outlined text-secondary-container sparkle" style="font-variation-settings: 'FILL' 1;">colors_spark</span>
+</div>
+</div>
+<!-- Gentle Correction Card -->
+<div class="w-full max-w-md bg-tertiary-fixed border-4 border-tertiary-fixed-dim rounded-xl p-stack-md shadow-[0_6px_0_0_#90d792] relative overflow-hidden bounce-on-load" style="animation-delay: 0.1s;">
+<!-- Card Decor -->
+<div class="absolute -top-6 -right-6 text-tertiary-fixed-dim opacity-30 material-symbols-outlined text-[100px] rotate-12">cruelty_free</div>
+<!-- Title -->
+<div class="flex items-center gap-2 mb-stack-sm relative z-10">
+<div class="bg-surface-container-lowest p-2 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">tips_and_updates</span>
+</div>
+<h2 class="font-headline-md text-headline-md-mobile text-on-tertiary-fixed">Pequeña mejora</h2>
+</div>
+<!-- Correction Display -->
+<div class="bg-surface-container-lowest rounded-lg p-4 mb-stack-sm shadow-sm relative z-10 flex flex-col gap-3">
+<!-- Original (Struckthrough) -->
+<div class="flex items-center gap-3 opacity-60">
+<span class="material-symbols-outlined text-outline">close</span>
+<p class="font-body-md text-body-md text-on-surface-variant line-through">I likes dogs</p>
+</div>
+<!-- Divider -->
+<div class="h-px bg-surface-container-highest w-full"></div>
+<!-- Corrected (Highlighted) -->
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<p class="font-headline-md text-headline-md-mobile text-on-surface flex items-center gap-2">
+            I <span class="bg-secondary-fixed text-on-secondary-fixed px-2 py-1 rounded-md shadow-sm">like</span> dogs
+            <span class="material-symbols-outlined text-secondary-container text-[20px] sparkle" style="font-variation-settings: 'FILL' 1;">star</span>
+</p>
+</div>
+</div>
+<!-- Explanation -->
+<p class="font-body-md text-body-md text-on-tertiary-fixed-variant mb-stack-sm relative z-10">
+        Con "I" usamos "like".
+      </p>
+<!-- Feedback / XP -->
+<div class="flex items-center justify-between bg-white/50 backdrop-blur-sm rounded-lg p-3 relative z-10 border border-white/60">
+<span class="font-label-bold text-label-bold text-on-tertiary-fixed">¡Buen intento!</span>
+<div class="flex items-center gap-1 bg-secondary-fixed px-3 py-1 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-secondary-container text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold text-label-bold text-on-secondary-fixed-variant">+10 XP</span>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<div class="w-full max-w-md mt-stack-lg bounce-on-load" style="animation-delay: 0.2s;">
+<button class="w-full bg-primary-container text-on-primary-container font-headline-md text-headline-md-mobile py-4 rounded-xl border-b-4 border-[#004e6b] shadow-[0_4px_0_0_rgba(0,0,0,0.1)] active:border-b-0 active:translate-y-1 hover:bg-primary-fixed transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">replay</span>
+        INTENTARLO OTRA VEZ
+      </button>
+</div>
+</main>
+<script>
+    // Simple interactions
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        this.classList.add('scale-95');
+        setTimeout(() => this.classList.remove('scale-95'), 100);
+      });
+    });
+  </script>
+</body></html>

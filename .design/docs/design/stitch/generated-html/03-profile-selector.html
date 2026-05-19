@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Profile Selection</title>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Quicksand -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#c3e8ff",
+                    "surface-variant": "#e7e2d9",
+                    "on-tertiary-container": "#0a541f",
+                    "primary": "#00668a",
+                    "outline-variant": "#bdc8d1",
+                    "inverse-surface": "#32302a",
+                    "error-container": "#ffdad6",
+                    "background": "#fff9f0",
+                    "tertiary-container": "#82c885",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#004c69",
+                    "surface-bright": "#fff9f0",
+                    "secondary-container": "#fdd34d",
+                    "outline": "#6e7980",
+                    "on-primary-container": "#004e6b",
+                    "secondary-fixed": "#ffe087",
+                    "on-background": "#1d1b16",
+                    "surface-tint": "#00668a",
+                    "surface": "#fff9f0",
+                    "on-tertiary-fixed-variant": "#07521d",
+                    "surface-dim": "#dfd9d1",
+                    "surface-container-low": "#f9f3ea",
+                    "on-surface": "#1d1b16",
+                    "on-surface-variant": "#3e484f",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#286b33",
+                    "secondary-fixed-dim": "#ebc23e",
+                    "on-tertiary-fixed": "#002107",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#e7e2d9",
+                    "on-secondary-fixed-variant": "#574500",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#ede7df",
+                    "tertiary-fixed-dim": "#90d792",
+                    "primary-fixed-dim": "#7ad0ff",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#40c4ff",
+                    "on-primary-fixed": "#001e2c",
+                    "secondary": "#735c00",
+                    "on-secondary-container": "#725b00",
+                    "on-secondary-fixed": "#241a00",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#f3ede4",
+                    "inverse-on-surface": "#f6f0e7",
+                    "tertiary-fixed": "#abf4ac",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#7ad0ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "24px",
+                    "gutter": "16px",
+                    "stack-sm": "12px",
+                    "unit": "8px",
+                    "stack-lg": "48px",
+                    "container-margin": "24px"
+            },
+            "fontFamily": {
+                    "display-lg": [
+                            "Quicksand"
+                    ],
+                    "caption": [
+                            "Quicksand"
+                    ],
+                    "headline-md": [
+                            "Quicksand"
+                    ],
+                    "display-lg-mobile": [
+                            "Quicksand"
+                    ],
+                    "body-md": [
+                            "Quicksand"
+                    ],
+                    "body-lg": [
+                            "Quicksand"
+                    ],
+                    "label-bold": [
+                            "Quicksand"
+                    ]
+            },
+            "fontSize": {
+                    "display-lg": [
+                            "40px",
+                            {
+                                    "lineHeight": "48px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "caption": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "display-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "38px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "body-lg": [
+                            "20px",
+                            {
+                                    "lineHeight": "30px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "label-bold": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        /* Custom Skeuomorphic Button Press Animation */
+        .btn-press {
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-press:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 0 currentColor !important;
+        }
+        
+        .card-press {
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-press:hover {
+            transform: translateY(-2px);
+        }
+        .card-press:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+        }
+
+        /* Ambient cloud pattern for background */
+        .bg-clouds {
+            background-image: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.6) 0%, transparent 20%),
+                              radial-gradient(circle at 80% 60%, rgba(255, 255, 255, 0.5) 0%, transparent 25%),
+                              radial-gradient(circle at 50% 90%, rgba(255, 255, 255, 0.4) 0%, transparent 30%);
+            background-color: theme('colors.background');
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-clouds min-h-screen flex flex-col font-body-md text-on-surface antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Placeholder (Hidden for this linear flow based on rules) -->
+<!-- Content wrapper -->
+<main class="flex-1 flex flex-col items-center justify-center p-container-margin md:p-stack-lg max-w-4xl mx-auto w-full relative z-10">
+<!-- Header -->
+<header class="text-center mb-stack-lg animate-fade-in-down">
+<h1 class="font-display-lg text-display-lg md:text-[48px] text-primary tracking-tight drop-shadow-sm">¿Quién va a practicar hoy?</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-stack-sm">¡Elige tu perfil para empezar a jugar!</p>
+</header>
+<!-- Profiles Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-stack-md w-full max-w-2xl mb-stack-lg">
+<!-- Profile 1: Sofía -->
+<button class="card-press group relative flex flex-col items-center bg-surface-container-lowest rounded-xl border-2 border-surface-container-highest shadow-[0_8px_0_0_rgba(231,226,217,1)] p-stack-md w-full focus:outline-none focus:ring-4 focus:ring-primary-container focus:ring-offset-4 focus:ring-offset-background">
+<!-- Level Badge Absolute -->
+<div class="absolute -top-4 -right-4 bg-tertiary-container text-on-tertiary-container font-label-bold text-label-bold px-4 py-2 rounded-full border-2 border-surface-container-lowest shadow-sm z-10 transform group-hover:scale-105 transition-transform">
+                    Explorer
+                </div>
+<!-- Avatar Frame (Level Color Stroke) -->
+<div class="relative w-32 h-32 mb-stack-sm rounded-full border-4 border-tertiary-container p-1 shadow-inner bg-surface-container-low overflow-hidden">
+<img alt="Avatar of Sofía" class="w-full h-full object-cover rounded-full bg-primary-fixed" data-alt="A vibrant, 3D-style illustration of a friendly 9-year-old girl named Sofía for a children's language learning app. She has curly dark hair tied in pigtails, a bright enthusiastic smile, and wears a colorful yellow and blue outfit. The lighting is warm and inviting, showcasing a playful and polished 3D render style against a clean, soft pastel background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgf481M8RykUJGRA6lOqCwbW_FhjIN-YIE3xXTe5y1zGLSI3VLWgHpNo5gAwWELqwUxEGarj6Pdn_fvPbklky7hiAvMikJwpvLYU-dH-pBjulmY0YbucziTdrYsXP6g1PBW047TBO0i74pVy3-_EFAWHVKpoZaq_fOUARlAWHCGJyF63u10izegJJqTUmVejwxOCq3I9WdV6V7mmxKSgIvdLbTRqVW6dILXkhOCI6ogOpvowjpY8nNn3KyntuLJIqF3zoa3MiH9hzr"/>
+</div>
+<!-- Name & Age -->
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Sofía</h2>
+<span class="font-caption text-caption text-on-surface-variant mb-stack-sm">9 años</span>
+<!-- Language & XP Details -->
+<div class="flex flex-col gap-unit w-full mt-auto">
+<!-- Language Badge -->
+<div class="flex items-center justify-center gap-2 bg-surface-container-low rounded-lg py-2 px-3 border border-surface-container-highest">
+<span class="text-xl leading-none">🇬🇧</span>
+<span class="font-label-bold text-label-bold text-on-surface">Inglés</span>
+</div>
+<!-- XP Badge -->
+<div class="flex items-center justify-center gap-2 bg-secondary-fixed text-on-secondary-fixed font-label-bold text-label-bold rounded-lg py-2 px-3 border border-secondary-fixed-dim shadow-[0_2px_0_0_#ebc23e]">
+<span class="material-symbols-outlined text-[20px] text-secondary">star</span>
+                        120 XP
+                    </div>
+</div>
+</button>
+<!-- Profile 2: Leo -->
+<button class="card-press group relative flex flex-col items-center bg-surface-container-lowest rounded-xl border-2 border-surface-container-highest shadow-[0_8px_0_0_rgba(231,226,217,1)] p-stack-md w-full focus:outline-none focus:ring-4 focus:ring-primary-container focus:ring-offset-4 focus:ring-offset-background">
+<!-- Level Badge Absolute -->
+<div class="absolute -top-4 -right-4 bg-primary-container text-on-primary-container font-label-bold text-label-bold px-4 py-2 rounded-full border-2 border-surface-container-lowest shadow-sm z-10 transform group-hover:scale-105 transition-transform">
+                    Starter
+                </div>
+<!-- Avatar Frame (Level Color Stroke) -->
+<div class="relative w-32 h-32 mb-stack-sm rounded-full border-4 border-primary-container p-1 shadow-inner bg-surface-container-low overflow-hidden">
+<img alt="Avatar of Leo" class="w-full h-full object-cover rounded-full bg-primary-fixed" src="https://lh3.googleusercontent.com/aida/ADBb0uifHN5bBjKY5qS5kMxTpfGrV0S6vffkWAay89lLsE8FGuaG6Hl60KRRAR4Xe-q69q2IY74DNQ2YNtlbivf74dNE_5E4UNsgaAq49CVmDILsm4ZBJI3xC_hLPPcigcZ8rFYNVuDKf2bFhkoZUGdV54rf8uReHASr20iXZssX0ZCqJqv5wdp3qe3wasmcUnZECOzvVEZsLjEwuaFz62JbXMaaSfGPct9bke55na-x7yEP04DCoPVVLkVfaMq_"/>
+</div>
+<!-- Name & Age -->
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Leo</h2>
+<span class="font-caption text-caption text-on-surface-variant mb-stack-sm">6 años</span>
+<!-- Language & XP Details -->
+<div class="flex flex-col gap-unit w-full mt-auto">
+<!-- Language Badge -->
+<div class="flex items-center justify-center gap-2 bg-surface-container-low rounded-lg py-2 px-3 border border-surface-container-highest">
+<span class="text-xl leading-none">🇬🇧</span>
+<span class="font-label-bold text-label-bold text-on-surface">Inglés</span>
+</div>
+<!-- XP Badge -->
+<div class="flex items-center justify-center gap-2 bg-secondary-fixed text-on-secondary-fixed font-label-bold text-label-bold rounded-lg py-2 px-3 border border-secondary-fixed-dim shadow-[0_2px_0_0_#ebc23e]">
+<span class="material-symbols-outlined text-[20px] text-secondary">star</span>
+                        45 XP
+                    </div>
+</div>
+</button>
+</div>
+<!-- Add Profile Button -->
+<button class="btn-press flex items-center justify-center gap-2 bg-primary text-on-primary font-label-bold text-[18px] uppercase tracking-wider py-4 px-8 rounded-full shadow-[0_6px_0_0_#004c69] hover:bg-surface-tint focus:outline-none focus:ring-4 focus:ring-primary-container focus:ring-offset-4 focus:ring-offset-background">
+<span class="material-symbols-outlined">add</span>
+            Crear nuevo perfil
+        </button>
+</main>
+<!-- Adult Panel Link -->
+<div class="w-full p-container-margin flex justify-end absolute bottom-0 right-0 z-20">
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-label-bold text-label-bold px-4 py-2 rounded-lg hover:bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-primary-container">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+            Panel adulto
+        </button>
+</div>
+</body></html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Crear perfil</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#fdd34d",
+                    "background": "#fff9f0",
+                    "surface-bright": "#fff9f0",
+                    "surface-variant": "#e7e2d9",
+                    "on-secondary-fixed-variant": "#574500",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#82c885",
+                    "surface-tint": "#00668a",
+                    "on-primary-fixed-variant": "#004c69",
+                    "tertiary-fixed-dim": "#90d792",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#dfd9d1",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#735c00",
+                    "on-tertiary-fixed": "#002107",
+                    "inverse-surface": "#32302a",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#004e6b",
+                    "surface-container-highest": "#e7e2d9",
+                    "surface-container-low": "#f9f3ea",
+                    "primary-fixed-dim": "#7ad0ff",
+                    "surface-container-high": "#ede7df",
+                    "secondary-fixed-dim": "#ebc23e",
+                    "on-surface": "#1d1b16",
+                    "on-background": "#1d1b16",
+                    "tertiary": "#286b33",
+                    "outline-variant": "#bdc8d1",
+                    "on-primary-fixed": "#001e2c",
+                    "primary": "#00668a",
+                    "outline": "#6e7980",
+                    "on-surface-variant": "#3e484f",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed": "#241a00",
+                    "surface": "#fff9f0",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#abf4ac",
+                    "primary-container": "#40c4ff",
+                    "secondary-fixed": "#ffe087",
+                    "on-tertiary-container": "#0a541f",
+                    "inverse-primary": "#7ad0ff",
+                    "on-secondary-container": "#725b00",
+                    "surface-container": "#f3ede4",
+                    "inverse-on-surface": "#f6f0e7",
+                    "on-error-container": "#93000a",
+                    "on-error": "#ffffff",
+                    "primary-fixed": "#c3e8ff",
+                    "on-tertiary-fixed-variant": "#07521d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "container-margin": "24px",
+                    "stack-md": "24px",
+                    "gutter": "16px",
+                    "stack-lg": "48px",
+                    "stack-sm": "12px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Quicksand"],
+                    "display-lg-mobile": ["Quicksand"],
+                    "body-lg": ["Quicksand"],
+                    "headline-md": ["Quicksand"],
+                    "label-bold": ["Quicksand"],
+                    "caption": ["Quicksand"],
+                    "body-md": ["Quicksand"]
+            },
+            "fontSize": {
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "38px", "fontWeight": "700"}],
+                    "body-lg": ["20px", {"lineHeight": "30px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-bold": ["16px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "caption": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Quicksand', sans-serif; }
+        .soft-shadow { box-shadow: 0 8px 30px rgba(0, 76, 105, 0.08); }
+        .input-shadow { box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-shadow { box-shadow: 0 4px 0 #004c69; transition: all 0.1s; }
+        .btn-shadow:active { box-shadow: 0 0 0 #004c69; transform: translateY(4px); }
+        
+        /* Hide scrollbar for horizontal lists */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface-container-low min-h-screen text-on-surface antialiased flex flex-col pt-10 pb-20">
+<!-- Top AppBar (Suppressed normal nav, just a simple back button for transactional flow) -->
+<header class="w-full px-container-margin py-4 flex items-center justify-between z-50 absolute top-0 left-0">
+<button aria-label="Volver" class="p-2 bg-surface rounded-full shadow-sm text-primary hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">arrow_back</span>
+</button>
+<div class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight">TalkyTown</div>
+<div class="w-[44px]"></div> <!-- Spacer -->
+</header>
+<main class="flex-grow flex items-center justify-center px-4 md:px-container-margin mt-16 z-10 relative">
+<!-- Decorative Elements -->
+<div class="absolute top-20 left-10 w-32 h-32 bg-secondary-container/20 rounded-full blur-3xl -z-10"></div>
+<div class="absolute bottom-20 right-10 w-40 h-40 bg-primary-container/20 rounded-full blur-3xl -z-10"></div>
+<!-- Main Card Container -->
+<div class="bg-surface w-full max-w-2xl rounded-[3rem] soft-shadow p-6 md:p-10 border-2 border-surface-variant relative overflow-hidden">
+<!-- Header Section -->
+<div class="text-center mb-stack-md">
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-on-surface mb-2">Crear perfil</h1>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-[20px]" style="font-variation-settings: 'FILL' 1;">info</span>
+                    Usa un alias, no el nombre completo del niño.
+                </p>
+</div>
+<form class="space-y-stack-md">
+<!-- Alias Input -->
+<div>
+<label class="block font-label-bold text-label-bold text-on-surface mb-stack-sm pl-2" for="alias">Alias del explorador</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">face</span>
+<input class="w-full h-14 pl-12 pr-4 bg-background border-2 border-surface-variant rounded-full font-body-lg text-body-lg text-on-surface focus:border-primary-container focus:ring-4 focus:ring-primary-container/20 outline-none transition-all input-shadow placeholder-outline-variant" id="alias" name="alias" placeholder="Ej: SuperLuna" type="text"/>
+</div>
+</div>
+<!-- Avatar Selection -->
+<div>
+<label class="block font-label-bold text-label-bold text-on-surface mb-stack-sm pl-2">Elige un compañero</label>
+<div class="flex gap-4 overflow-x-auto pb-4 hide-scrollbar px-2 snap-x">
+<!-- Avatar 1 -->
+<label class="relative cursor-pointer snap-center group flex-shrink-0">
+<input checked="" class="peer sr-only" name="avatar" type="radio" value="luna"/>
+<div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-surface-variant peer-checked:border-primary peer-checked:bg-primary-container/10 overflow-hidden transition-all group-hover:scale-105 bg-background shadow-sm">
+<img alt="" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uiKkS7Nai543W0hjfTo4szF9Y-THyBtO2-wAudI2w7SXyIYUuIZUtTY3nOhnUabpqoFYy9kaJfQIR9mtEvh65B6VHcBGteZdB4A6yFBImG3H-D2ucFtSGdr4W6svEmaTP-zKusWaBk1M2dI-_9rj_zUGxwkfxQsXFgaMfb2ulK1PuTN2j30yM5lmqfeCVX4Mh3TDjZjoUjzn6Y58AWHGh822skg6adU6O3iK39rfG_xL2nxu2zKD_VzmSY"/>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-surface text-on-surface font-label-bold text-label-bold px-3 py-1 rounded-full text-sm shadow-sm border border-surface-variant peer-checked:bg-primary peer-checked:text-on-primary">Luna</div>
+</label>
+<!-- Avatar 2 -->
+<label class="relative cursor-pointer snap-center group flex-shrink-0">
+<input class="peer sr-only" name="avatar" type="radio" value="leo"/>
+<div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-surface-variant peer-checked:border-primary peer-checked:bg-primary-container/10 overflow-hidden transition-all group-hover:scale-105 bg-background shadow-sm">
+<img alt="" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uifHN5bBjKY5qS5kMxTpfGrV0S6vffkWAay89lLsE8FGuaG6Hl60KRRAR4Xe-q69q2IY74DNQ2YNtlbivf74dNE_5E4UNsgaAq49CVmDILsm4ZBJI3xC_hLPPcigcZ8rFYNVuDKf2bFhkoZUGdV54rf8uReHASr20iXZssX0ZCqJqv5wdp3qe3wasmcUnZECOzvVEZsLjEwuaFz62JbXMaaSfGPct9bke55na-x7yEP04DCoPVVLkVfaMq_"/>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-surface text-on-surface font-label-bold text-label-bold px-3 py-1 rounded-full text-sm shadow-sm border border-surface-variant peer-checked:bg-primary peer-checked:text-on-primary">Leo</div>
+</label>
+<!-- Avatar 3 -->
+<label class="relative cursor-pointer snap-center group flex-shrink-0">
+<input class="peer sr-only" name="avatar" type="radio" value="nova"/>
+<div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-surface-variant peer-checked:border-primary peer-checked:bg-primary-container/10 overflow-hidden transition-all group-hover:scale-105 bg-surface-container-high flex items-center justify-center shadow-sm relative">
+<!-- Placeholder for image generation if needed later, using CSS for now to look like a placeholder slot -->
+<div class="w-full h-full bg-cover bg-center" data-alt="A friendly 3D-style illustrated avatar of a cute purple robot named Nova for a children's language learning app. The robot has big glowing blue eyes, a rounded metallic body, and small antenna. High-quality, warm lighting, playful and polished 3D render style, light mode aesthetic, clean background." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCw3XtM_Xxi8ysCxc4CaaxGCy99Sv7iUg_0kaTtvtzCFXv_5xtxs7LeCzftqZOCN8ut2xTCHzwG-Y2jI9OQWRCdVhFM_ZN7gWjEu6GYOnP_7BQ1r-lbcEuey8xfFtOx7mjFatqDsTDlbxJ_rbvdzBTBwdoLr-C6HjFkF_NUtO2uUft-pDNqDt5jUh6Eg_6QmHI5FRxBnJE_gVyBaPTLGICYrXQvCZa0NyIN5mKjvimsRREIjzh7AXnRHTEYYzD0jSFaTMSjzjvK5YpE');"></div>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-surface text-on-surface font-label-bold text-label-bold px-3 py-1 rounded-full text-sm shadow-sm border border-surface-variant peer-checked:bg-primary peer-checked:text-on-primary">Nova</div>
+</label>
+</div>
+</div>
+<!-- Age Selector -->
+<div>
+<label class="block font-label-bold text-label-bold text-on-surface mb-stack-sm pl-2">Edad</label>
+<div class="flex gap-2 overflow-x-auto pb-2 hide-scrollbar px-2 snap-x">
+<!-- Age 5 to 12 -->
+<label class="relative cursor-pointer snap-center group flex-shrink-0">
+<input class="peer sr-only" name="age" type="radio" value="5"/>
+<div class="w-14 h-14 rounded-2xl border-2 border-surface-variant flex items-center justify-center font-headline-md text-headline-md text-on-surface-variant bg-background peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary-container transition-all shadow-sm group-hover:bg-surface-container-highest">5</div>
+</label>
+<label class="relative cursor-pointer snap-center group flex-shrink-0">
+<input checked="" class="peer sr-only" name="age" type="radio" value="6"/>
+<div class="w-14 h-14 rounded-2xl border-2 border-surface-variant flex items-center justify-center font-headline-md text-headline-md text-on-surface-variant bg-background peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary-container transition-all shadow-sm group-hover:bg-surface-container-highest">6</div>
+</label>
+<label class="relative cursor-pointer snap-center group flex-shrink-0">
+<input class="peer sr-only" name="age" type="radio" value="7"/>
+<div class="w-14 h-14 rounded-2xl border-2 border-surface-variant flex items-center justify-center font-headline-md text-headline-md text-on-surface-variant bg-background peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary-container transition-all shadow-sm group-hover:bg-surface-container-highest">7</div>
+</label>
+<label class="relative cursor-pointer snap-center group flex-shrink-0">
+<input class="peer sr-only" name="age" type="radio" value="8"/>
+<div class="w-14 h-14 rounded-2xl border-2 border-surface-variant flex items-center justify-center font-headline-md text-headline-md text-on-surface-variant bg-background peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary-container transition-all shadow-sm group-hover:bg-surface-container-highest">8</div>
+</label>
+<label class="relative cursor-pointer snap-center group flex-shrink-0">
+<input class="peer sr-only" name="age" type="radio" value="9"/>
+<div class="w-14 h-14 rounded-2xl border-2 border-surface-variant flex items-center justify-center font-headline-md text-headline-md text-on-surface-variant bg-background peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary-container transition-all shadow-sm group-hover:bg-surface-container-highest">9</div>
+</label>
+</div>
+</div>
+<!-- Languages Grid (2 cols on md) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+<!-- Native Language -->
+<div>
+<label class="block font-label-bold text-label-bold text-on-surface mb-stack-sm pl-2" for="native_lang">Idioma nativo</label>
+<div class="relative">
+<select class="appearance-none w-full h-14 pl-4 pr-12 bg-background border-2 border-surface-variant rounded-full font-body-lg text-body-lg text-on-surface focus:border-primary-container focus:ring-4 focus:ring-primary-container/20 outline-none transition-all shadow-sm" id="native_lang" name="native_lang">
+<option value="es">Español</option>
+<option value="en">Inglés</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Target Language -->
+<div>
+<label class="block font-label-bold text-label-bold text-on-surface mb-stack-sm pl-2" for="target_lang">Idioma a practicar</label>
+<div class="relative">
+<select class="appearance-none w-full h-14 pl-4 pr-12 bg-background border-2 border-surface-variant rounded-full font-body-lg text-body-lg text-on-surface focus:border-primary-container focus:ring-4 focus:ring-primary-container/20 outline-none transition-all shadow-sm" id="target_lang" name="target_lang">
+<option value="en">Inglés</option>
+<option value="es">Español</option>
+<option value="fr">Francés</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Initial Level -->
+<div>
+<label class="block font-label-bold text-label-bold text-on-surface mb-stack-sm pl-2">Nivel inicial</label>
+<div class="grid grid-cols-2 gap-4">
+<label class="relative cursor-pointer">
+<input checked="" class="peer sr-only" name="level" type="radio" value="beginner"/>
+<div class="p-4 rounded-2xl border-2 border-surface-variant bg-background peer-checked:border-tertiary-container peer-checked:bg-tertiary-container/10 transition-all flex flex-col items-center justify-center gap-2 text-center shadow-sm">
+<span class="material-symbols-outlined text-tertiary text-[32px]" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="font-label-bold text-label-bold text-on-surface">Principiante</span>
+</div>
+</label>
+<label class="relative cursor-pointer">
+<input class="peer sr-only" name="level" type="radio" value="intermediate"/>
+<div class="p-4 rounded-2xl border-2 border-surface-variant bg-background peer-checked:border-tertiary-container peer-checked:bg-tertiary-container/10 transition-all flex flex-col items-center justify-center gap-2 text-center shadow-sm">
+<div class="flex">
+<span class="material-symbols-outlined text-tertiary text-[32px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary text-[32px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface">Intermedio</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Favorite Topics -->
+<div>
+<label class="block font-label-bold text-label-bold text-on-surface mb-stack-sm pl-2">Temas favoritos</label>
+<div class="flex flex-wrap gap-2">
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" name="topics" type="checkbox" value="animales"/>
+<div class="px-4 py-2 rounded-full border-2 border-surface-variant bg-background text-on-surface-variant font-label-bold text-label-bold peer-checked:bg-primary-container peer-checked:border-primary-container peer-checked:text-on-primary-container transition-all shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">pets</span> Animales
+                            </div>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="topics" type="checkbox" value="espacio"/>
+<div class="px-4 py-2 rounded-full border-2 border-surface-variant bg-background text-on-surface-variant font-label-bold text-label-bold peer-checked:bg-primary-container peer-checked:border-primary-container peer-checked:text-on-primary-container transition-all shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">rocket_launch</span> Espacio
+                            </div>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="topics" type="checkbox" value="comida"/>
+<div class="px-4 py-2 rounded-full border-2 border-surface-variant bg-background text-on-surface-variant font-label-bold text-label-bold peer-checked:bg-primary-container peer-checked:border-primary-container peer-checked:text-on-primary-container transition-all shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">restaurant</span> Comida
+                            </div>
+</label>
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" name="topics" type="checkbox" value="deportes"/>
+<div class="px-4 py-2 rounded-full border-2 border-surface-variant bg-background text-on-surface-variant font-label-bold text-label-bold peer-checked:bg-primary-container peer-checked:border-primary-container peer-checked:text-on-primary-container transition-all shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">sports_soccer</span> Deportes
+                            </div>
+</label>
+</div>
+</div>
+<!-- Actions -->
+<div class="pt-stack-md flex flex-col md:flex-row-reverse gap-4 items-center">
+<button class="w-full md:w-auto flex-1 h-14 bg-primary text-on-primary rounded-full font-label-bold text-label-bold uppercase tracking-wider btn-shadow flex items-center justify-center gap-2" type="button">
+<span>Crear perfil</span>
+<span class="material-symbols-outlined">check_circle</span>
+</button>
+<button class="w-full md:w-auto px-6 h-14 text-on-surface-variant font-label-bold text-label-bold hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center" type="button">
+                        Cancelar
+                    </button>
+</div>
+<!-- Privacy Note -->
+<div class="pt-4 text-center">
+<p class="font-caption text-caption text-outline flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+                        Los datos están seguros. Solo tú puedes ver este perfil.
+                    </p>
+</div>
+</form>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Fallback</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#32302a",
+                        "secondary-container": "#fdd34d",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#7ad0ff",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#00668a",
+                        "on-background": "#1d1b16",
+                        "surface-container": "#f3ede4",
+                        "tertiary": "#286b33",
+                        "outline-variant": "#bdc8d1",
+                        "on-secondary-fixed-variant": "#574500",
+                        "surface-bright": "#fff9f0",
+                        "surface-container-highest": "#e7e2d9",
+                        "primary": "#00668a",
+                        "on-tertiary-container": "#0a541f",
+                        "on-primary-container": "#004e6b",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-variant": "#e7e2d9",
+                        "on-surface-variant": "#3e484f",
+                        "inverse-on-surface": "#f6f0e7",
+                        "surface": "#fff9f0",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#ede7df",
+                        "on-secondary-container": "#725b00",
+                        "on-surface": "#1d1b16",
+                        "on-tertiary-fixed-variant": "#07521d",
+                        "tertiary-fixed-dim": "#90d792",
+                        "tertiary-container": "#82c885",
+                        "primary-fixed": "#c3e8ff",
+                        "background": "#fff9f0",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#7ad0ff",
+                        "secondary-fixed-dim": "#ebc23e",
+                        "surface-dim": "#dfd9d1",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#abf4ac",
+                        "primary-container": "#40c4ff",
+                        "on-primary-fixed": "#001e2c",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#735c00",
+                        "surface-container-low": "#f9f3ea",
+                        "on-tertiary-fixed": "#002107",
+                        "on-primary-fixed-variant": "#004c69",
+                        "outline": "#6e7980",
+                        "secondary-fixed": "#ffe087"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "gutter": "16px",
+                        "container-margin": "24px",
+                        "stack-md": "24px",
+                        "stack-lg": "48px",
+                        "stack-sm": "12px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Quicksand"],
+                        "body-md": ["Quicksand"],
+                        "caption": ["Quicksand"],
+                        "body-lg": ["Quicksand"],
+                        "headline-md": ["Quicksand"],
+                        "display-lg": ["Quicksand"],
+                        "label-bold": ["Quicksand"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["32px", {"lineHeight": "38px", "fontWeight": "700"}],
+                        "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "caption": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "body-lg": ["20px", {"lineHeight": "30px", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-bold": ["16px", {"lineHeight": "24px", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.surface');
+            background-image: radial-gradient(circle at top right, theme('colors.primary-fixed') 0%, transparent 40%),
+                              radial-gradient(circle at bottom left, theme('colors.secondary-container') 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+        .bouncing-nav:active {
+            transform: scale(0.95);
+            transition: transform 0.1s;
+        }
+        .soft-shadow {
+            box-shadow: 0 4px 0 0 theme('colors.primary-container');
+        }
+        .btn-3d {
+            box-shadow: 0 4px 0 0 theme('colors.primary-fixed-variant', '#004c69');
+            transition: all 0.1s ease;
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 0 theme('colors.primary-fixed-variant', '#004c69');
+        }
+        .input-glow:focus-within {
+            box-shadow: 0 0 0 4px theme('colors.primary-container');
+            border-color: theme('colors.primary');
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-surface dark:bg-surface-dim border-b-4 border-surface-container-highest dark:border-outline-variant shadow-sm">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary dark:text-primary-container tracking-tight font-extrabold">TalkyTown</h1>
+<div class="flex gap-4">
+<button aria-label="star" class="text-primary dark:text-primary-fixed-dim hover:scale-105 transition-transform active:translate-y-1 duration-100 flex items-center justify-center p-2 rounded-full bg-surface-container hover:bg-surface-container-high">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</button>
+<button aria-label="local_fire_department" class="text-primary dark:text-primary-fixed-dim hover:scale-105 transition-transform active:translate-y-1 duration-100 flex items-center justify-center p-2 rounded-full bg-surface-container hover:bg-surface-container-high">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-28 px-container-margin md:px-stack-lg max-w-4xl mx-auto w-full flex flex-col items-center justify-center">
+<!-- Character / Avatar Area -->
+<div class="relative mb-stack-md w-full flex flex-col items-center">
+<!-- Speech Bubble -->
+<div class="relative bg-surface-container-lowest border-2 border-outline-variant p-6 rounded-xl mb-6 max-w-sm w-full soft-shadow text-center">
+<p class="font-headline-md text-headline-md text-primary font-bold">
+                    No pasa nada, puedes escribir tu respuesta.
+                </p>
+<!-- Tail for speech bubble -->
+<div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[16px] border-l-transparent border-t-[16px] border-t-surface-container-lowest border-r-[16px] border-r-transparent filter drop-shadow-[0_4px_0_theme('colors.primary-container')]"></div>
+</div>
+<!-- Avatar -->
+<div class="w-48 h-48 rounded-full border-4 border-secondary-container p-2 bg-surface-container-highest flex items-center justify-center shadow-md relative">
+<img alt="Luna the Owl looking encouraging" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida/ADBb0uiKkS7Nai543W0hjfTo4szF9Y-THyBtO2-wAudI2w7SXyIYUuIZUtTY3nOhnUabpqoFYy9kaJfQIR9mtEvh65B6VHcBGteZdB4A6yFBImG3H-D2ucFtSGdr4W6svEmaTP-zKusWaBk1M2dI-_9rj_zUGxwkfxQsXFgaMfb2ulK1PuTN2j30yM5lmqfeCVX4Mh3TDjZjoUjzn6Y58AWHGh822skg6adU6O3iK39rfG_xL2nxu2zKD_VzmSY"/>
+</div>
+</div>
+<!-- Input Area -->
+<div class="w-full max-w-md flex flex-col gap-stack-sm bg-surface-container p-stack-md rounded-xl border-2 border-outline-variant shadow-sm relative">
+<div class="input-glow flex flex-col gap-2 rounded-DEFAULT bg-surface-container-lowest border-2 border-outline-variant p-2 transition-all">
+<textarea aria-label="Text input for child's response" class="w-full bg-transparent border-none focus:ring-0 resize-none font-body-lg text-body-lg text-on-surface p-2" placeholder="Escribe aquí..." rows="3"></textarea>
+<div class="flex justify-end px-2 pb-2">
+<button aria-label="Send" class="bg-primary text-on-primary rounded-full p-3 flex items-center justify-center hover:opacity-90 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-primary-fixed text-on-primary-fixed rounded-full py-4 px-6 font-label-bold text-label-bold uppercase tracking-wider btn-3d mt-4 flex items-center justify-center gap-2">
+                Seguir escribiendo
+            </button>
+<!-- Secondary Action -->
+<button class="w-full bg-surface-container-low text-on-surface-variant rounded-full py-3 px-6 font-label-bold text-label-bold border-2 border-outline-variant hover:bg-surface-container-highest transition-colors active:scale-95 flex items-center justify-center gap-2 mt-2">
+<span class="material-symbols-outlined">mic</span>
+                Intentar micrófono otra vez
+            </button>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: talkytown-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: talkytown
+      POSTGRES_PASSWORD: talkytown
+      POSTGRES_DB: talkytown
+    ports:
+      - "5432:5432"
+    volumes:
+      - talkytown_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U talkytown -d talkytown"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  talkytown_postgres_data:

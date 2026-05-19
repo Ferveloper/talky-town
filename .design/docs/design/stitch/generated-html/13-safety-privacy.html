@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Seguridad y Privacidad - TalkyTown</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-variant": "#e7e2d9",
+                      "primary-fixed": "#c3e8ff",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary": "#735c00",
+                      "inverse-primary": "#7ad0ff",
+                      "surface-container-high": "#ede7df",
+                      "surface-container-highest": "#e7e2d9",
+                      "tertiary-fixed-dim": "#90d792",
+                      "surface-bright": "#fff9f0",
+                      "on-secondary-container": "#725b00",
+                      "tertiary": "#286b33",
+                      "surface-container": "#f3ede4",
+                      "on-tertiary-fixed-variant": "#07521d",
+                      "secondary-fixed": "#ffe087",
+                      "error-container": "#ffdad6",
+                      "on-tertiary-fixed": "#002107",
+                      "on-error": "#ffffff",
+                      "on-surface": "#1d1b16",
+                      "on-primary-fixed-variant": "#004c69",
+                      "primary-fixed-dim": "#7ad0ff",
+                      "on-tertiary-container": "#0a541f",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#f6f0e7",
+                      "secondary-container": "#fdd34d",
+                      "on-error-container": "#93000a",
+                      "surface-dim": "#dfd9d1",
+                      "surface": "#fff9f0",
+                      "primary": "#00668a",
+                      "outline": "#6e7980",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed": "#abf4ac",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed": "#241a00",
+                      "outline-variant": "#bdc8d1",
+                      "on-secondary": "#ffffff",
+                      "background": "#fff9f0",
+                      "inverse-surface": "#32302a",
+                      "surface-tint": "#00668a",
+                      "on-background": "#1d1b16",
+                      "tertiary-container": "#82c885",
+                      "surface-container-low": "#f9f3ea",
+                      "on-secondary-fixed-variant": "#574500",
+                      "on-primary-fixed": "#001e2c",
+                      "secondary-fixed-dim": "#ebc23e",
+                      "primary-container": "#40c4ff",
+                      "on-surface-variant": "#3e484f",
+                      "on-primary-container": "#004e6b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "12px",
+                      "unit": "8px",
+                      "stack-md": "24px",
+                      "gutter": "16px",
+                      "container-margin": "24px",
+                      "stack-lg": "48px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Quicksand"],
+                      "label-bold": ["Quicksand"],
+                      "display-lg-mobile": ["Quicksand"],
+                      "headline-md": ["Quicksand"],
+                      "display-lg": ["Quicksand"],
+                      "caption": ["Quicksand"],
+                      "body-md": ["Quicksand"]
+              },
+              "fontSize": {
+                      "body-lg": ["20px", {"lineHeight": "30px", "fontWeight": "500"}],
+                      "label-bold": ["16px", {"lineHeight": "24px", "fontWeight": "700"}],
+                      "display-lg-mobile": ["32px", {"lineHeight": "38px", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "caption": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { font-family: 'Quicksand', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface-dim min-h-screen text-on-surface antialiased pt-20 pb-24 md:pb-8 flex flex-col items-center">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-surface dark:bg-surface-dim border-b-4 border-surface-container-highest dark:border-outline-variant shadow-sm docked full-width top-0">
+<div class="flex items-center gap-4">
+<!-- Suppressed Nav Structure for Top Level Transactional / Settings Page -->
+<div class="font-display-lg-mobile text-display-lg-mobile text-primary dark:text-primary-container tracking-tight">TalkyTown</div>
+</div>
+<div class="flex items-center gap-4 hidden md:flex">
+<!-- Top bar actions hidden for this specific screen to focus on canvas -->
+</div>
+<div class="flex items-center gap-4">
+<button class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary shadow-sm hover:scale-105 transition-transform active:translate-y-1 transition-all duration-100 flex items-center justify-center bg-surface-container-high">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+</button>
+</div>
+</header>
+<main class="w-full max-w-4xl px-container-margin mt-stack-md flex-1 flex flex-col gap-stack-lg">
+<!-- Header Section -->
+<section class="flex flex-col items-center text-center gap-stack-sm pt-8">
+<div class="w-20 h-20 bg-primary-container rounded-full flex items-center justify-center mb-4 shadow-[0_4px_0_0_#004c69] border-2 border-primary">
+<span class="material-symbols-outlined text-on-primary-container text-5xl" data-icon="security" data-weight="fill" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-primary md:hidden font-display-lg-mobile text-display-lg-mobile">Seguridad y privacidad</h1>
+<h1 class="font-display-lg text-display-lg text-primary hidden md:block">Seguridad y privacidad</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+                TalkyTown está diseñado para que los niños practiquen idiomas en un entorno seguro.
+            </p>
+</section>
+<!-- Bento Grid Layout for Safety Cards -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant rounded-lg p-6 shadow-[0_4px_0_0_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform duration-200 flex flex-col items-start gap-4 h-full relative overflow-hidden group">
+<div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-on-primary-container text-2xl" data-icon="person_outline">person_outline</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary mb-2">Usa alias</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">No pedimos nombres completos.</p>
+</div>
+<!-- Decorative soft shape -->
+<div class="absolute -bottom-4 -right-4 w-24 h-24 bg-surface-container rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant rounded-lg p-6 shadow-[0_4px_0_0_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform duration-200 flex flex-col items-start gap-4 h-full relative overflow-hidden group lg:col-span-2">
+<div class="w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-on-secondary-container text-2xl" data-icon="shield">shield</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-secondary mb-2">Sin datos personales</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">El avatar no solicita dirección, teléfono ni información sensible.</p>
+</div>
+<div class="absolute -top-8 -right-8 w-32 h-32 bg-surface-container rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant rounded-lg p-6 shadow-[0_4px_0_0_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform duration-200 flex flex-col items-start gap-4 h-full relative overflow-hidden group">
+<div class="w-12 h-12 bg-error-container rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-on-error-container text-2xl" data-icon="mic_off">mic_off</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-error mb-2">Audio protegido</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">El audio no se guarda por defecto.</p>
+</div>
+<div class="absolute -bottom-6 -left-6 w-20 h-20 bg-surface-container rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant rounded-lg p-6 shadow-[0_4px_0_0_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform duration-200 flex flex-col items-start gap-4 h-full relative overflow-hidden group">
+<div class="w-12 h-12 bg-tertiary-container rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-on-tertiary-container text-2xl" data-icon="gpp_good">gpp_good</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-tertiary mb-2">Temas seguros</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Los temas no adecuados se redirigen hacia conversaciones educativas.</p>
+</div>
+<div class="absolute -top-4 -left-4 w-16 h-16 bg-surface-container rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+</div>
+<!-- Card 5 -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant rounded-lg p-6 shadow-[0_4px_0_0_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform duration-200 flex flex-col items-start gap-4 h-full relative overflow-hidden group">
+<div class="w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-on-primary-fixed text-2xl" data-icon="supervisor_account">supervisor_account</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary mb-2">Control adulto</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">El adulto puede revisar progreso y configuración.</p>
+</div>
+<div class="absolute -bottom-8 -right-8 w-28 h-28 bg-surface-container rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+</div>
+</section>
+<!-- Action Area -->
+<section class="flex justify-center mt-stack-sm mb-stack-lg">
+<button class="bg-primary text-on-primary font-label-bold text-label-bold uppercase px-8 py-4 rounded-xl border-b-4 border-[#004c69] active:border-b-0 active:translate-y-1 hover:bg-surface-tint transition-all flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+                Volver al panel adulto
+            </button>
+</section>
+</main>
+<!-- Bottom Nav Bar suppressed because this is a focused settings/transactional screen, prioritizing canvas -->
+</body></html>

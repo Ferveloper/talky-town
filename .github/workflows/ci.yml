@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: talkytown
+          POSTGRES_PASSWORD: talkytown
+          POSTGRES_DB: talkytown
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U talkytown -d talkytown"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+        env:
+          DATABASE_URL: postgresql://talkytown:talkytown@localhost:5432/talkytown?schema=public
+          AI_PROVIDER: mock
+
+      - name: Build
+        run: pnpm build
+        env:
+          DATABASE_URL: postgresql://talkytown:talkytown@localhost:5432/talkytown?schema=public
+          AI_PROVIDER: mock
