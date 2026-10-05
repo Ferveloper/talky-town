@@ -842,16 +842,16 @@ El avatar es el elemento central de la experiencia infantil.
 
 ### 9.1 Estados MVP
 
-| Estado | Cuándo aparece | Representación visual |
-|---|---|---|
-| `idle` | Home o espera | Sonrisa tranquila |
-| `greeting` | Inicio de sesión | Saludo animado |
-| `listening` | Niño habla o escribe | Oreja/icono micrófono |
-| `thinking` | Esperando IA | Animación suave |
-| `speaking` | Avatar responde | Boca/gesto activo |
-| `encouraging` | Corrección amable | Pulgar arriba |
-| `celebrating` | XP/badge | Confeti/estrella |
-| `safe_redirect` | Tema no adecuado | Gesto amable de cambio |
+| Estado          | Cuándo aparece       | Representación visual  |
+| --------------- | -------------------- | ---------------------- |
+| `idle`          | Home o espera        | Sonrisa tranquila      |
+| `greeting`      | Inicio de sesión     | Saludo animado         |
+| `listening`     | Niño habla o escribe | Oreja/icono micrófono  |
+| `thinking`      | Esperando IA         | Animación suave        |
+| `speaking`      | Avatar responde      | Boca/gesto activo      |
+| `encouraging`   | Corrección amable    | Pulgar arriba          |
+| `celebrating`   | XP/badge             | Confeti/estrella       |
+| `safe_redirect` | Tema no adecuado     | Gesto amable de cambio |
 
 ### 9.2 Reglas de avatar
 
@@ -885,13 +885,13 @@ Permitir que el niño practique oralmente, aunque el backend trabaje internament
 
 ### 10.3 Estados de error
 
-| Error | Mensaje UX |
-|---|---|
-| Micrófono denegado | "No pasa nada, puedes escribir tu respuesta." |
-| STT no disponible | "Hoy usaremos el teclado para jugar." |
-| TTS no disponible | "Te muestro la respuesta en pantalla." |
-| IA tarda demasiado | "Estoy pensando..." |
-| Provider no disponible | "Usaremos el modo demo para seguir jugando." |
+| Error                  | Mensaje UX                                    |
+| ---------------------- | --------------------------------------------- |
+| Micrófono denegado     | "No pasa nada, puedes escribir tu respuesta." |
+| STT no disponible      | "Hoy usaremos el teclado para jugar."         |
+| TTS no disponible      | "Te muestro la respuesta en pantalla."        |
+| IA tarda demasiado     | "Estoy pensando..."                           |
+| Provider no disponible | "Usaremos el modo demo para seguir jugando."  |
 
 ### 10.4 Regla de MVP
 
@@ -1054,16 +1054,16 @@ Redirigir contenido no adecuado sin generar miedo, castigo o exceso de explicaci
 
 ### 14.1 Eventos de recompensa
 
-| Evento | Recompensa |
-|---|---|
-| Primer mensaje | +5 XP |
-| Turno válido | +5 XP |
-| Uso de palabra nueva | +5 XP |
-| Corrección repetida correctamente | +10 XP |
-| Misión completada | +25 XP |
-| Primera sesión | Badge First Talk |
-| Tema animales completado | Badge Animal Explorer |
-| 3 días de uso | Badge 3 Day Streak |
+| Evento                            | Recompensa            |
+| --------------------------------- | --------------------- |
+| Primer mensaje                    | +5 XP                 |
+| Turno válido                      | +5 XP                 |
+| Uso de palabra nueva              | +5 XP                 |
+| Corrección repetida correctamente | +10 XP                |
+| Misión completada                 | +25 XP                |
+| Primera sesión                    | Badge First Talk      |
+| Tema animales completado          | Badge Animal Explorer |
+| 3 días de uso                     | Badge 3 Day Streak    |
 
 ### 14.2 Momentos de celebración
 
@@ -1206,11 +1206,11 @@ Los wireframes mínimos para Fase 1 son:
 
 ### 17.1 Prioridad de wireframes
 
-| Prioridad | Pantallas |
-|---|---|
-| Alta | Home infantil, conversación, resumen de sesión, selector de perfil |
-| Media | Landing, crear perfil, selección de misión, panel adulto |
-| Baja | Configuración IA, seguridad, premios |
+| Prioridad | Pantallas                                                          |
+| --------- | ------------------------------------------------------------------ |
+| Alta      | Home infantil, conversación, resumen de sesión, selector de perfil |
+| Media     | Landing, crear perfil, selección de misión, panel adulto           |
+| Baja      | Configuración IA, seguridad, premios                               |
 
 ---
 
@@ -1266,24 +1266,24 @@ Create an AI provider settings screen for TalkyTown. The parent can choose betwe
 
 ### 20.1 Estados de carga
 
-| Estado | Mensaje |
-|---|---|
-| Iniciando sesión | "Entering TalkyTown..." |
-| Cargando perfil | "Preparing your town..." |
-| Esperando IA | "Luna is thinking..." |
-| Guardando progreso | "Saving your stars..." |
-| Probando provider | "Testing connection..." |
+| Estado             | Mensaje                  |
+| ------------------ | ------------------------ |
+| Iniciando sesión   | "Entering TalkyTown..."  |
+| Cargando perfil    | "Preparing your town..." |
+| Esperando IA       | "Luna is thinking..."    |
+| Guardando progreso | "Saving your stars..."   |
+| Probando provider  | "Testing connection..."  |
 
 ### 20.2 Estados de error
 
-| Error | Mensaje usuario |
-|---|---|
-| Login falla | "We could not enter. Try demo mode." |
-| IA falla | "Luna needs a second. Let's try again." |
+| Error                  | Mensaje usuario                            |
+| ---------------------- | ------------------------------------------ |
+| Login falla            | "We could not enter. Try demo mode."       |
+| IA falla               | "Luna needs a second. Let's try again."    |
 | Provider no disponible | "Demo mode is ready. We can keep playing." |
-| DB/API falla | "Something went wrong. Please try again." |
-| Voz falla | "You can write your answer instead." |
-| Safety redirection | "Let's talk about something safe and fun." |
+| DB/API falla           | "Something went wrong. Please try again."  |
+| Voz falla              | "You can write your answer instead."       |
+| Safety redirection     | "Let's talk about something safe and fun." |
 
 ---
 

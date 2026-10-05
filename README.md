@@ -47,20 +47,20 @@ The first version should allow an evaluator or user to:
 
 ## 3. Tech stack
 
-| Layer | Technology |
-|---|---|
-| Monorepo | pnpm workspaces + Turborepo |
-| Frontend | Next.js + TypeScript |
-| UI | Tailwind CSS + shadcn/ui |
-| Animation | Framer Motion / Lottie |
-| Backend | NestJS + TypeScript |
-| Database | PostgreSQL |
-| ORM | Prisma |
-| AI | OpenAI-compatible provider adapters |
-| Testing | Vitest + Supertest |
-| E2E | Playwright |
-| Local infra | Docker Compose |
-| Deploy target | Vercel + Railway/Render/Fly.io |
+| Layer         | Technology                          |
+| ------------- | ----------------------------------- |
+| Monorepo      | pnpm workspaces + Turborepo         |
+| Frontend      | Next.js + TypeScript                |
+| UI            | Tailwind CSS + shadcn/ui            |
+| Animation     | Framer Motion / Lottie              |
+| Backend       | NestJS + TypeScript                 |
+| Database      | PostgreSQL                          |
+| ORM           | Prisma                              |
+| AI            | OpenAI-compatible provider adapters |
+| Testing       | Vitest + Supertest                  |
+| E2E           | Playwright                          |
+| Local infra   | Docker Compose                      |
+| Deploy target | Vercel + Railway/Render/Fly.io      |
 
 ---
 
@@ -139,21 +139,28 @@ Expected apps:
 - Web: `http://localhost:3000`
 - API: `http://localhost:3001`
 - API docs: `http://localhost:3001/docs`
+- Health: `http://localhost:3001/health`
+
+The database scripts load defaults from `.env.example` and override them with `.env`
+when present, so the first local run works with the included Docker Compose
+PostgreSQL settings.
 
 ---
 
 ## 6. Root scripts
 
-| Script | Purpose |
-|---|---|
-| `pnpm dev` | Start all development apps |
-| `pnpm build` | Build all apps/packages |
-| `pnpm test` | Run all tests |
-| `pnpm lint` | Run linting |
-| `pnpm format` | Format the repository |
-| `pnpm db:migrate` | Run Prisma migrations in the API app |
-| `pnpm db:seed` | Seed demo data |
-| `pnpm db:studio` | Open Prisma Studio |
+| Script            | Purpose                                   |
+| ----------------- | ----------------------------------------- |
+| `pnpm dev`        | Start all development apps                |
+| `pnpm build`      | Build all apps/packages                   |
+| `pnpm test`       | Run all tests                             |
+| `pnpm lint`       | Run linting                               |
+| `pnpm format`     | Format the repository                     |
+| `pnpm db:migrate` | Run Prisma migrations in the API app      |
+| `pnpm db:seed`    | Seed demo data                            |
+| `pnpm db:studio`  | Open Prisma Studio                        |
+| `pnpm typecheck`  | Run TypeScript checks                     |
+| `pnpm e2e`        | Run Playwright tests when E2E specs exist |
 
 ---
 
@@ -163,10 +170,10 @@ TalkyTown must support provider abstraction from the beginning.
 
 Initial providers:
 
-| Provider | Purpose |
-|---|---|
-| `mock` | Demo, tests and no-cost evaluation |
-| `openai-compatible-cloud` | Cloud LLM provider |
+| Provider                  | Purpose                                         |
+| ------------------------- | ----------------------------------------------- |
+| `mock`                    | Demo, tests and no-cost evaluation              |
+| `openai-compatible-cloud` | Cloud LLM provider                              |
 | `local-openai-compatible` | Ollama / LM Studio using configurable `baseUrl` |
 
 The MVP must work using the mock provider without external API keys.

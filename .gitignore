@@ -8,6 +8,8 @@ dist/
 build/
 coverage/
 .turbo/
+.codex-logs/
+*.tsbuildinfo
 
 # Environment
 .env

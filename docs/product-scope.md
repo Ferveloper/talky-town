@@ -739,18 +739,18 @@ Para reforzar la entrega del TFM, se buscará que el proyecto evidencie:
 
 ## 21. Riesgos iniciales
 
-| Riesgo | Impacto | Mitigación |
-|---|---:|---|
-| Alcance excesivo | Alto | Limitar MVP a 1 idioma, 2 modos, 1–2 avatares. |
-| Voz demasiado compleja | Alto | Texto primero; voz básica como mejora progresiva. |
-| Dependencia de APIs externas | Alto | Provider mock y proveedor local configurable. |
-| Evaluador sin claves IA | Alto | Demo con mock provider. |
-| Proveedor local difícil de configurar | Medio | Documentar Ollama/LM Studio como opción, no requisito de demo. |
-| UI demasiado adulta | Medio | Diseñar interfaz infantil desde el principio. |
-| Parecer un simple chatbot | Alto | Añadir misiones, XP, badges, avatar y progreso. |
-| Seguridad infantil débil | Alto | Crear módulo safety, prompts y tests específicos. |
-| Falta de documentación | Alto | Mantener README y docs desde fases tempranas. |
-| Despliegue inestable | Medio | Usar modo demo sencillo y servicios conocidos. |
+| Riesgo                                | Impacto | Mitigación                                                     |
+| ------------------------------------- | ------: | -------------------------------------------------------------- |
+| Alcance excesivo                      |    Alto | Limitar MVP a 1 idioma, 2 modos, 1–2 avatares.                 |
+| Voz demasiado compleja                |    Alto | Texto primero; voz básica como mejora progresiva.              |
+| Dependencia de APIs externas          |    Alto | Provider mock y proveedor local configurable.                  |
+| Evaluador sin claves IA               |    Alto | Demo con mock provider.                                        |
+| Proveedor local difícil de configurar |   Medio | Documentar Ollama/LM Studio como opción, no requisito de demo. |
+| UI demasiado adulta                   |   Medio | Diseñar interfaz infantil desde el principio.                  |
+| Parecer un simple chatbot             |    Alto | Añadir misiones, XP, badges, avatar y progreso.                |
+| Seguridad infantil débil              |    Alto | Crear módulo safety, prompts y tests específicos.              |
+| Falta de documentación                |    Alto | Mantener README y docs desde fases tempranas.                  |
+| Despliegue inestable                  |   Medio | Usar modo demo sencillo y servicios conocidos.                 |
 
 ---
 
@@ -776,25 +776,25 @@ Una vez entregado el MVP, TalkyTown podría evolucionar con:
 
 ## 23. Decisiones iniciales
 
-| Decisión | Valor |
-|---|---|
-| Nombre | TalkyTown |
-| Tipo de producto | Aplicación web educativa |
-| Público | Niños de 5 a 12 años |
-| Usuario secundario | Adulto/tutor |
-| Idioma inicial | Inglés para hispanohablantes |
-| Stack preferido | Node.js + TypeScript |
-| Frontend recomendado | Next.js |
-| Backend recomendado | NestJS o Fastify |
-| Base de datos | PostgreSQL |
-| ORM | Prisma |
-| IA | Proveedores OpenAI-compatible |
-| Proveedor demo | Mock provider |
-| Proveedores locales | Ollama / LM Studio mediante `baseUrl` |
-| Interacción inicial | Texto |
-| Interacción deseada | Voz básica |
-| Gamificación MVP | XP, nivel, badges, racha |
-| Entrega | GitHub + README + demo + slides |
+| Decisión             | Valor                                 |
+| -------------------- | ------------------------------------- |
+| Nombre               | TalkyTown                             |
+| Tipo de producto     | Aplicación web educativa              |
+| Público              | Niños de 5 a 12 años                  |
+| Usuario secundario   | Adulto/tutor                          |
+| Idioma inicial       | Inglés para hispanohablantes          |
+| Stack preferido      | Node.js + TypeScript                  |
+| Frontend recomendado | Next.js                               |
+| Backend recomendado  | NestJS o Fastify                      |
+| Base de datos        | PostgreSQL                            |
+| ORM                  | Prisma                                |
+| IA                   | Proveedores OpenAI-compatible         |
+| Proveedor demo       | Mock provider                         |
+| Proveedores locales  | Ollama / LM Studio mediante `baseUrl` |
+| Interacción inicial  | Texto                                 |
+| Interacción deseada  | Voz básica                            |
+| Gamificación MVP     | XP, nivel, badges, racha              |
+| Entrega              | GitHub + README + demo + slides       |
 
 ---
 

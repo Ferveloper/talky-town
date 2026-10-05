@@ -4,6 +4,7 @@ dist
 build
 coverage
 .turbo
+.design
 pnpm-lock.yaml
 package-lock.json
 yarn.lock

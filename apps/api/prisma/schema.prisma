@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String             @id @default(cuid())
+  email             String             @unique
+  displayAlias      String
+  role              String             @default("adult")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  aiProviderConfigs AiProviderConfig[]
+  childProfiles     ChildProfile[]
+}
+
+model ChildProfile {
+  id             String                @id @default(cuid())
+  userId         String
+  avatarId       String?
+  alias          String
+  age            Int
+  ageBand        String
+  nativeLanguage String                @default("es")
+  targetLanguage String                @default("en")
+  level          String                @default("starter")
+  xpTotal        Int                   @default(0)
+  streakDays     Int                   @default(0)
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  avatar         Avatar?               @relation(fields: [avatarId], references: [id], onDelete: SetNull)
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  safetyEvents   SafetyEvent[]
+  sessions       ConversationSession[]
+  xpEvents       XpEvent[]
+
+  @@unique([userId, alias])
+}
+
+model Avatar {
+  id            String                @id @default(cuid())
+  code          String                @unique
+  name          String
+  personality   String
+  style         String
+  isActive      Boolean               @default(true)
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  childProfiles ChildProfile[]
+  sessions      ConversationSession[]
+}
+
+model Mission {
+  id          String                @id @default(cuid())
+  code        String                @unique
+  title       String
+  description String
+  ageBand     String
+  xpReward    Int
+  sortOrder   Int                   @default(0)
+  isActive    Boolean               @default(true)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  sessions    ConversationSession[]
+}
+
+model ConversationSession {
+  id             String             @id @default(cuid())
+  childProfileId String
+  avatarId       String?
+  missionId      String?
+  mode           String
+  status         String             @default("active")
+  xpEarned       Int                @default(0)
+  startedAt      DateTime           @default(now())
+  endedAt        DateTime?
+  avatar         Avatar?            @relation(fields: [avatarId], references: [id], onDelete: SetNull)
+  childProfile   ChildProfile       @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  mission        Mission?           @relation(fields: [missionId], references: [id], onDelete: SetNull)
+  safetyEvents   SafetyEvent[]
+  turns          ConversationTurn[]
+}
+
+model ConversationTurn {
+  id               String              @id @default(cuid())
+  sessionId        String
+  role             String
+  content          String
+  correctionNeeded Boolean             @default(false)
+  xpAwarded        Int                 @default(0)
+  createdAt        DateTime            @default(now())
+  session          ConversationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  title       String
+  description String
+  icon        String
+  xpRequired  Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model XpEvent {
+  id             String       @id @default(cuid())
+  childProfileId String
+  amount         Int
+  reason         String
+  source         String?
+  createdAt      DateTime     @default(now())
+  childProfile   ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+}
+
+model AiProviderConfig {
+  id           String   @id @default(cuid())
+  userId       String?
+  providerType String
+  baseUrl      String?
+  model        String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, providerType])
+}
+
+model SafetyEvent {
+  id             String               @id @default(cuid())
+  childProfileId String?
+  sessionId      String?
+  reason         String
+  severity       String               @default("info")
+  inputSnippet   String?
+  createdAt      DateTime             @default(now())
+  childProfile   ChildProfile?        @relation(fields: [childProfileId], references: [id], onDelete: SetNull)
+  session        ConversationSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+}

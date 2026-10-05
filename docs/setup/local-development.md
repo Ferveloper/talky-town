@@ -18,6 +18,9 @@ pnpm db:seed
 pnpm dev
 ```
 
+The Prisma scripts load `.env.example` first and `.env` second, so the included
+PostgreSQL defaults work immediately and local overrides still apply.
+
 ## URLs
 
 - Web: http://localhost:3000

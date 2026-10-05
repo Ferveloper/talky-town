@@ -6,29 +6,29 @@ Build a professional, clean and defensible technical foundation for TalkyTown.
 
 ## Tasks
 
-- [ ] Create pnpm monorepo.
-- [ ] Configure Turborepo.
-- [ ] Configure TypeScript.
-- [ ] Configure ESLint and Prettier.
-- [ ] Initialize `apps/web` with Next.js.
-- [ ] Initialize `apps/api` with NestJS.
-- [ ] Create `packages/shared`.
-- [ ] Create `packages/ai-core`.
-- [ ] Configure PostgreSQL with Docker Compose.
-- [ ] Configure Prisma in the API app.
-- [ ] Create `.env.example`.
+- [x] Create pnpm monorepo.
+- [x] Configure Turborepo.
+- [x] Configure TypeScript.
+- [x] Configure ESLint and Prettier.
+- [x] Initialize `apps/web` with Next.js.
+- [x] Initialize `apps/api` with NestJS.
+- [x] Create `packages/shared`.
+- [x] Create `packages/ai-core`.
+- [x] Configure PostgreSQL with Docker Compose.
+- [x] Configure Prisma in the API app.
+- [x] Create `.env.example`.
 - [ ] Add root scripts:
-  - [ ] `dev`
-  - [ ] `build`
-  - [ ] `test`
-  - [ ] `lint`
-  - [ ] `db:migrate`
-  - [ ] `db:seed`
-- [ ] Add README.
-- [ ] Add AGENTS.md.
-- [ ] Add license.
-- [ ] Add CI workflow.
-- [ ] Ensure local execution works.
+  - [x] `dev`
+  - [x] `build`
+  - [x] `test`
+  - [x] `lint`
+  - [x] `db:migrate`
+  - [x] `db:seed`
+- [x] Add README.
+- [x] Add AGENTS.md.
+- [x] Add license.
+- [x] Add CI workflow.
+- [x] Ensure local execution works.
 - [ ] Create internal tag `v0.1-setup`.
 
 ## Definition of done
