@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Login</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Quicksand -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Guidelines -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#ffe087",
+                        "tertiary-fixed-dim": "#90d792",
+                        "secondary-fixed-dim": "#ebc23e",
+                        "on-secondary-fixed": "#241a00",
+                        "outline": "#6e7980",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#001e2c",
+                        "primary": "#00668a",
+                        "inverse-primary": "#7ad0ff",
+                        "on-background": "#1d1b16",
+                        "surface-bright": "#fff9f0",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#004e6b",
+                        "surface-tint": "#00668a",
+                        "on-surface": "#1d1b16",
+                        "tertiary-container": "#82c885",
+                        "on-surface-variant": "#3e484f",
+                        "tertiary": "#286b33",
+                        "surface-container-high": "#ede7df",
+                        "surface": "#fff9f0",
+                        "surface-container-highest": "#e7e2d9",
+                        "primary-fixed": "#c3e8ff",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#725b00",
+                        "on-secondary-fixed-variant": "#574500",
+                        "secondary-container": "#fdd34d",
+                        "surface-container": "#f3ede4",
+                        "primary-fixed-dim": "#7ad0ff",
+                        "on-tertiary-fixed-variant": "#07521d",
+                        "on-primary-fixed-variant": "#004c69",
+                        "inverse-surface": "#32302a",
+                        "inverse-on-surface": "#f6f0e7",
+                        "on-error": "#ffffff",
+                        "primary-container": "#40c4ff",
+                        "surface-container-low": "#f9f3ea",
+                        "outline-variant": "#bdc8d1",
+                        "on-tertiary-container": "#0a541f",
+                        "secondary": "#735c00",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#abf4ac",
+                        "background": "#fff9f0",
+                        "surface-dim": "#dfd9d1",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e7e2d9",
+                        "on-tertiary-fixed": "#002107"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "stack-lg": "48px",
+                        "gutter": "16px",
+                        "stack-md": "24px",
+                        "stack-sm": "12px",
+                        "container-margin": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Quicksand"],
+                        "caption": ["Quicksand"],
+                        "label-bold": ["Quicksand"],
+                        "body-md": ["Quicksand"],
+                        "body-lg": ["Quicksand"],
+                        "display-lg-mobile": ["Quicksand"],
+                        "headline-md": ["Quicksand"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "caption": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "label-bold": ["16px", { "lineHeight": "24px", "fontWeight": "700" }],
+                        "body-md": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "body-lg": ["20px", { "lineHeight": "30px", "fontWeight": "500" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "38px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom styles for the playful button press effect */
+        .btn-press:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 0 transparent;
+        }
+        
+        /* Subtle animated background */
+        .bg-pattern {
+            background-color: #fff9f0; /* surface */
+            background-image: radial-gradient(#e7e2d9 2px, transparent 2px);
+            background-size: 32px 32px;
+        }
+    </style>
+</head>
+<body class="bg-pattern min-h-screen flex items-center justify-center p-4 font-body-md text-on-surface antialiased overflow-hidden relative">
+<!-- Decorative Elements -->
+<div class="absolute top-10 left-10 w-24 h-24 bg-secondary-container rounded-full opacity-50 blur-xl mix-blend-multiply"></div>
+<div class="absolute bottom-10 right-10 w-32 h-32 bg-primary-container rounded-full opacity-40 blur-2xl mix-blend-multiply"></div>
+<div class="absolute top-1/4 right-1/4 w-16 h-16 bg-tertiary-container rounded-full opacity-60 blur-lg mix-blend-multiply"></div>
+<!-- Main Card -->
+<div class="relative w-full max-w-md bg-surface-container-lowest rounded-xl shadow-[0_8px_24px_rgba(0,102,138,0.08)] border-2 border-surface-container-highest p-stack-md sm:p-stack-lg z-10 flex flex-col items-center">
+<!-- Avatar/Mascot -->
+<div class="w-32 h-32 -mt-20 mb-stack-sm rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-[0_4px_12px_rgba(0,0,0,0.1)] relative bg-surface">
+<img alt="Friendly waving 3D owl mascot for TalkyTown" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uiKkS7Nai543W0hjfTo4szF9Y-THyBtO2-wAudI2w7SXyIYUuIZUtTY3nOhnUabpqoFYy9kaJfQIR9mtEvh65B6VHcBGteZdB4A6yFBImG3H-D2ucFtSGdr4W6svEmaTP-zKusWaBk1M2dI-_9rj_zUGxwkfxQsXFgaMfb2ulK1PuTN2j30yM5lmqfeCVX4Mh3TDjZjoUjzn6Y58AWHGh822skg6adU6O3iK39rfG_xL2nxu2zKD_VzmSY"/>
+</div>
+<!-- Title -->
+<h1 class="font-display-lg text-display-lg text-primary text-center mb-stack-md">
+            Entrar en TalkyTown
+        </h1>
+<!-- Form -->
+<form class="w-full flex flex-col gap-stack-sm w-full">
+<!-- Email Input -->
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">mail</span>
+</div>
+<input class="w-full h-14 pl-12 pr-4 bg-surface rounded-full border-2 border-surface-container-highest text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary-container transition-all font-body-md placeholder-on-surface-variant" id="email" placeholder="Email" type="email"/>
+</div>
+<!-- Password Input -->
+<div class="relative mb-stack-sm">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+<input class="w-full h-14 pl-12 pr-4 bg-surface rounded-full border-2 border-surface-container-highest text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary-container transition-all font-body-md placeholder-on-surface-variant" id="password" placeholder="Contraseña" type="password"/>
+</div>
+<!-- Primary Action -->
+<button class="w-full h-14 bg-inverse-primary text-on-primary-fixed-variant font-label-bold text-label-bold rounded-full shadow-[0_4px_0_0_#004c69] btn-press transition-transform hover:bg-primary-container uppercase tracking-wider mb-stack-sm" type="button">
+                Entrar
+            </button>
+<!-- Divider -->
+<div class="flex items-center justify-center my-2 gap-4">
+<div class="h-0.5 bg-surface-container-highest flex-1 rounded-full"></div>
+<span class="text-on-surface-variant font-caption text-caption uppercase">O</span>
+<div class="h-0.5 bg-surface-container-highest flex-1 rounded-full"></div>
+</div>
+<!-- Secondary Action (Demo Mode) -->
+<button class="w-full h-14 bg-secondary-container text-on-secondary-container font-label-bold text-label-bold rounded-full shadow-[0_4px_0_0_#725b00] btn-press transition-transform hover:bg-secondary-fixed-dim uppercase tracking-wider flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined">play_circle</span>
+                Usar modo demo
+            </button>
+<!-- Helper Text -->
+<p class="text-center text-on-surface-variant font-caption text-caption mt-2 px-4">
+                El modo demo permite probar la aplicación sin configurar claves de IA.
+            </p>
+</form>
+<!-- Footer Link -->
+<div class="mt-stack-lg border-t-2 border-surface-container-highest w-full pt-stack-sm text-center">
+<a class="inline-flex items-center gap-1 text-primary hover:text-primary-container font-label-bold text-label-bold transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help</span>
+                ¿Qué es TalkyTown?
+            </a>
+</div>
+</div>
+</body></html>

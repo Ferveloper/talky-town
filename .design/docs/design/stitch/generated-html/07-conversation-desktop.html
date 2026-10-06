@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Animal Adventure</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-tint": "#00668a",
+                      "inverse-surface": "#32302a",
+                      "surface": "#fff9f0",
+                      "on-tertiary-fixed": "#002107",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed": "#abf4ac",
+                      "primary-container": "#40c4ff",
+                      "secondary-container": "#fdd34d",
+                      "secondary-fixed-dim": "#ebc23e",
+                      "surface-bright": "#fff9f0",
+                      "surface-container-lowest": "#ffffff",
+                      "on-surface-variant": "#3e484f",
+                      "surface-container-low": "#f9f3ea",
+                      "on-primary-fixed-variant": "#004c69",
+                      "tertiary": "#286b33",
+                      "tertiary-fixed-dim": "#90d792",
+                      "tertiary-container": "#82c885",
+                      "on-secondary-fixed": "#241a00",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed": "#c3e8ff",
+                      "on-primary-container": "#004e6b",
+                      "on-secondary-container": "#725b00",
+                      "error-container": "#ffdad6",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#f6f0e7",
+                      "surface-dim": "#dfd9d1",
+                      "on-error": "#ffffff",
+                      "inverse-primary": "#7ad0ff",
+                      "surface-container-highest": "#e7e2d9",
+                      "outline-variant": "#bdc8d1",
+                      "on-secondary-fixed-variant": "#574500",
+                      "outline": "#6e7980",
+                      "on-primary-fixed": "#001e2c",
+                      "on-background": "#1d1b16",
+                      "secondary-fixed": "#ffe087",
+                      "primary-fixed-dim": "#7ad0ff",
+                      "on-secondary": "#ffffff",
+                      "primary": "#00668a",
+                      "surface-container": "#f3ede4",
+                      "secondary": "#735c00",
+                      "on-tertiary-fixed-variant": "#07521d",
+                      "on-tertiary-container": "#0a541f",
+                      "background": "#fff9f0",
+                      "on-surface": "#1d1b16",
+                      "surface-container-high": "#ede7df",
+                      "surface-variant": "#e7e2d9"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-md": "24px",
+                      "stack-lg": "48px",
+                      "stack-sm": "12px",
+                      "gutter": "16px",
+                      "container-margin": "24px",
+                      "unit": "8px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Quicksand"],
+                      "caption": ["Quicksand"],
+                      "label-bold": ["Quicksand"],
+                      "body-md": ["Quicksand"],
+                      "body-lg": ["Quicksand"],
+                      "display-lg-mobile": ["Quicksand"],
+                      "display-lg": ["Quicksand"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                      "caption": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                      "label-bold": ["16px", { "lineHeight": "24px", "fontWeight": "700" }],
+                      "body-md": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                      "body-lg": ["20px", { "lineHeight": "30px", "fontWeight": "500" }],
+                      "display-lg-mobile": ["32px", { "lineHeight": "38px", "fontWeight": "700" }],
+                      "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Skeuomorphic Button Styles */
+        .btn-primary {
+            background-color: theme('colors.primary-container');
+            color: theme('colors.on-primary-container');
+            border-bottom: 4px solid theme('colors.primary');
+            transition: all 0.1s ease;
+        }
+        .btn-primary:active {
+            transform: translateY(4px);
+            border-bottom-width: 0px;
+            margin-bottom: 4px; /* maintain layout space */
+        }
+        
+        .btn-secondary {
+            background-color: theme('colors.surface-container-high');
+            color: theme('colors.on-surface');
+            border-bottom: 4px solid theme('colors.surface-variant');
+            transition: all 0.1s ease;
+        }
+        .btn-secondary:active {
+            transform: translateY(4px);
+            border-bottom-width: 0px;
+            margin-bottom: 4px;
+        }
+
+        /* Progress Bar Liquid Effect */
+        .progress-liquid {
+            background: linear-gradient(180deg, theme('colors.tertiary-fixed') 0%, theme('colors.tertiary') 100%);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.5);
+        }
+
+        /* Pulse Animation for Mic */
+        @keyframes soft-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(64, 196, 255, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(64, 196, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(64, 196, 255, 0); }
+        }
+        .animate-soft-pulse {
+            animation: soft-pulse 2s infinite;
+        }
+        
+        /* Avatar Float */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col items-center">
+<!-- Top Area: Header & Progress -->
+<header class="w-full max-w-md mx-auto p-container-margin flex flex-col gap-unit sticky top-0 bg-background/90 backdrop-blur-md z-40 pb-stack-sm">
+<!-- Top Row -->
+<div class="flex justify-between items-center w-full">
+<!-- Salir Button -->
+<button aria-label="Exit" class="btn-secondary rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-error">close</span>
+</button>
+<!-- Mission Title -->
+<h1 class="font-headline-md text-headline-md-mobile text-primary flex-grow text-center truncate px-2">Animal Adventure</h1>
+<!-- XP Badge -->
+<div class="bg-secondary-container border-2 border-secondary rounded-full px-3 py-1 flex items-center justify-center shadow-sm flex-shrink-0">
+<span class="material-symbols-outlined text-secondary mr-1" style="font-size: 16px;">star</span>
+<span class="font-label-bold text-label-bold text-on-secondary-container">+15 XP</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-container-high rounded-full h-6 mt-2 border-2 border-surface-variant relative overflow-hidden shadow-inner">
+<div class="progress-liquid h-full rounded-full w-1/2 transition-all duration-500 ease-out flex items-center justify-end px-2">
+<div class="w-2 h-2 bg-white/50 rounded-full mr-1"></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="w-full max-w-md mx-auto flex-grow flex flex-col p-container-margin pb-32 gap-stack-md overflow-y-auto">
+<!-- Avatar Area -->
+<div class="flex flex-col items-center justify-center mt-stack-sm mb-stack-sm">
+<div class="relative">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-primary-container p-1 shadow-md bg-white animate-float">
+<img alt="Luna the Owl" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBC9axeKlTWuUEgfjP27m7yy2mkahR40tZPlZes4aSeH2M6RtaIF91b9AX_S_6C4wyo2qBzappz7P0CIatE4s75Z95VO_5q3OB66XyBi-sQfTt8LgRDfBZ3rbKB8zGG-GNKCfa1udfIlo7s9ULGCpwbIjdmn5BlzByZwdo9h0wnbdGmxeNmiSnz_kBvbpYTkHeI26muTS0R8auBVxotcZZsNLDKle4UrI2pD_tVKg3Mgl9jIrdApCF_2oyiDbRxh5y-SgQbKYLBbDJX"/>
+</div>
+<!-- Status indicator -->
+<div class="absolute bottom-2 right-2 w-6 h-6 bg-tertiary border-2 border-white rounded-full"></div>
+</div>
+<p class="mt-4 font-label-bold text-label-bold text-on-surface-variant text-center">Luna está escuchando...</p>
+</div>
+<!-- Conversation Area -->
+<div class="flex flex-col gap-4 w-full">
+<!-- Luna Bubble 1 -->
+<div class="flex items-end gap-2 self-start w-5/6">
+<div class="w-8 h-8 rounded-full flex-shrink-0 bg-surface-container overflow-hidden border-2 border-primary-container">
+<img alt="Luna small" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBC9axeKlTWuUEgfjP27m7yy2mkahR40tZPlZes4aSeH2M6RtaIF91b9AX_S_6C4wyo2qBzappz7P0CIatE4s75Z95VO_5q3OB66XyBi-sQfTt8LgRDfBZ3rbKB8zGG-GNKCfa1udfIlo7s9ULGCpwbIjdmn5BlzByZwdo9h0wnbdGmxeNmiSnz_kBvbpYTkHeI26muTS0R8auBVxotcZZsNLDKle4UrI2pD_tVKg3Mgl9jIrdApCF_2oyiDbRxh5y-SgQbKYLBbDJX"/>
+</div>
+<div class="bg-white border-2 border-surface-variant rounded-2xl rounded-bl-none p-4 shadow-sm relative">
+<p class="font-body-md text-body-md text-on-surface">What animal do you like?</p>
+</div>
+</div>
+<!-- Child Bubble -->
+<div class="flex flex-col items-end gap-1 self-end w-5/6 mt-2">
+<div class="bg-primary-container border-2 border-primary rounded-2xl rounded-br-none p-4 shadow-sm relative">
+<p class="font-body-md text-body-md text-on-primary-container">I like dogs</p>
+</div>
+<span class="font-caption text-caption text-on-surface-variant mr-1 opacity-70 text-right">Tú</span>
+</div>
+<!-- Luna Bubble 2 -->
+<div class="flex items-end gap-2 self-start w-11/12 mt-2">
+<div class="w-8 h-8 rounded-full flex-shrink-0 bg-surface-container overflow-hidden border-2 border-primary-container">
+<img alt="Luna small" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBC9axeKlTWuUEgfjP27m7yy2mkahR40tZPlZes4aSeH2M6RtaIF91b9AX_S_6C4wyo2qBzappz7P0CIatE4s75Z95VO_5q3OB66XyBi-sQfTt8LgRDfBZ3rbKB8zGG-GNKCfa1udfIlo7s9ULGCpwbIjdmn5BlzByZwdo9h0wnbdGmxeNmiSnz_kBvbpYTkHeI26muTS0R8auBVxotcZZsNLDKle4UrI2pD_tVKg3Mgl9jIrdApCF_2oyiDbRxh5y-SgQbKYLBbDJX"/>
+</div>
+<div class="bg-white border-2 border-surface-variant rounded-2xl rounded-bl-none p-4 shadow-sm relative">
+<p class="font-body-md text-body-md text-on-surface mb-2">Great! Dogs are friendly.</p>
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-2 flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary flex-shrink-0" style="font-size: 20px;">lightbulb</span>
+<p class="font-caption text-caption text-on-surface-variant">Small fix: say <span class="font-bold text-primary">'I like dogs'</span>.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Input Area -->
+<footer class="w-full max-w-md mx-auto fixed bottom-0 left-0 right-0 bg-surface-container-lowest border-t-2 border-surface-container-highest px-container-margin py-stack-sm z-50 rounded-t-xl shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+<!-- Action Row -->
+<div class="flex items-center gap-3">
+<!-- Mic Button (Prominent) -->
+<button aria-label="Hablar" class="w-16 h-16 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shadow-lg border-b-4 border-primary active:border-b-0 active:translate-y-1 transition-all flex-shrink-0 animate-soft-pulse">
+<span class="material-symbols-outlined" style="font-size: 32px;">mic</span>
+</button>
+<!-- Text Input -->
+<div class="flex-grow relative">
+<input class="w-full h-14 bg-surface rounded-xl border-2 border-surface-variant px-4 font-body-md text-body-md text-on-surface placeholder-outline focus:outline-none focus:border-primary-container focus:ring-0 shadow-inner" placeholder="Escribe tu respuesta..." type="text"/>
+</div>
+<!-- Send Button -->
+<button aria-label="Send" class="w-14 h-14 rounded-xl btn-secondary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">send</span>
+</button>
+</div>
+<p class="text-center font-caption text-caption text-on-surface-variant mt-3 uppercase tracking-wider">Manten presionado para hablar</p>
+</footer>
+</body></html>

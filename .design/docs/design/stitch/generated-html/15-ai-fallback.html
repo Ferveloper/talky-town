@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Luna pensando...</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-background": "#1d1b16",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#e7e2d9",
+                      "on-secondary-fixed": "#241a00",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#574500",
+                      "tertiary-container": "#82c885",
+                      "surface-bright": "#fff9f0",
+                      "tertiary": "#286b33",
+                      "on-primary-container": "#004e6b",
+                      "surface": "#fff9f0",
+                      "error": "#ba1a1a",
+                      "surface-container-high": "#ede7df",
+                      "primary-fixed-dim": "#7ad0ff",
+                      "outline-variant": "#bdc8d1",
+                      "on-tertiary-container": "#0a541f",
+                      "on-tertiary": "#ffffff",
+                      "on-surface-variant": "#3e484f",
+                      "secondary": "#735c00",
+                      "surface-container": "#f3ede4",
+                      "inverse-surface": "#32302a",
+                      "inverse-primary": "#7ad0ff",
+                      "tertiary-fixed": "#abf4ac",
+                      "on-secondary-container": "#725b00",
+                      "primary-container": "#40c4ff",
+                      "tertiary-fixed-dim": "#90d792",
+                      "primary-fixed": "#c3e8ff",
+                      "surface-container-highest": "#e7e2d9",
+                      "surface-tint": "#00668a",
+                      "inverse-on-surface": "#f6f0e7",
+                      "secondary-fixed-dim": "#ebc23e",
+                      "secondary-fixed": "#ffe087",
+                      "primary": "#00668a",
+                      "on-tertiary-fixed-variant": "#07521d",
+                      "on-surface": "#1d1b16",
+                      "on-primary-fixed": "#001e2c",
+                      "surface-dim": "#dfd9d1",
+                      "on-tertiary-fixed": "#002107",
+                      "on-secondary": "#ffffff",
+                      "surface-container-low": "#f9f3ea",
+                      "outline": "#6e7980",
+                      "on-error": "#ffffff",
+                      "secondary-container": "#fdd34d",
+                      "background": "#fff9f0",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed-variant": "#004c69",
+                      "on-error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-lg": "48px",
+                      "unit": "8px",
+                      "gutter": "16px",
+                      "container-margin": "24px",
+                      "stack-sm": "12px",
+                      "stack-md": "24px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Quicksand"
+                      ],
+                      "body-lg": [
+                              "Quicksand"
+                      ],
+                      "body-md": [
+                              "Quicksand"
+                      ],
+                      "label-bold": [
+                              "Quicksand"
+                      ],
+                      "display-lg-mobile": [
+                              "Quicksand"
+                      ],
+                      "display-lg": [
+                              "Quicksand"
+                      ],
+                      "caption": [
+                              "Quicksand"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "30px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-bold": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "38px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "caption": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Playful button animations */
+        .btn-bounce {
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-bounce:active {
+            transform: scale(0.95) translateY(4px);
+            box-shadow: none !important;
+            border-bottom-width: 0px !important;
+            margin-top: 4px; /* compensate for lost border */
+        }
+        
+        .floating-anim {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Decorative background elements -->
+<div class="absolute inset-0 z-0 opacity-40 pointer-events-none overflow-hidden flex flex-col justify-between">
+<div class="h-64 bg-gradient-to-b from-primary-fixed to-transparent w-full"></div>
+<div class="h-64 bg-gradient-to-t from-secondary-fixed to-transparent w-full"></div>
+</div>
+<!-- Floating decorative shapes -->
+<div class="absolute top-20 left-10 w-24 h-24 bg-primary-fixed rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse z-0"></div>
+<div class="absolute bottom-40 right-10 w-32 h-32 bg-secondary-fixed rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse z-0" style="animation-delay: 1s;"></div>
+<!-- Main Content Container -->
+<main class="relative z-10 w-full max-w-md px-container-margin py-stack-lg flex flex-col items-center justify-center min-h-screen">
+<!-- Top App Bar (Simplified for modal feel) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-transparent pointer-events-none">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight font-bold">TalkyTown</h1>
+<div class="flex gap-4">
+<!-- Empty placeholders to balance the flex layout -->
+</div>
+</header>
+<!-- Avatar & Message Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_8px_0_0_#e7e2d9] border-2 border-surface-container-highest p-stack-md flex flex-col items-center text-center w-full mb-stack-lg relative overflow-visible">
+<!-- Avatar Frame overflowing the top -->
+<div class="absolute -top-16 w-32 h-32 rounded-full border-4 border-secondary shadow-md bg-surface-container-highest flex items-center justify-center overflow-hidden floating-anim">
+<img alt="Luna thinking" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_Z2wLGXcQyUVMA1PoL7WXNDAdcmTf28_b4R4GSICL8t6IRXnipMHf5IsZyFFCK-9k9-M4kVRQ8Ka85aJAnR1nwUH4PxFNXQeG8gwDa-3eEjayuslsv9-55eCxiHPoRf1P_I4JAVg4hBfgGKOmpkW0kuZGxw84Z1jqqGn9KH2UNeE96W28vTIawA9R6-wIal9mx8-bwIcQya8kV_dt2LnlS564CSC5j_-1aaEesHxuvheK6FrLYDJvZUEUzddApFuZqON3bNUYmmfn"/>
+</div>
+<!-- Spacer to push content below the overlapping avatar -->
+<div class="h-12 w-full"></div>
+<!-- Message -->
+<h2 class="font-display-lg-mobile text-display-lg-mobile text-on-background mt-4 mb-2">
+                Luna necesita un segundo. Podemos seguir jugando en modo demo.
+            </h2>
+<p class="font-body-md text-on-surface-variant mb-6 max-w-[280px]">
+                ¡Las lechuzas también necesitan pensar a veces!
+            </p>
+</div>
+<!-- Action Buttons Cluster -->
+<div class="w-full flex flex-col gap-stack-sm mb-stack-lg">
+<!-- Primary Action -->
+<button class="btn-bounce w-full bg-primary text-on-primary font-headline-md text-headline-md uppercase py-4 px-6 rounded-DEFAULT border-b-4 border-surface-tint shadow-[0_4px_0_0_#004c69] flex items-center justify-center gap-3">
+<span class="material-symbols-outlined text-3xl" data-icon="refresh" data-weight="fill">refresh</span>
+                Intentar de nuevo
+            </button>
+<!-- Secondary Action -->
+<button class="btn-bounce w-full bg-secondary-container text-on-secondary-container font-headline-md text-headline-md uppercase py-4 px-6 rounded-DEFAULT border-b-4 border-[#d4a81e] shadow-[0_4px_0_0_#574500] flex items-center justify-center gap-3 mt-2">
+<span class="material-symbols-outlined text-3xl" data-icon="play_arrow" data-weight="fill">play_arrow</span>
+                Usar modo demo
+            </button>
+<!-- Tertiary Action -->
+<button class="btn-bounce w-full bg-surface-container-highest text-on-surface-variant font-label-bold text-label-bold uppercase py-4 px-6 rounded-DEFAULT border-2 border-outline-variant shadow-sm flex items-center justify-center gap-3 mt-4">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+                Escribir respuesta
+            </button>
+</div>
+<!-- Parent Note -->
+<div class="mt-auto pt-8">
+<p class="font-caption text-caption text-outline text-center opacity-60">
+                El proveedor actual no está disponible.
+            </p>
+</div>
+</main>
+<script>
+        // Simple script to handle button clicks for demonstration
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Add a small vibration if supported
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+                
+                // Show a brief visual feedback
+                const originalText = this.innerHTML;
+                const icon = this.querySelector('.material-symbols-outlined');
+                
+                if(icon && icon.textContent === 'refresh') {
+                     icon.classList.add('animate-spin');
+                     setTimeout(() => {
+                         icon.classList.remove('animate-spin');
+                     }, 1000);
+                }
+            });
+        });
+    </script>
+</body></html>

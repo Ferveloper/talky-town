@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Chat with Barnaby</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-highest": "#e7e2d9",
+                      "surface-container-low": "#f9f3ea",
+                      "primary-fixed-dim": "#7ad0ff",
+                      "on-background": "#1d1b16",
+                      "secondary-fixed-dim": "#ebc23e",
+                      "on-surface": "#1d1b16",
+                      "surface-container-high": "#ede7df",
+                      "outline-variant": "#bdc8d1",
+                      "tertiary": "#286b33",
+                      "on-primary-fixed": "#001e2c",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-fixed": "#002107",
+                      "secondary": "#735c00",
+                      "error-container": "#ffdad6",
+                      "inverse-surface": "#32302a",
+                      "on-primary-container": "#004e6b",
+                      "surface-variant": "#e7e2d9",
+                      "on-secondary-fixed-variant": "#574500",
+                      "on-primary": "#ffffff",
+                      "on-primary-fixed-variant": "#004c69",
+                      "tertiary-container": "#82c885",
+                      "surface-tint": "#00668a",
+                      "tertiary-fixed-dim": "#90d792",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#dfd9d1",
+                      "secondary-container": "#fdd34d",
+                      "background": "#fff9f0",
+                      "surface-bright": "#fff9f0",
+                      "tertiary-fixed": "#abf4ac",
+                      "primary-container": "#40c4ff",
+                      "inverse-primary": "#7ad0ff",
+                      "on-tertiary-container": "#0a541f",
+                      "secondary-fixed": "#ffe087",
+                      "on-secondary-container": "#725b00",
+                      "surface-container": "#f3ede4",
+                      "inverse-on-surface": "#f6f0e7",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "primary-fixed": "#c3e8ff",
+                      "on-tertiary-fixed-variant": "#07521d",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed": "#241a00",
+                      "surface": "#fff9f0",
+                      "on-secondary": "#ffffff",
+                      "primary": "#00668a",
+                      "outline": "#6e7980",
+                      "on-surface-variant": "#3e484f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "8px",
+                      "container-margin": "24px",
+                      "stack-md": "24px",
+                      "gutter": "16px",
+                      "stack-lg": "48px",
+                      "stack-sm": "12px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Quicksand"
+                      ],
+                      "display-lg-mobile": [
+                              "Quicksand"
+                      ],
+                      "display-lg": [
+                              "Quicksand"
+                      ],
+                      "body-md": [
+                              "Quicksand"
+                      ],
+                      "caption": [
+                              "Quicksand"
+                      ],
+                      "label-bold": [
+                              "Quicksand"
+                      ],
+                      "headline-md": [
+                              "Quicksand"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "30px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "38px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "caption": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-bold": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+            },
+          }
+        }
+    </script>
+<style>
+        body {
+            background-image: radial-gradient(circle at top right, #fff9f0 0%, #f3ede4 100%);
+            background-attachment: fixed;
+        }
+        /* Hide scrollbar for clean chat view */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .chat-bubble-enter {
+            animation: slideUpFade 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+
+        @keyframes slideUpFade {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body class="font-body-lg text-on-background min-h-screen flex flex-col bg-background">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-surface border-b-4 border-surface-container-highest shadow-sm">
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors active:translate-y-1" onclick="window.history.back()">
+<span class="material-symbols-outlined text-on-surface-variant font-bold text-[32px]">arrow_back</span>
+</button>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight">TalkyTown</h1>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-1 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full border-2 border-secondary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold text-label-bold">120</span>
+</div>
+<div class="flex items-center gap-1 bg-error-container text-on-error-container px-3 py-1 rounded-full border-2 border-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="font-label-bold text-label-bold">3</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow pt-24 pb-32 px-container-margin flex flex-col md:flex-row gap-8 max-w-6xl mx-auto w-full h-[calc(100vh-80px)] overflow-hidden">
+<!-- Left Side: Avatar (Barnaby) -->
+<div class="hidden md:flex flex-col items-center justify-center w-1/3 p-4">
+<div class="relative w-64 h-64 rounded-full border-8 border-primary-container shadow-[0_8px_0_0_#004e6b] mb-6 bg-surface-container-lowest overflow-hidden">
+<img alt="Barnaby the Bear" class="w-full h-full object-cover" data-alt="A friendly, cartoon-style illustrated bear named Barnaby, waving happily. The bear has soft brown fur, a bright green scarf, and large, expressive eyes. The background is a flat, warm cream color. The style is modern playful, reminiscent of high-quality children's book illustrations with smooth vector-like shading." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOVrHDAKlNfXPcQtsnlcsZKnCRl7VDYxxvCLYvz8kJSIOzrBtXD6ImtOx6lgW_di81QqaYhlr1-G7bndzAh7RseLzHy1RBlVNOUFS8rVbJS6wpQtL7EHwHYdN0oMdLigd7e5Il7zlbZTCPwxU0bdtlQJtNu7WXp1SW3iBgPIUpVcw8UGjI-XtU4fobPqusYjaLoPC3xIJps2eSguuEPKsi7_SbaE50893rCP_W7ENgyAnTIgQ0_Nn7wo3_dLpr199u0EcB8wXpdCk4"/>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-surface text-center bg-surface-container-high px-6 py-2 rounded-xl border-2 border-surface-container-highest shadow-sm">Barnaby</h2>
+</div>
+<!-- Right Side: Chat Area -->
+<div class="flex-grow flex flex-col w-full md:w-2/3 bg-surface-container-lowest rounded-xl border-4 border-surface-container-highest shadow-[0_6px_0_0_#e7e2d9] overflow-hidden relative">
+<!-- Mobile Avatar Bar (Only visible on small screens) -->
+<div class="md:hidden flex items-center p-4 bg-surface-container-low border-b-2 border-surface-container-highest">
+<div class="w-12 h-12 rounded-full border-2 border-primary-container overflow-hidden mr-3">
+<img alt="Barnaby the Bear" class="w-full h-full object-cover" data-alt="A friendly, cartoon-style illustrated bear named Barnaby, waving happily. The bear has soft brown fur, a bright green scarf, and large, expressive eyes. The background is a flat, warm cream color. The style is modern playful, reminiscent of high-quality children's book illustrations with smooth vector-like shading." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEPDK7uUBmNHimNbSgVQx-3WFyKi7xUhcuJX5qZ-q1neM72XmWf5jvbR9J_A1KlKH4wN0tZhwXKkHlOH_vgDRUSEq9k5qXh_rwwwlBeG-B5CvvfaLHWP859un1HhZLSHHtwTYO0ZUI3GmjX3u_ARdHFN1eZl0P0cBzE3oCSJIxCf5_Kp4xKq4wbBGOHW7iWeTYcQ8einTIDqUCmshw-hewevezK8q_1EGe0FNlJh4v5otKxIRolEa0XWsvt7S993TVJgiGxpnwRjZx"/>
+</div>
+<h2 class="font-headline-md text-headline-md-mobile text-on-surface">Barnaby</h2>
+</div>
+<!-- Chat Messages Scrollable Area -->
+<div class="flex-grow p-6 overflow-y-auto no-scrollbar flex flex-col gap-6" id="chat-container">
+<!-- Barnaby Message -->
+<div class="flex gap-4 items-end chat-bubble-enter">
+<div class="bg-surface-container-low p-4 rounded-t-xl rounded-br-xl rounded-bl-sm border-2 border-surface-container-highest max-w-[80%] shadow-sm relative">
+<p class="font-body-lg text-body-lg text-on-surface">Hello there! I'm Barnaby. Are you ready to practice English today?</p>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex gap-4 items-end justify-end chat-bubble-enter" style="animation-delay: 0.2s;">
+<div class="bg-primary-container p-4 rounded-t-xl rounded-bl-xl rounded-br-sm border-2 border-primary max-w-[80%] shadow-[0_4px_0_0_#004c69]">
+<p class="font-body-lg text-body-lg text-on-primary-container">Hi Barnaby! Yes, I am ready.</p>
+</div>
+</div>
+<!-- Barnaby Message -->
+<div class="flex gap-4 items-end chat-bubble-enter" style="animation-delay: 0.4s;">
+<div class="bg-surface-container-low p-4 rounded-t-xl rounded-br-xl rounded-bl-sm border-2 border-surface-container-highest max-w-[80%] shadow-sm">
+<p class="font-body-lg text-body-lg text-on-surface">Great! What is your favorite animal?</p>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-4 bg-surface-container-low border-t-2 border-surface-container-highest flex gap-3 items-center">
+<!-- Hint Button -->
+<button aria-label="Get a hint" class="flex-shrink-0 w-14 h-14 bg-secondary-container rounded-full flex items-center justify-center border-2 border-secondary shadow-[0_4px_0_0_#735c00] active:translate-y-1 active:shadow-none transition-all">
+<span class="material-symbols-outlined text-on-secondary-container text-3xl" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+</button>
+<!-- Input Field -->
+<div class="flex-grow relative">
+<input class="w-full h-14 bg-surface-container-lowest border-2 border-surface-container-highest rounded-full px-6 font-body-lg text-body-lg text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary-container transition-all" id="chat-input" placeholder="Type your answer..." type="text"/>
+</div>
+<!-- Send Button -->
+<button aria-label="Send message" class="flex-shrink-0 w-14 h-14 bg-primary rounded-full flex items-center justify-center border-2 border-surface-tint shadow-[0_4px_0_0_#004c69] active:translate-y-1 active:shadow-none transition-all" id="send-btn">
+<span class="material-symbols-outlined text-on-primary text-3xl" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface-container-low rounded-t-lg shadow-[0_-4px_0_0_rgba(0,0,0,0.05)] md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-75 rounded-lg" href="#">
+<span class="material-symbols-outlined text-[28px]">map</span>
+<span class="font-label-bold text-label-bold mt-1">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-75 rounded-lg" href="#">
+<span class="material-symbols-outlined text-[28px]">school</span>
+<span class="font-label-bold text-label-bold mt-1">Lessons</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 scale-110 shadow-[0_4px_0_0_#004c69] hover:bg-surface-container-high transition-colors active:scale-95 duration-75" href="#">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">forum</span>
+<span class="font-label-bold text-label-bold mt-1">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-75 rounded-lg" href="#">
+<span class="material-symbols-outlined text-[28px]">leaderboard</span>
+<span class="font-label-bold text-label-bold mt-1">Progress</span>
+</a>
+</nav>
+<script>
+        // Simple chat interaction logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const container = document.getElementById('chat-container');
+
+            function addMessage(text, isUser = false) {
+                if (!text.trim()) return;
+
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `flex gap-4 items-end ${isUser ? 'justify-end' : ''} chat-bubble-enter`;
+                
+                const bubbleClass = isUser 
+                    ? 'bg-primary-container p-4 rounded-t-xl rounded-bl-xl rounded-br-sm border-2 border-primary max-w-[80%] shadow-[0_4px_0_0_#004c69]'
+                    : 'bg-surface-container-low p-4 rounded-t-xl rounded-br-xl rounded-bl-sm border-2 border-surface-container-highest max-w-[80%] shadow-sm';
+                
+                const textClass = isUser ? 'text-on-primary-container' : 'text-on-surface';
+
+                msgDiv.innerHTML = `
+                    <div class="${bubbleClass}">
+                        <p class="font-body-lg text-body-lg ${textClass}">${text}</p>
+                    </div>
+                `;
+
+                container.appendChild(msgDiv);
+                container.scrollTop = container.scrollHeight;
+                input.value = '';
+
+                // Simulate Barnaby's response
+                if (isUser) {
+                    setTimeout(() => {
+                        addMessage("That's wonderful! I love animals too.", false);
+                    }, 1000);
+                }
+            }
+
+            sendBtn.addEventListener('click', () => addMessage(input.value, true));
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addMessage(input.value, true);
+            });
+        });
+    </script>
+</body></html>

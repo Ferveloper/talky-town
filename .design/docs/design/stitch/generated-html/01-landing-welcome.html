@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Aprende idiomas hablando con avatares de IA</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e7e2d9",
+                    "on-secondary-fixed-variant": "#574500",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#82c885",
+                    "surface-tint": "#00668a",
+                    "on-primary-fixed-variant": "#004c69",
+                    "tertiary-fixed-dim": "#90d792",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#dfd9d1",
+                    "secondary-container": "#fdd34d",
+                    "background": "#fff9f0",
+                    "surface-bright": "#fff9f0",
+                    "surface-container-highest": "#e7e2d9",
+                    "surface-container-low": "#f9f3ea",
+                    "primary-fixed-dim": "#7ad0ff",
+                    "surface-container-high": "#ede7df",
+                    "secondary-fixed-dim": "#ebc23e",
+                    "on-surface": "#1d1b16",
+                    "on-background": "#1d1b16",
+                    "tertiary": "#286b33",
+                    "outline-variant": "#bdc8d1",
+                    "on-primary-fixed": "#001e2c",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#735c00",
+                    "on-tertiary-fixed": "#002107",
+                    "inverse-surface": "#32302a",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#004e6b",
+                    "primary": "#00668a",
+                    "outline": "#6e7980",
+                    "on-surface-variant": "#3e484f",
+                    "tertiary-fixed": "#abf4ac",
+                    "primary-container": "#40c4ff",
+                    "secondary-fixed": "#ffe087",
+                    "on-tertiary-container": "#0a541f",
+                    "inverse-primary": "#7ad0ff",
+                    "on-secondary-container": "#725b00",
+                    "surface-container": "#f3ede4",
+                    "inverse-on-surface": "#f6f0e7",
+                    "on-error-container": "#93000a",
+                    "on-error": "#ffffff",
+                    "primary-fixed": "#c3e8ff",
+                    "on-tertiary-fixed-variant": "#07521d",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed": "#241a00",
+                    "surface": "#fff9f0",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-margin": "24px",
+                    "unit": "8px",
+                    "stack-sm": "12px",
+                    "stack-lg": "48px",
+                    "gutter": "16px",
+                    "stack-md": "24px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Quicksand"],
+                    "label-bold": ["Quicksand"],
+                    "caption": ["Quicksand"],
+                    "body-md": ["Quicksand"],
+                    "display-lg": ["Quicksand"],
+                    "display-lg-mobile": ["Quicksand"],
+                    "body-lg": ["Quicksand"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-bold": ["16px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "caption": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "38px", "fontWeight": "700"}],
+                    "body-lg": ["20px", {"lineHeight": "30px", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { background-color: #fff9f0; }
+        .bouncing-hover:hover {
+            transform: translateY(-4px);
+        }
+        .bouncing-active:active {
+            transform: translateY(2px) scale(0.98);
+        }
+        .skeuomorphic-btn {
+            box-shadow: 0 4px 0 0 #004c69;
+            transition: all 0.1s ease;
+        }
+        .skeuomorphic-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 0 #004c69;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 0 0 rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden min-h-screen flex flex-col pt-20">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-surface border-b-4 border-surface-container-highest shadow-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">toys</span>
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight hidden md:block">TalkyTown</span>
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight md:hidden">TalkyTown</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="font-label-bold text-label-bold text-on-surface-variant hover:text-primary transition-colors px-4 py-2 rounded-full hover:bg-surface-container-high">
+                Iniciar sesión
+            </button>
+<div class="hidden md:flex gap-2">
+<button class="material-symbols-outlined text-on-surface-variant hover:scale-105 transition-transform" style="font-variation-settings: 'FILL' 1;">star</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:scale-105 transition-transform" style="font-variation-settings: 'FILL' 1;">local_fire_department</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center w-full max-w-7xl mx-auto px-4 sm:px-container-margin pb-32">
+<!-- Hero Section -->
+<section class="w-full flex flex-col-reverse lg:flex-row items-center justify-between gap-stack-lg mt-12 mb-24">
+<!-- Hero Text -->
+<div class="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left gap-stack-md max-w-2xl">
+<!-- Trust Badges -->
+<div class="flex flex-wrap justify-center lg:justify-start gap-2 mb-2">
+<span class="inline-flex items-center gap-1 bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full font-caption text-caption border-2 border-tertiary/20">
+<span class="material-symbols-outlined text-[16px]">verified_user</span> Seguro para niños
+                    </span>
+<span class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-caption text-caption border-2 border-secondary/20">
+<span class="material-symbols-outlined text-[16px]">sports_esports</span> Gamificado
+                    </span>
+<span class="inline-flex items-center gap-1 bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-caption text-caption border-2 border-primary/20">
+<span class="material-symbols-outlined text-[16px]">smart_toy</span> Con IA
+                    </span>
+</div>
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary-fixed-dim drop-shadow-sm">
+                    Aprende idiomas hablando con avatares de IA
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                    Una ciudad interactiva donde los niños practican inglés con misiones, recompensas y personajes inteligentes.
+                </p>
+<div class="mt-4 flex flex-col sm:flex-row items-center gap-4">
+<button class="skeuomorphic-btn bg-primary text-on-primary font-headline-md text-headline-md px-8 py-4 rounded-xl uppercase tracking-wider w-full sm:w-auto text-center relative overflow-hidden group">
+<span class="relative z-10 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                            Entrar en modo demo
+                        </span>
+<div class="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-full transition-transform duration-500 z-0"></div>
+</button>
+<span class="font-caption text-caption text-outline">Modo demo sin claves</span>
+</div>
+</div>
+<!-- Hero Images (Bento-ish cluster) -->
+<div class="flex-1 w-full max-w-lg lg:max-w-none relative h-[400px] md:h-[500px]">
+<!-- Decorative background elements -->
+<div class="absolute inset-0 bg-primary-fixed-dim/20 rounded-full blur-3xl -z-10"></div>
+<!-- Image 1 -->
+<div class="absolute top-0 right-0 w-2/3 h-2/3 rounded-3xl overflow-hidden border-4 border-surface shadow-lg transform rotate-2 hover:rotate-0 transition-transform duration-300 z-20">
+<img alt="Luna the Owl" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uiKkS7Nai543W0hjfTo4szF9Y-THyBtO2-wAudI2w7SXyIYUuIZUtTY3nOhnUabpqoFYy9kaJfQIR9mtEvh65B6VHcBGteZdB4A6yFBImG3H-D2ucFtSGdr4W6svEmaTP-zKusWaBk1M2dI-_9rj_zUGxwkfxQsXFgaMfb2ulK1PuTN2j30yM5lmqfeCVX4Mh3TDjZjoUjzn6Y58AWHGh822skg6adU6O3iK39rfG_xL2nxu2zKD_VzmSY"/>
+</div>
+<!-- Image 2 -->
+<div class="absolute bottom-0 left-0 w-2/3 h-2/3 rounded-3xl overflow-hidden border-4 border-surface shadow-lg transform -rotate-3 hover:rotate-0 transition-transform duration-300 z-10">
+<img alt="Leo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uifHN5bBjKY5qS5kMxTpfGrV0S6vffkWAay89lLsE8FGuaG6Hl60KRRAR4Xe-q69q2IY74DNQ2YNtlbivf74dNE_5E4UNsgaAq49CVmDILsm4ZBJI3xC_hLPPcigcZ8rFYNVuDKf2bFhkoZUGdV54rf8uReHASr20iXZssX0ZCqJqv5wdp3qe3wasmcUnZECOzvVEZsLjEwuaFz62JbXMaaSfGPct9bke55na-x7yEP04DCoPVVLkVfaMq_"/>
+</div>
+<!-- Floating Elements -->
+<div class="absolute top-1/4 left-4 bg-surface p-3 rounded-2xl shadow-md border-2 border-surface-variant z-30 animate-bounce">
+<span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<div class="absolute bottom-1/4 right-4 bg-surface p-3 rounded-2xl shadow-md border-2 border-surface-variant z-30 animate-bounce" style="animation-delay: 0.5s;">
+<span class="material-symbols-outlined text-tertiary-container text-3xl" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+</div>
+</div>
+</section>
+<!-- How It Works Section -->
+<section class="w-full flex flex-col items-center gap-stack-lg mb-24">
+<h2 class="font-headline-md text-display-lg-mobile text-primary text-center">Cómo funciona</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter w-full">
+<!-- Step 1 -->
+<div class="bg-surface-container-low rounded-3xl p-6 border-2 border-surface-container-highest card-shadow flex flex-col items-center text-center gap-4 hover:bg-surface-container-high transition-colors group cursor-pointer">
+<div class="w-24 h-24 rounded-full bg-primary-container flex items-center justify-center border-4 border-surface group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-5xl text-on-primary-container" style="font-variation-settings: 'FILL' 1;">face</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">1. Elige tu avatar</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Selecciona un amigo divertido de TalkyTown para empezar tu aventura.</p>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-low rounded-3xl p-6 border-2 border-surface-container-highest card-shadow flex flex-col items-center text-center gap-4 hover:bg-surface-container-high transition-colors group cursor-pointer">
+<div class="w-24 h-24 rounded-full bg-secondary-container flex items-center justify-center border-4 border-surface group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-5xl text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">map</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">2. Completa misiones</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Explora la ciudad y habla con los personajes para resolver divertidos retos.</p>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-low rounded-3xl p-6 border-2 border-surface-container-highest card-shadow flex flex-col items-center text-center gap-4 hover:bg-surface-container-high transition-colors group cursor-pointer">
+<div class="w-24 h-24 rounded-full bg-tertiary-container flex items-center justify-center border-4 border-surface group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-5xl text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">3. Gana XP aprendiendo</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Sube de nivel y desbloquea nuevas zonas mientras mejoras tu inglés.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface-container-low border-t-4 border-surface-container-highest rounded-t-lg shadow-[0_-4px_0_0_rgba(0,0,0,0.05)]">
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 scale-110 shadow-[0_4px_0_0_#004c69]">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-bold text-[12px] mt-1">Map</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors rounded-xl active:scale-95 duration-75">
+<span class="material-symbols-outlined text-2xl">school</span>
+<span class="font-label-bold text-[12px] mt-1">Lessons</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors rounded-xl active:scale-95 duration-75">
+<span class="material-symbols-outlined text-2xl">forum</span>
+<span class="font-label-bold text-[12px] mt-1">Chat</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors rounded-xl active:scale-95 duration-75">
+<span class="material-symbols-outlined text-2xl">leaderboard</span>
+<span class="font-label-bold text-[12px] mt-1">Progress</span>
+</button>
+</nav>
+</body></html>

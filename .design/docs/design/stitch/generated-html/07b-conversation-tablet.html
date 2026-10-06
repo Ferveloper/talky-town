@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>TalkyTown - Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#ebc23e",
+                        "outline": "#6e7980",
+                        "inverse-primary": "#7ad0ff",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#f3ede4",
+                        "primary-container": "#40c4ff",
+                        "primary": "#00668a",
+                        "primary-fixed": "#c3e8ff",
+                        "on-secondary-fixed-variant": "#574500",
+                        "tertiary-container": "#82c885",
+                        "surface-container-highest": "#e7e2d9",
+                        "secondary-fixed": "#ffe087",
+                        "tertiary-fixed": "#abf4ac",
+                        "on-secondary-container": "#725b00",
+                        "on-primary-fixed-variant": "#004c69",
+                        "on-tertiary-fixed": "#002107",
+                        "surface-dim": "#dfd9d1",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1d1b16",
+                        "on-primary-fixed": "#001e2c",
+                        "tertiary": "#286b33",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#ede7df",
+                        "on-surface-variant": "#3e484f",
+                        "on-surface": "#1d1b16",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-bright": "#fff9f0",
+                        "primary-fixed-dim": "#7ad0ff",
+                        "on-primary-container": "#004e6b",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f6f0e7",
+                        "surface": "#fff9f0",
+                        "on-tertiary-container": "#0a541f",
+                        "secondary-container": "#fdd34d",
+                        "on-tertiary-fixed-variant": "#07521d",
+                        "background": "#fff9f0",
+                        "surface-container-low": "#f9f3ea",
+                        "tertiary-fixed-dim": "#90d792",
+                        "inverse-surface": "#32302a",
+                        "secondary": "#735c00",
+                        "outline-variant": "#bdc8d1",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#00668a",
+                        "surface-variant": "#e7e2d9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-margin": "24px",
+                        "stack-md": "24px",
+                        "stack-lg": "48px",
+                        "gutter": "16px",
+                        "stack-sm": "12px"
+                    },
+                    "fontFamily": {
+                        "caption": ["Quicksand"],
+                        "label-bold": ["Quicksand"],
+                        "display-lg-mobile": ["Quicksand"],
+                        "display-lg": ["Quicksand"],
+                        "body-md": ["Quicksand"],
+                        "headline-md": ["Quicksand"],
+                        "body-lg": ["Quicksand"]
+                    },
+                    "fontSize": {
+                        "caption": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "label-bold": ["16px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "38px", "fontWeight": "700"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-lg": ["20px", {"lineHeight": "30px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Quicksand', sans-serif; }
+        .skeuomorphic-btn {
+            box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.1s ease;
+        }
+        .skeuomorphic-btn:active {
+            box-shadow: 0 0px 0 0 rgba(0, 0, 0, 0.2);
+            transform: translateY(4px);
+        }
+        .mic-btn-shadow {
+            box-shadow: 0 8px 0 0 #004c69;
+        }
+        .mic-btn-shadow:active {
+            box-shadow: 0 0px 0 0 #004c69;
+            transform: translateY(8px);
+        }
+        /* Soft pulsing animation for the microphone to encourage interaction */
+        @keyframes softPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse-mic {
+            animation: softPulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col pt-20 pb-24 md:pb-0 font-body-md">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-surface shadow-sm border-b-4 border-surface-container-highest">
+<div class="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">pets</span>
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight">TalkyTown</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center hover:scale-105 active:translate-y-1 transition-all duration-100 text-on-surface-variant skeuomorphic-btn">
+<span class="material-symbols-outlined" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center hover:scale-105 active:translate-y-1 transition-all duration-100 text-on-surface-variant skeuomorphic-btn">
+<span class="material-symbols-outlined" data-icon="local_fire_department" data-weight="fill" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</button>
+<img alt="User profile avatar" class="w-12 h-12 rounded-full border-2 border-primary-container cursor-pointer hover:scale-105 transition-transform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYaiebjju4mJ_i9IwWHtfvpk5Kx8p_el-1GPjGpOVl-4U63DOcTVr6vyKzvtmuYS7Y7--kBTihqSMKxanGqpeYmMd5q2z2lvqTOORCIsa4PKx362lnuNoo0dHWqZLrQDXg1Tedi8WfoXocS9Unbto7DQ5qVcpU8rr5PQClkEvhJ8B5e1Q9oT4T5SQ-L7o_XjL3bbaLqJPq5V1hX5XNuNnGIeiSqFVaFhHpButS1bzPZ7p0UVUlUvXIx7iB2jCMZ0ZyVbGcdM4cthmy"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col max-w-4xl mx-auto w-full px-container-margin py-stack-md gap-stack-md relative">
+<!-- Gamification Header & Terminar Sesión -->
+<div class="flex justify-between items-center bg-surface-container-low p-4 rounded-xl border-2 border-surface-container-highest shadow-[0_4px_0_0_#e7e2d9]">
+<div class="flex flex-col gap-2 flex-grow max-w-sm">
+<div class="flex justify-between items-end">
+<span class="font-label-bold text-label-bold text-on-surface">Animal Adventure</span>
+<span class="font-caption text-caption text-secondary">120/200 XP</span>
+</div>
+<!-- Progress Bar -->
+<div class="h-6 w-full bg-surface-variant rounded-full overflow-hidden border-2 border-outline-variant relative">
+<div class="absolute top-0 left-0 h-full bg-tertiary-container w-[60%] rounded-full shadow-inner flex items-center">
+<!-- Glossy highlight -->
+<div class="w-full h-1/2 bg-white/30 absolute top-0 rounded-t-full"></div>
+</div>
+</div>
+</div>
+<button class="px-4 py-2 bg-error-container text-on-error-container rounded-lg font-label-bold text-label-bold border-2 border-error/20 skeuomorphic-btn flex items-center gap-2 hover:bg-error/20 transition-colors ml-4 shrink-0">
+<span class="material-symbols-outlined text-xl">logout</span>
+<span class="hidden sm:inline">Terminar sesión</span>
+</button>
+</div>
+<!-- Conversation Area -->
+<div class="flex-grow flex flex-col gap-stack-md overflow-y-auto py-4">
+<!-- Luna the Owl Bubble -->
+<div class="flex items-end gap-gutter w-full">
+<div class="w-20 h-20 shrink-0 rounded-full border-4 border-primary-fixed overflow-hidden bg-primary-container shadow-md z-10">
+<img alt="Luna the Owl avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uiKkS7Nai543W0hjfTo4szF9Y-THyBtO2-wAudI2w7SXyIYUuIZUtTY3nOhnUabpqoFYy9kaJfQIR9mtEvh65B6VHcBGteZdB4A6yFBImG3H-D2ucFtSGdr4W6svEmaTP-zKusWaBk1M2dI-_9rj_zUGxwkfxQsXFgaMfb2ulK1PuTN2j30yM5lmqfeCVX4Mh3TDjZjoUjzn6Y58AWHGh822skg6adU6O3iK39rfG_xL2nxu2zKD_VzmSY"/>
+</div>
+<div class="bg-surface p-6 rounded-3xl rounded-bl-none border-2 border-surface-container-highest shadow-[0_4px_0_0_#e7e2d9] max-w-[80%] relative">
+<p class="font-body-lg text-body-lg text-on-surface">¡Hola! ¿Cómo se dice 'owl' en español?</p>
+</div>
+</div>
+<!-- Child Placeholder Bubble -->
+<div class="flex items-end gap-gutter w-full justify-end">
+<div class="bg-primary-fixed p-6 rounded-3xl rounded-br-none border-2 border-primary-fixed-dim shadow-[0_4px_0_0_#7ad0ff] max-w-[80%] relative">
+<p class="font-body-lg text-body-lg text-on-primary-fixed-variant">Se dice 'búho'</p>
+</div>
+<img alt="Child's avatar" class="w-16 h-16 shrink-0 rounded-full border-4 border-secondary-fixed overflow-hidden bg-secondary-container shadow-md z-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFSZzXdMmm35QrpGG8LQlOiecB0qL4N3XVCnDpUQaSeCYPVrkQY2Z58yNR2ipeUsgidiGPX1bMEMyRulhaCrfxWQFBSaJ8IoA4np3gRz79p8vHUFwlrLEBOIPXlS4Wdtywk_67FauJkePgPzPiK8HV3ilWGlrc5T5R9JxRjj433rwDxsdhpbjEYl-rp9TvZelnimoe6pAeu0HWal95WF-VNrkbumEVQdoEno9kMIBdGeQ5ozDmY95wTVbXfWVTEH8Oo-BuZSwCDOuP"/>
+</div>
+</div>
+<!-- Input Area (Microphone & Text) -->
+<div class="flex flex-col items-center justify-center gap-stack-sm pb-8 mt-auto">
+<!-- Massive Microphone Button -->
+<button class="w-32 h-32 rounded-full bg-primary text-on-primary flex items-center justify-center pulse-mic mic-btn-shadow border-4 border-primary-fixed z-20">
+<span class="material-symbols-outlined text-[64px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+<span class="font-label-bold text-label-bold text-primary mt-2">Tap to speak!</span>
+<!-- Text Input Fallback -->
+<div class="w-full max-w-md mt-4 flex relative group">
+<input class="w-full h-14 pl-6 pr-14 rounded-full bg-surface border-2 border-surface-variant font-body-md text-body-md text-on-surface focus:outline-none focus:border-4 focus:border-primary-container focus:ring-0 shadow-sm transition-all" placeholder="Type your answer here..." type="text"/>
+<button class="absolute right-2 top-2 w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface-container-low border-t-4 border-surface-container-highest shadow-[0_-4px_0_0_rgba(0,0,0,0.05)] rounded-t-lg">
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-75 rounded-xl">
+<span class="material-symbols-outlined text-3xl" data-icon="map">map</span>
+<span class="font-label-bold text-label-bold mt-1">Map</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-75 rounded-xl">
+<span class="material-symbols-outlined text-3xl" data-icon="school">school</span>
+<span class="font-label-bold text-label-bold mt-1">Lessons</span>
+</button>
+<!-- Chat is Active Tab -->
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 scale-110 shadow-[0_4px_0_0_#004c69] active:scale-95 transition-all duration-75">
+<span class="material-symbols-outlined text-3xl" data-icon="forum" style="font-variation-settings: 'FILL' 1;">forum</span>
+<span class="font-label-bold text-label-bold mt-1">Chat</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-75 rounded-xl">
+<span class="material-symbols-outlined text-3xl" data-icon="leaderboard">leaderboard</span>
+<span class="font-label-bold text-label-bold mt-1">Progress</span>
+</button>
+</nav>
+<!-- SideNav for Web would go here, but omitted as per instructions for standard layout, 
+         using the main canvas efficiently. The TopAppBar serves desktop well for this view. -->
+</body></html>

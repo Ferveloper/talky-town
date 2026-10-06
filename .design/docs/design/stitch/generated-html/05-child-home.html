@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - ¡Hola, Sofía!</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#004c69",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#fdd34d",
+                        "background": "#fff9f0",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f9f3ea",
+                        "outline": "#6e7980",
+                        "primary": "#00668a",
+                        "on-tertiary-fixed-variant": "#07521d",
+                        "on-surface": "#1d1b16",
+                        "on-primary-fixed": "#001e2c",
+                        "surface-dim": "#dfd9d1",
+                        "on-tertiary-fixed": "#002107",
+                        "surface-container-highest": "#e7e2d9",
+                        "surface-tint": "#00668a",
+                        "inverse-on-surface": "#f6f0e7",
+                        "secondary-fixed-dim": "#ebc23e",
+                        "secondary-fixed": "#ffe087",
+                        "tertiary-fixed": "#abf4ac",
+                        "on-secondary-container": "#725b00",
+                        "primary-container": "#40c4ff",
+                        "tertiary-fixed-dim": "#90d792",
+                        "primary-fixed": "#c3e8ff",
+                        "surface-container": "#f3ede4",
+                        "inverse-surface": "#32302a",
+                        "inverse-primary": "#7ad0ff",
+                        "on-surface-variant": "#3e484f",
+                        "secondary": "#735c00",
+                        "primary-fixed-dim": "#7ad0ff",
+                        "outline-variant": "#bdc8d1",
+                        "on-tertiary-container": "#0a541f",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#ede7df",
+                        "tertiary": "#286b33",
+                        "on-primary-container": "#004e6b",
+                        "surface": "#fff9f0",
+                        "on-secondary-fixed": "#241a00",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#574500",
+                        "tertiary-container": "#82c885",
+                        "surface-bright": "#fff9f0",
+                        "on-background": "#1d1b16",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e7e2d9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "48px",
+                        "stack-sm": "12px",
+                        "stack-md": "24px",
+                        "container-margin": "24px",
+                        "unit": "8px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-bold": ["Quicksand"],
+                        "display-lg-mobile": ["Quicksand"],
+                        "display-lg": ["Quicksand"],
+                        "caption": ["Quicksand"],
+                        "body-md": ["Quicksand"],
+                        "body-lg": ["Quicksand"],
+                        "headline-md": ["Quicksand"]
+                    },
+                    "fontSize": {
+                        "label-bold": ["16px", { "lineHeight": "24px", "fontWeight": "700" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "38px", "fontWeight": "700" }],
+                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "caption": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-md": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "body-lg": ["20px", { "lineHeight": "30px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            background-image: radial-gradient(circle at 50% 0%, theme('colors.primary-fixed-dim'), transparent 60%);
+        }
+        /* Custom styles for the 3D button effect as per design guidance */
+        .btn-3d-primary {
+            box-shadow: 0 6px 0 0 theme('colors.on-primary-fixed');
+            transition: all 0.1s ease-in-out;
+        }
+        .btn-3d-primary:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 0 theme('colors.on-primary-fixed');
+        }
+        .btn-3d-secondary {
+            box-shadow: 0 6px 0 0 theme('colors.secondary');
+            transition: all 0.1s ease-in-out;
+        }
+        .btn-3d-secondary:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 0 theme('colors.secondary');
+        }
+    </style>
+</head>
+<body class="text-on-background min-h-screen flex flex-col pb-24 md:pb-0 pt-20">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-surface border-b-4 border-surface-container-highest shadow-sm">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight">TalkyTown</h1>
+<div class="flex items-center gap-4">
+<button class="hover:scale-105 transition-transform active:translate-y-1 transition-all duration-100 flex items-center justify-center p-2 rounded-full bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</button>
+<button class="hover:scale-105 transition-transform active:translate-y-1 transition-all duration-100 flex items-center justify-center p-2 rounded-full bg-error-container text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</button>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center px-container-margin py-stack-md w-full max-w-2xl mx-auto gap-stack-md">
+<!-- Greeting & Avatar Area -->
+<section class="flex flex-col items-center text-center w-full mt-stack-sm">
+<h2 class="font-display-lg-mobile text-display-lg-mobile text-primary mb-stack-sm drop-shadow-sm">¡Hola, Sofía!</h2>
+<div class="relative mb-stack-sm">
+<!-- Avatar Frame using current level color (Grass Green / Tertiary) -->
+<div class="w-40 h-40 rounded-full border-8 border-tertiary-container shadow-[0_8px_0_0_#286b33] p-1 bg-surface-container-lowest overflow-hidden flex items-center justify-center">
+<img alt="Sofía" class="w-full h-full object-cover rounded-full" data-alt="A friendly, expressive cartoon-style 3D avatar of a young girl with brown hair and bright eyes, wearing a colorful adventurer outfit. The avatar is centered in a circular frame against a solid warm cream background. The lighting is soft and bright, creating a playful, modern toy-like aesthetic suitable for a children's language learning app. High contrast, clean edges, and cheerful colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7AsEovTj-3E6dVERf96AAc8HUNpr1zRW3eTZTRpvqp6q2_T9CHnTiglinT6TSisNL5PsVAepchzF_0Pvb6stm3mp6VggKBRGCEofVlgWv-rUe00oEJp-rY2conjhS8T1CqOIrSab7PjH6wov0JVkaD4Suo1hwxeQqf6wujUAc0k-Vkv7Edzf9JOovVk8J73hl7xNv8ctlN3l_1dJTboffmIedlnVwErFolGaht9vqFrQJJdZeH6ILPBrgaQgd12_iktcrknJoRWKw"/>
+</div>
+</div>
+<!-- Progress Badges Bento -->
+<div class="grid grid-cols-3 gap-unit w-full max-w-sm">
+<!-- Level Badge -->
+<div class="bg-secondary-container rounded-xl p-unit flex flex-col items-center justify-center shadow-sm border-2 border-secondary-fixed-dim">
+<span class="material-symbols-outlined text-secondary text-3xl mb-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold text-label-bold text-on-secondary-container">Nivel 2</span>
+</div>
+<!-- XP Badge -->
+<div class="bg-primary-container rounded-xl p-unit flex flex-col items-center justify-center shadow-sm border-2 border-primary-fixed-dim">
+<span class="material-symbols-outlined text-primary text-3xl mb-1" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+<span class="font-label-bold text-label-bold text-on-primary-container">120 XP</span>
+</div>
+<!-- Streak Badge -->
+<div class="bg-error-container rounded-xl p-unit flex flex-col items-center justify-center shadow-sm border-2 border-[#ffb4ab]">
+<span class="material-symbols-outlined text-error text-3xl mb-1" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="font-caption text-caption text-error text-center leading-tight">Racha:<br/>3 días</span>
+</div>
+</div>
+</section>
+<!-- Main Action Cards -->
+<section class="w-full flex flex-col gap-stack-sm mt-stack-sm">
+<!-- Hablar libremente (Free talk) -->
+<button class="w-full bg-primary-container border-2 border-primary-fixed-dim rounded-2xl p-6 flex items-center gap-gutter btn-3d-primary relative overflow-hidden group">
+<div class="w-16 h-16 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-sm shrink-0">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+</div>
+<div class="flex-grow text-left">
+<span class="font-headline-md text-headline-md-mobile text-on-primary-container block uppercase tracking-wide">Hablar libremente</span>
+</div>
+<!-- Decorative background blob -->
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-primary-fixed rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+</button>
+<!-- Ir a una misión (Go on a mission) -->
+<button class="w-full bg-secondary-container border-2 border-secondary-fixed-dim rounded-2xl p-6 flex items-center gap-gutter btn-3d-secondary relative overflow-hidden group">
+<div class="w-16 h-16 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-sm shrink-0">
+<span class="material-symbols-outlined text-secondary text-4xl" style="font-variation-settings: 'FILL' 1;">explore</span>
+</div>
+<div class="flex-grow text-left">
+<span class="font-headline-md text-headline-md-mobile text-on-secondary-container block uppercase tracking-wide">Ir a una misión</span>
+</div>
+<!-- Decorative background blob -->
+<div class="absolute -right-8 -bottom-8 w-32 h-32 bg-secondary-fixed rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+</button>
+</section>
+<!-- Secondary Actions -->
+<section class="w-full flex justify-center mt-stack-sm">
+<button class="bg-surface-container-highest hover:bg-surface-dim transition-colors rounded-xl py-3 px-6 flex items-center gap-unit shadow-sm border-2 border-outline-variant">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">redeem</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant uppercase">Mis premios</span>
+</button>
+</section>
+<!-- Adult Zone Footer Link -->
+<footer class="mt-auto pt-stack-lg w-full text-center">
+<a class="font-caption text-caption text-outline hover:text-on-surface-variant transition-colors underline decoration-2 underline-offset-4" href="#">Zona adulto</a>
+</footer>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex md:hidden justify-around items-center px-4 py-3 pb-safe bg-surface-container-low border-t-4 border-surface-container-highest shadow-[0_-4px_0_0_rgba(0,0,0,0.05)] rounded-t-lg">
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 transition-all duration-75 rounded-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-bold text-label-bold text-[10px] mt-1">Map</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 scale-110 shadow-[0_4px_0_0_#004c69] active:scale-95 transition-all duration-75">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
+<span class="font-label-bold text-label-bold text-[10px] mt-1">Lessons</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 transition-all duration-75 rounded-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">forum</span>
+<span class="font-label-bold text-label-bold text-[10px] mt-1">Chat</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors active:scale-95 transition-all duration-75 rounded-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+<span class="font-label-bold text-label-bold text-[10px] mt-1">Progress</span>
+</button>
+</nav>
+<!-- Top Navigation Block for Desktop (Hidden on Mobile) -->
+<div class="hidden md:flex fixed top-0 left-1/2 transform -translate-x-1/2 h-20 z-50 items-center gap-8">
+<button class="text-on-surface-variant font-label-bold hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">map</span> Map
+        </button>
+<button class="text-primary font-bold font-label-bold flex items-center gap-2 border-b-4 border-primary pt-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span> Lessons
+        </button>
+<button class="text-on-surface-variant font-label-bold hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">forum</span> Chat
+        </button>
+<button class="text-on-surface-variant font-label-bold hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">leaderboard</span> Progress
+        </button>
+</div>
+</body></html>

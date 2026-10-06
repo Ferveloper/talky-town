@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TalkyTown - Trophy Case</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e7e2d9",
+                        "surface-container-low": "#f9f3ea",
+                        "primary-fixed-dim": "#7ad0ff",
+                        "on-background": "#1d1b16",
+                        "secondary-fixed-dim": "#ebc23e",
+                        "on-surface": "#1d1b16",
+                        "surface-container-high": "#ede7df",
+                        "outline-variant": "#bdc8d1",
+                        "tertiary": "#286b33",
+                        "on-primary-fixed": "#001e2c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#002107",
+                        "secondary": "#735c00",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#32302a",
+                        "on-primary-container": "#004e6b",
+                        "surface-variant": "#e7e2d9",
+                        "on-secondary-fixed-variant": "#574500",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#004c69",
+                        "tertiary-container": "#82c885",
+                        "surface-tint": "#00668a",
+                        "tertiary-fixed-dim": "#90d792",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#dfd9d1",
+                        "secondary-container": "#fdd34d",
+                        "background": "#fff9f0",
+                        "surface-bright": "#fff9f0",
+                        "tertiary-fixed": "#abf4ac",
+                        "primary-container": "#40c4ff",
+                        "inverse-primary": "#7ad0ff",
+                        "on-tertiary-container": "#0a541f",
+                        "secondary-fixed": "#ffe087",
+                        "on-secondary-container": "#725b00",
+                        "surface-container": "#f3ede4",
+                        "inverse-on-surface": "#f6f0e7",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#c3e8ff",
+                        "on-tertiary-fixed-variant": "#07521d",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#241a00",
+                        "surface": "#fff9f0",
+                        "on-secondary": "#ffffff",
+                        "primary": "#00668a",
+                        "outline": "#6e7980",
+                        "on-surface-variant": "#3e484f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-margin": "24px",
+                        "stack-md": "24px",
+                        "gutter": "16px",
+                        "stack-lg": "48px",
+                        "stack-sm": "12px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Quicksand"],
+                        "display-lg-mobile": ["Quicksand"],
+                        "display-lg": ["Quicksand"],
+                        "body-md": ["Quicksand"],
+                        "caption": ["Quicksand"],
+                        "label-bold": ["Quicksand"],
+                        "headline-md": ["Quicksand"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["20px", { "lineHeight": "30px", "fontWeight": "500" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "38px", "fontWeight": "700" }],
+                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["18px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "caption": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "label-bold": ["16px", { "lineHeight": "24px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            font-family: 'Quicksand', sans-serif;
+            /* Subtle radial gradient for background */
+            background-image: radial-gradient(circle at 50% -20%, theme('colors.primary-fixed') 0%, theme('colors.background') 60%);
+            background-attachment: fixed;
+            margin: 0;
+            padding-top: 80px; /* Space for TopAppBar */
+            padding-bottom: 90px; /* Space for BottomNavBar */
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Confetti Animation */
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: theme('colors.secondary-container');
+            top: -10px;
+            z-index: 10;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- Confetti Container -->
+<div id="confetti-container"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-20 bg-surface border-b-4 border-surface-container-highest shadow-sm">
+<div class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight">TalkyTown</div>
+<div class="flex gap-4 items-center">
+<span class="material-symbols-outlined text-3xl text-secondary-container hover:scale-105 transition-transform cursor-pointer active:translate-y-1 transition-all duration-100" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-3xl text-error-container hover:scale-105 transition-transform cursor-pointer active:translate-y-1 transition-all duration-100" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<img alt="User profile avatar" class="w-10 h-10 rounded-full border-2 border-primary hover:scale-105 transition-transform cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRa0Q8gbcglvuA7-uLvaMAIKVgJP1PvFBhmcutVZOl6cjSP5VAoSw3_1UTzn4QCfsOagwyJu5SfgrzI0gkXHwy6bEdIj9_SRdfi_8_XSZPofsAwkCopkhTgP-6yEq1OtzOiulnqXHyiG9_C5uk5YkmaOTpMkc-_nTGvdHocuYUfnx5K11Ybm66vbT92h5798i0dbaqnA3dX6e1_t0Cy8S-yurGZQ8XNUhbTRJ6VZl8bxzAOp1XmQxl_Rz71pJRWN3VqXL7Fya_zQja"/>
+</div>
+</header>
+<main class="max-w-4xl mx-auto px-container-margin py-stack-lg">
+<!-- Header Section -->
+<div class="text-center mb-stack-lg relative">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-on-surface mb-stack-sm md:font-display-lg md:text-display-lg">Trophy Case</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Celebrate your learning journey!</p>
+</div>
+<!-- Level Progress Card -->
+<section class="bg-surface-container-low rounded-xl border-2 border-surface-container-highest shadow-[0_4px_0_0_#e7e2d9] p-stack-md mb-stack-lg relative overflow-hidden">
+<!-- Glossy highlight effect -->
+<div class="absolute top-0 left-0 w-full h-1/3 bg-white opacity-20 pointer-events-none rounded-t-xl"></div>
+<div class="flex flex-col md:flex-row items-center justify-between gap-stack-md">
+<!-- Avatar / Level Circle -->
+<div class="relative shrink-0">
+<div class="w-24 h-24 rounded-full border-4 border-primary-container p-1 bg-surface-container-lowest flex items-center justify-center shadow-md">
+<img alt="Avatar" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBC1ER7e0Qg1NsFk5TxUKv3znwzbm9ZPgiWAoSl3IQ2TdIbjQRkUbAt6N8ZHXXNisjugEYLs_Udb47UR8NSFGIjF2iRJT8t879OcgB9AjOD0-u3Pf2TTAJ5KUfPWbgbckFXGl9jcOp7RNk-z9pfQs2usW8MHf3xFpByFGU278yC9KHlEqpEMpQQL8hb_ePWMNmjqwd8BDiTuyvPYhf5kus3gEWr8hwTajFrfLRCcXJ-BXAasBmZ4KKmr4bFO6hdplnXdOOiThHz8Xd"/>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-secondary-container text-on-secondary-container font-label-bold text-label-bold px-3 py-1 rounded-full border-2 border-secondary shadow-sm whitespace-nowrap">
+                        Level 5
+                    </div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full flex-grow">
+<div class="flex justify-between items-end mb-2">
+<span class="font-body-md text-body-md text-on-surface font-bold">Explorer</span>
+<span class="font-caption text-caption text-on-surface-variant">350 / 500 XP to next level</span>
+</div>
+<!-- Thick progress track -->
+<div class="h-6 w-full bg-surface-container-highest rounded-full overflow-hidden relative border-2 border-surface-variant">
+<!-- Filled portion -->
+<div class="h-full bg-tertiary-container w-[70%] rounded-full relative transition-all duration-1000 ease-out" id="xp-bar">
+<!-- Glossy highlight on fill -->
+<div class="absolute top-1 left-2 right-2 h-2 bg-white opacity-40 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Daily Streak Bento -->
+<section class="bg-surface-container-low rounded-xl border-2 border-surface-container-highest shadow-[0_4px_0_0_#e7e2d9] p-stack-md mb-stack-lg">
+<div class="flex items-center gap-2 mb-stack-sm">
+<span class="material-symbols-outlined text-error text-3xl" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<h2 class="font-headline-md text-headline-md-mobile text-on-surface">Daily Streak: 4 Days!</h2>
+</div>
+<div class="grid grid-cols-7 gap-2">
+<!-- Day 1 (Done) -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-error-container border-2 border-error flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">M</span>
+</div>
+<!-- Day 2 (Done) -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-error-container border-2 border-error flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">T</span>
+</div>
+<!-- Day 3 (Done) -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-error-container border-2 border-error flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">W</span>
+</div>
+<!-- Day 4 (Today/Done) -->
+<div class="flex flex-col items-center gap-1 relative">
+<div class="absolute -top-3 w-4 h-4 bg-tertiary-container rounded-full flex items-center justify-center z-10 border-2 border-surface-container-lowest">
+<span class="material-symbols-outlined text-[10px] text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-error-container border-4 border-primary-container flex items-center justify-center shadow-md animate-pulse">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<span class="font-caption text-caption text-primary font-bold">Th</span>
+</div>
+<!-- Day 5 (Future) -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-surface-container-highest border-2 border-outline-variant border-dashed flex items-center justify-center">
+<div class="w-4 h-4 rounded-full bg-surface-variant"></div>
+</div>
+<span class="font-caption text-caption text-outline">F</span>
+</div>
+<!-- Day 6 (Future) -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-surface-container-highest border-2 border-outline-variant border-dashed flex items-center justify-center">
+<div class="w-4 h-4 rounded-full bg-surface-variant"></div>
+</div>
+<span class="font-caption text-caption text-outline">S</span>
+</div>
+<!-- Day 7 (Future) -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-surface-container-highest border-2 border-outline-variant border-dashed flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">redeem</span>
+</div>
+<span class="font-caption text-caption text-outline">S</span>
+</div>
+</div>
+</section>
+<!-- Badges Grid -->
+<section>
+<h2 class="font-headline-md text-headline-md-mobile text-on-surface mb-stack-md text-center">My Badges</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-stack-md">
+<!-- Earned Badge 1 -->
+<div class="flex flex-col items-center text-center group cursor-pointer">
+<div class="w-24 h-24 rounded-full bg-secondary-container border-4 border-secondary flex items-center justify-center shadow-[0_4px_0_0_#735c00] mb-2 group-hover:-translate-y-1 group-active:translate-y-1 group-active:shadow-none transition-all duration-100 relative overflow-hidden">
+<div class="absolute top-1 left-2 w-10 h-3 bg-white opacity-40 rounded-full rotate-[-45deg] z-10"></div>
+<span class="material-symbols-outlined text-5xl text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">campaign</span>
+</div>
+<h3 class="font-label-bold text-label-bold text-on-surface">First Words</h3>
+<p class="font-caption text-caption text-on-surface-variant">Learned 10 words</p>
+</div>
+<!-- Earned Badge 2 -->
+<div class="flex flex-col items-center text-center group cursor-pointer">
+<div class="w-24 h-24 rounded-full bg-tertiary-container border-4 border-tertiary flex items-center justify-center shadow-[0_4px_0_0_#286b33] mb-2 group-hover:-translate-y-1 group-active:translate-y-1 group-active:shadow-none transition-all duration-100 relative overflow-hidden">
+<div class="absolute top-1 left-2 w-10 h-3 bg-white opacity-40 rounded-full rotate-[-45deg] z-10"></div>
+<span class="material-symbols-outlined text-5xl text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">school</span>
+</div>
+<h3 class="font-label-bold text-label-bold text-on-surface">Smarty Pants</h3>
+<p class="font-caption text-caption text-on-surface-variant">Perfect Quiz</p>
+</div>
+<!-- Earned Badge 3 -->
+<div class="flex flex-col items-center text-center group cursor-pointer">
+<div class="w-24 h-24 rounded-full bg-primary-fixed border-4 border-primary flex items-center justify-center shadow-[0_4px_0_0_#00668a] mb-2 group-hover:-translate-y-1 group-active:translate-y-1 group-active:shadow-none transition-all duration-100 relative overflow-hidden">
+<div class="absolute top-1 left-2 w-10 h-3 bg-white opacity-40 rounded-full rotate-[-45deg] z-10"></div>
+<span class="material-symbols-outlined text-5xl text-primary" style="font-variation-settings: 'FILL' 1;">pets</span>
+</div>
+<h3 class="font-label-bold text-label-bold text-on-surface">Animal Lover</h3>
+<p class="font-caption text-caption text-on-surface-variant">Completed Animals</p>
+</div>
+<!-- Locked Badge 1 -->
+<div class="flex flex-col items-center text-center opacity-60">
+<div class="w-24 h-24 rounded-full bg-surface-container-highest border-4 border-outline-variant flex items-center justify-center shadow-sm mb-2 relative">
+<span class="material-symbols-outlined text-5xl text-outline">lock</span>
+</div>
+<h3 class="font-label-bold text-label-bold text-on-surface-variant">Bookworm</h3>
+<p class="font-caption text-caption text-outline">Read 5 stories</p>
+</div>
+<!-- Locked Badge 2 -->
+<div class="flex flex-col items-center text-center opacity-60">
+<div class="w-24 h-24 rounded-full bg-surface-container-highest border-4 border-outline-variant flex items-center justify-center shadow-sm mb-2 relative">
+<span class="material-symbols-outlined text-5xl text-outline">lock</span>
+</div>
+<h3 class="font-label-bold text-label-bold text-on-surface-variant">Chatterbox</h3>
+<p class="font-caption text-caption text-outline">Speak for 5 mins</p>
+</div>
+<!-- Locked Badge 3 -->
+<div class="flex flex-col items-center text-center opacity-60">
+<div class="w-24 h-24 rounded-full bg-surface-container-highest border-4 border-outline-variant flex items-center justify-center shadow-sm mb-2 relative">
+<span class="material-symbols-outlined text-5xl text-outline">lock</span>
+</div>
+<h3 class="font-label-bold text-label-bold text-on-surface-variant">Explorer</h3>
+<p class="font-caption text-caption text-outline">Visit 3 cities</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface-container-low md:hidden border-t-4 border-surface-container-highest shadow-[0_-4px_0_0_rgba(0,0,0,0.05)] rounded-t-lg">
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors cursor-pointer active:scale-95 transition-all duration-75">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-bold text-label-bold mt-1 text-xs">Map</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors cursor-pointer active:scale-95 transition-all duration-75">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-bold text-label-bold mt-1 text-xs">Lessons</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors cursor-pointer active:scale-95 transition-all duration-75">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-label-bold text-label-bold mt-1 text-xs">Chat</span>
+</div>
+<!-- Progress is Active -->
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 scale-110 shadow-[0_4px_0_0_#004c69] active:scale-95 transition-all duration-75 cursor-default">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+<span class="font-label-bold text-label-bold mt-1 text-xs">Progress</span>
+</div>
+</nav>
+<script>
+        // Simple JS for Confetti on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('confetti-container');
+            const colors = ['bg-primary-container', 'bg-secondary-container', 'bg-tertiary-container', 'bg-error-container'];
+            
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                confetti.className = `confetti ${randomColor} rounded-sm`;
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.animationDuration = `${Math.random() * 2 + 2}s`;
+                confetti.style.animationDelay = `${Math.random()}s`;
+                
+                container.appendChild(confetti);
+            }
+            
+            // Clean up
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 4000);
+            
+            // Animate XP bar
+            setTimeout(() => {
+                const bar = document.getElementById('xp-bar');
+                if(bar) {
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                         bar.style.width = '70%';
+                    }, 100);
+                }
+            }, 500);
+        });
+    </script>
+</body></html>
