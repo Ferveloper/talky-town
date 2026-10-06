@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 
-import { seedDemo } from "./seed-demo";
+import { verifyDemoData } from "./seed-verification";
 
 const prisma = new PrismaClient();
 
-seedDemo(prisma)
-  .then(() => console.log("TalkyTown demo seed complete."))
+verifyDemoData(prisma)
+  .then((report) => console.log(JSON.stringify(report, null, 2)))
   .catch((error: unknown) => {
     console.error(error);
     process.exitCode = 1;

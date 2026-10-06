@@ -5,16 +5,18 @@
   "type": "commonjs",
   "scripts": {
     "dev": "nest start --watch --preserveWatchOutput",
-    "build": "dotenv -e ../../.env.example -e ../../.env -- prisma generate --schema prisma/schema.prisma && nest build",
+    "build": "dotenv -e ../../.env -e ../../.env.example -- prisma generate --schema prisma/schema.prisma && nest build",
     "start": "node dist/main.js",
     "lint": "eslint . --max-warnings=0",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "db:migrate": "dotenv -e ../../.env.example -e ../../.env -- prisma migrate deploy --schema prisma/schema.prisma",
-    "db:seed": "dotenv -e ../../.env.example -e ../../.env -- tsx prisma/seed.ts",
-    "db:studio": "dotenv -e ../../.env.example -e ../../.env -- prisma studio --schema prisma/schema.prisma"
+    "db:migrate": "dotenv -e ../../.env -e ../../.env.example -- prisma migrate deploy --schema prisma/schema.prisma",
+    "db:migrate:dev": "dotenv -e ../../.env -e ../../.env.example -- prisma migrate dev --schema prisma/schema.prisma",
+    "db:seed": "dotenv -e ../../.env -e ../../.env.example -- tsx prisma/seed.ts",
+    "db:studio": "dotenv -e ../../.env -e ../../.env.example -- prisma studio --schema prisma/schema.prisma"
   },
   "dependencies": {
+    "@talkytown/shared": "workspace:*",
     "@nestjs/common": "^10.4.15",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.4.15",

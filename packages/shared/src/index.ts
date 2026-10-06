@@ -35,7 +35,8 @@ export type MissionSummary = {
   code: string;
   title: string;
   description: string;
-  ageBand: AgeBand;
+  minAge: number;
+  maxAge: number;
   estimatedXp: number;
 };
 
@@ -44,6 +45,30 @@ export type BadgeSummary = {
   title: string;
   description: string;
 };
+
+export type ChildBadgeSummary = {
+  id: string;
+  childProfileId: string;
+  badgeId: string;
+  awardedAt: string;
+  source?: string;
+};
+
+export type VocabularyItemSummary = {
+  id: string;
+  childProfileId: string;
+  language: string;
+  term: string;
+  normalizedTerm: string;
+  practiceCount: number;
+  successfulUseCount: number;
+  firstSeenAt: string;
+  lastPracticedAt: string;
+};
+
+export function normalizeVocabularyTerm(term: string): string {
+  return term.normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase();
+}
 
 export const demoProfiles = [
   {
@@ -88,28 +113,32 @@ export const initialMissions = [
     code: "meet-a-new-friend",
     title: "Meet a New Friend",
     description: "Say hello and practice simple greetings.",
-    ageBand: "5-7",
+    minAge: 5,
+    maxAge: 7,
     estimatedXp: 25,
   },
   {
     code: "animal-adventure",
     title: "Animal Adventure",
     description: "Talk about favorite animals with Luna.",
-    ageBand: "8-10",
+    minAge: 5,
+    maxAge: 10,
     estimatedXp: 30,
   },
   {
     code: "ice-cream-shop",
     title: "Ice Cream Shop",
     description: "Order a treat in English.",
-    ageBand: "8-10",
+    minAge: 8,
+    maxAge: 12,
     estimatedXp: 40,
   },
   {
     code: "space-explorer",
     title: "Space Explorer",
     description: "Answer questions on a safe space trip.",
-    ageBand: "11-12",
+    minAge: 8,
+    maxAge: 12,
     estimatedXp: 50,
   },
 ] satisfies MissionSummary[];
