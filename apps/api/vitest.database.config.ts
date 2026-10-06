@@ -3,7 +3,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["test/**/*.ts"],
-    exclude: ["test/domain-database.spec.ts"],
+    include: ["test/domain-database.spec.ts"],
+    hookTimeout: 60_000,
+    testTimeout: 30_000,
   },
 });

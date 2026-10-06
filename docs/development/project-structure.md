@@ -46,6 +46,15 @@ Responsibilities:
 - Prisma database access.
 - Swagger/OpenAPI.
 
+Database assets live in `apps/api/prisma/`:
+
+- `schema.prisma` and ordered `migrations/` define persistence.
+- `seed.ts` runs transactional `seed-demo.ts` with deterministic `demo-history.ts` fixtures.
+- `verify-seed.ts` runs read-only checks from `seed-verification.ts`.
+- `test/domain-database.spec.ts` and `vitest.database.config.ts` provide opt-in PostgreSQL checks.
+
+Phase 3 adds persistence only; domain CRUD modules belong to the next backend phase.
+
 ## Packages
 
 ### `packages/shared`
@@ -56,6 +65,8 @@ Shared TypeScript contracts:
 - Enums.
 - Domain types.
 - Validation schemas, if shared.
+- Inclusive mission age ranges, badge/vocabulary summaries and English vocabulary normalization.
+- Initial mission/avatar/profile definitions reused by demo database seeding.
 
 ### `packages/ai-core`
 

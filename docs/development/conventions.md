@@ -50,3 +50,19 @@ Update docs when:
 ## Testing
 
 Do not call external AI providers in automated tests. Use mock providers.
+
+Default tests must not require PostgreSQL. Keep actual database tests in the API's
+`vitest.database.config.ts` suite, run with root `pnpm test:db` after migrations.
+Use deterministic fixture dates and IDs; verify seed reruns without increasing XP,
+awards or vocabulary counters. Never reset a developer's existing database implicitly.
+
+## Domain Persistence
+
+- Add migrations after the existing history; do not edit applied SQL.
+- Reuse shared mission definitions and vocabulary normalization instead of copying constants.
+- Normalize vocabulary before using its `(child, language, normalizedTerm)` unique key.
+- Treat XP events and badge awards as facts; cached totals must reconcile with them.
+- Keep ISO timestamp strings at shared transport boundaries; Prisma uses Date values.
+- No LearningProgress aggregate, child personal identifiers, raw audio or provider credentials.
+- Safety metadata uses controlled reason/category/action codes, never raw child snippets.
+- Screen conversation/correction text before persistence when live writes are introduced.

@@ -34,6 +34,8 @@ model ChildProfile {
   updatedAt      DateTime              @updatedAt
   avatar         Avatar?               @relation(fields: [avatarId], references: [id], onDelete: SetNull)
   user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badges         ChildBadge[]
+  vocabulary     VocabularyItem[]
   safetyEvents   SafetyEvent[]
   sessions       ConversationSession[]
   xpEvents       XpEvent[]
@@ -59,7 +61,8 @@ model Mission {
   code        String                @unique
   title       String
   description String
-  ageBand     String
+  minAge      Int
+  maxAge      Int
   xpReward    Int
   sortOrder   Int                   @default(0)
   isActive    Boolean               @default(true)
@@ -69,52 +72,98 @@ model Mission {
 }
 
 model ConversationSession {
-  id             String             @id @default(cuid())
-  childProfileId String
-  avatarId       String?
-  missionId      String?
-  mode           String
-  status         String             @default("active")
-  xpEarned       Int                @default(0)
-  startedAt      DateTime           @default(now())
-  endedAt        DateTime?
-  avatar         Avatar?            @relation(fields: [avatarId], references: [id], onDelete: SetNull)
-  childProfile   ChildProfile       @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
-  mission        Mission?           @relation(fields: [missionId], references: [id], onDelete: SetNull)
-  safetyEvents   SafetyEvent[]
-  turns          ConversationTurn[]
+  id              String             @id @default(cuid())
+  childProfileId  String
+  avatarId        String?
+  missionId       String?
+  mode            String
+  status          String             @default("active")
+  xpEarned        Int                @default(0)
+  missionProgress Int                @default(0)
+  aiProviderType  String?
+  aiModel         String?
+  startedAt       DateTime           @default(now())
+  endedAt         DateTime?
+  avatar          Avatar?            @relation(fields: [avatarId], references: [id], onDelete: SetNull)
+  childProfile    ChildProfile       @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  mission         Mission?           @relation(fields: [missionId], references: [id], onDelete: SetNull)
+  safetyEvents    SafetyEvent[]
+  turns           ConversationTurn[]
+  xpEvents        XpEvent[]
+
+  @@index([childProfileId, startedAt])
 }
 
 model ConversationTurn {
-  id               String              @id @default(cuid())
-  sessionId        String
-  role             String
-  content          String
-  correctionNeeded Boolean             @default(false)
-  xpAwarded        Int                 @default(0)
-  createdAt        DateTime            @default(now())
-  session          ConversationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  id                    String              @id @default(cuid())
+  sessionId             String
+  role                  String
+  content               String
+  correctionNeeded      Boolean             @default(false)
+  correctedContent      String?
+  correctionExplanation String?
+  inputMode             String              @default("text")
+  xpAwarded             Int                 @default(0)
+  createdAt             DateTime            @default(now())
+  session               ConversationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
 }
 
 model Badge {
-  id          String   @id @default(cuid())
-  code        String   @unique
+  id          String       @id @default(cuid())
+  code        String       @unique
   title       String
   description String
   icon        String
   xpRequired  Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  childBadges ChildBadge[]
+}
+
+model ChildBadge {
+  id             String       @id @default(cuid())
+  childProfileId String
+  badgeId        String
+  awardedAt      DateTime     @default(now())
+  source         String?
+  childProfile   ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  badge          Badge        @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([childProfileId, badgeId])
+  @@index([childProfileId])
+}
+
+model VocabularyItem {
+  id                 String       @id @default(cuid())
+  childProfileId     String
+  language           String
+  term               String
+  normalizedTerm     String
+  practiceCount      Int          @default(1)
+  successfulUseCount Int          @default(0)
+  firstSeenAt        DateTime     @default(now())
+  lastPracticedAt    DateTime     @default(now())
+  childProfile       ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([childProfileId, language, normalizedTerm])
+  @@index([childProfileId])
 }
 
 model XpEvent {
-  id             String       @id @default(cuid())
+  id             String               @id @default(cuid())
   childProfileId String
+  sessionId      String?
   amount         Int
   reason         String
   source         String?
-  createdAt      DateTime     @default(now())
-  childProfile   ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  createdAt      DateTime             @default(now())
+  childProfile   ChildProfile         @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  session        ConversationSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@index([sessionId])
+  @@index([childProfileId, createdAt])
 }
 
 model AiProviderConfig {
@@ -137,7 +186,8 @@ model SafetyEvent {
   sessionId      String?
   reason         String
   severity       String               @default("info")
-  inputSnippet   String?
+  category       String
+  action         String
   createdAt      DateTime             @default(now())
   childProfile   ChildProfile?        @relation(fields: [childProfileId], references: [id], onDelete: SetNull)
   session        ConversationSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)

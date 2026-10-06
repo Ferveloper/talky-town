@@ -118,14 +118,19 @@ Edit `.env` if needed.
 ### 5.4 Start PostgreSQL
 
 ```bash
-docker compose up -d postgres
+docker compose up -d --wait postgres
 ```
+
+TalkyTown PostgreSQL listens on `localhost:55432` (container port 5432), leaving
+native Windows PostgreSQL on 5432 untouched. To choose another host port, set
+`POSTGRES_PORT` in `.env` and update the port in `DATABASE_URL` to match.
 
 ### 5.5 Run migrations and seed
 
 ```bash
 pnpm db:migrate
 pnpm db:seed
+pnpm db:verify
 ```
 
 ### 5.6 Start development
@@ -145,22 +150,29 @@ The database scripts load defaults from `.env.example` and override them with `.
 when present, so the first local run works with the included Docker Compose
 PostgreSQL settings.
 
+Existing `.env` files from Phase 2 must update their database URL from port 5432 to
+55432 when using this Compose service. No database reset or volume deletion is needed.
+
 ---
 
 ## 6. Root scripts
 
-| Script            | Purpose                                   |
-| ----------------- | ----------------------------------------- |
-| `pnpm dev`        | Start all development apps                |
-| `pnpm build`      | Build all apps/packages                   |
-| `pnpm test`       | Run all tests                             |
-| `pnpm lint`       | Run linting                               |
-| `pnpm format`     | Format the repository                     |
-| `pnpm db:migrate` | Run Prisma migrations in the API app      |
-| `pnpm db:seed`    | Seed demo data                            |
-| `pnpm db:studio`  | Open Prisma Studio                        |
-| `pnpm typecheck`  | Run TypeScript checks                     |
-| `pnpm e2e`        | Run Playwright tests when E2E specs exist |
+| Script                | Purpose                                       |
+| --------------------- | --------------------------------------------- |
+| `pnpm dev`            | Start all development apps                    |
+| `pnpm build`          | Build all apps/packages                       |
+| `pnpm test`           | Run all tests                                 |
+| `pnpm test:db`        | Verify PostgreSQL constraints and seed reruns |
+| `pnpm lint`           | Run linting                                   |
+| `pnpm format`         | Format the repository                         |
+| `pnpm db:migrate`     | Run Prisma migrations in the API app          |
+| `pnpm db:migrate:dev` | Create/apply a development Prisma migration   |
+| `pnpm db:seed`        | Seed demo data                                |
+| `pnpm db:verify`      | Check demo relationships, counters and XP     |
+| `pnpm db:validate`    | Validate the Prisma schema                    |
+| `pnpm db:studio`      | Open Prisma Studio                            |
+| `pnpm typecheck`      | Run TypeScript checks                         |
+| `pnpm e2e`            | Run Playwright tests when E2E specs exist     |
 
 ---
 
@@ -234,19 +246,27 @@ The final delivery should include:
 
 ## 11. Current phase
 
-Current phase: **Phase 2 — Technical project setup**
+Current phase: **Phase 3 - Domain Model and Database Consolidation**
 
 Expected outcome:
 
-- Professional monorepo structure.
-- Next.js frontend initialized.
-- NestJS backend initialized.
-- PostgreSQL configured with Docker Compose.
-- Prisma configured.
-- Shared packages created.
-- Root scripts working.
-- Initial documentation committed.
-- First internal tag: `v0.1-setup`.
+- Phase 2 monorepo and initial migration preserved.
+- Explicit child badge awards and practiced vocabulary.
+- Mission age eligibility using inclusive minAge/maxAge.
+- Conversation history with corrections, provider metadata and session-linked XP.
+- Privacy-aware safety metadata with no raw input snippets or API secrets.
+- Deterministic idempotent seed and database verification.
+- Learning progress derived from domain records, not a duplicated aggregate.
+
+See [domain model](docs/architecture/domain-model.md),
+[Phase 3 checklist](docs/development/phase3-domain-model-checklist.md) and
+[local development](docs/setup/local-development.md).
+
+The demo seed includes Sofia (age 9, 120 XP), Leo (age 6, 35 XP), Luna, Max,
+four missions and five badge definitions, plus four sessions, 22 turns, 14 XP
+events, four badge awards and six vocabulary items. Historical practice dates are
+fixed in May 2026; streak values describe the last demo practice date, not today.
+No new frontend screens, CRUD APIs or real AI calls are introduced in this phase.
 
 ---
 
