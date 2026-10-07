@@ -21,7 +21,7 @@ Always preserve these principles:
 - The MVP must work without paid AI keys through a mock provider.
 - Never ask children for personal data.
 - Use aliases, not real names, in demo data.
-- Always provide fallback if AI, voice or provider configuration fails.
+- Provide safe error/retry guidance when AI or provider configuration fails, and graceful voice fallbacks.
 - Gamification should support learning, not distract from it.
 - Avoid dark, corporate or dense user interfaces.
 - Prefer clear flows and small iterations over large unfinished features.
@@ -135,7 +135,7 @@ progress
 
 The AI layer must be provider-agnostic.
 
-Initial provider types:
+Supported provider types (Phase 5):
 
 - `mock`
 - `openai-compatible-cloud`
@@ -149,27 +149,32 @@ The mock provider must be good enough for:
 - Automated tests
 - TFM evaluation without API keys
 
-Responses should eventually support a structured format similar to:
+Use the existing `AiConversationResponse`, inferred from `aiConversationResponseSchema`
+in `packages/ai-core/src/ai-response.schema.ts` and exported by `@talkytown/ai-core`.
+Do not define a second provider response contract. Its strict schema contains only:
 
-```ts
-type ConversationResponse = {
-  reply: string;
-  correction?: {
-    needed: boolean;
-    original?: string;
-    corrected?: string;
-    explanation?: string;
-  };
-  xp: number;
-  newVocabulary: string[];
-  missionProgress?: number;
-  avatarEmotion: "happy" | "thinking" | "celebrating" | "encouraging";
-  safety: {
-    flagged: boolean;
-    reason?: string;
-  };
-};
-```
+- `reply`: trimmed conversational text, 1–2000 characters.
+- Optional `correction`: `{ needed: false }`, or `needed: true` with required `corrected`
+  and optional `original`/`explanation`. False rejects these extra fields; supplied
+  `original` must exactly match the screened current child message.
+- `newVocabulary`: vocabulary suggestions, not persistence instructions.
+- `avatarEmotion`: `happy | thinking | celebrating | encouraging`.
+- `safety`: `{ flagged: false }`, or `flagged: true` with required `reason`:
+  `personal-data-request | unsuitable-topic | instruction-override | other`.
+  False rejects `reason`.
+
+Architectural rules:
+
+- AI providers never decide XP, award badges, decide mission progress or make persistence decisions.
+- XP and badges are server-authoritative through `GamificationService`.
+- The backend evaluates mission progress through `MissionEvaluationService`.
+- Application/backend safety enforcement through `SafetyService` remains mandatory,
+  even when a provider returns safety metadata.
+- Mock has its own deterministic local runtime; cloud/local share the OpenAI-compatible runtime.
+- Real-provider failures must never silently fall back to Mock. Mock's local behavior
+  must never conceal failures of a selected cloud/local provider.
+- Provider/model are pinned to `ConversationSession` when it starts. Changing the
+  active provider affects new sessions only.
 
 ---
 

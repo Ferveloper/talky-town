@@ -211,7 +211,7 @@ TalkyTown is designed for children, so the application must follow these princip
 - Redirect unsafe or inappropriate topics.
 - Use age-adapted prompts.
 - Keep corrections friendly and motivational.
-- Provide fallback when AI or voice features fail.
+- Provide safe error/retry guidance for AI failures and graceful voice fallbacks; switching to Mock requires explicit adult selection for new sessions.
 - Keep parent controls separate from the child experience.
 
 ---

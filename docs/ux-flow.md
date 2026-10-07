@@ -56,7 +56,7 @@ La IA debe sentirse como un personaje conversacional, no como una consola de cha
 
 ### 2.6 Fallback siempre disponible
 
-Si falla voz, IA, proveedor local o permisos de micrófono, el niño debe poder seguir usando el modo texto o el provider mock.
+Si falla voz o los permisos de micrófono, el niño debe poder seguir usando el modo texto. Si falla un proveedor IA, se muestra un error controlado y se permite reintentar. El adulto puede seleccionar explícitamente Mock para nuevas sesiones; las sesiones existentes conservan su proveedor y modelo, sin cambio automático a Mock.
 
 ---
 

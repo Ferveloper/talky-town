@@ -79,7 +79,7 @@ AI provider abstraction:
 - Provider interface.
 - Conversation request/response types.
 - Mock provider.
-- Mock runtime only in Phase 4; OpenAI-compatible adapters remain future work.
+- Mock has its own runtime; cloud/local share the OpenAI-compatible adapter introduced in Phase 5.
 - Safety-related types.
 
 Phase 5 extends ai-core with pedagogical Zod schema/parser, pure prompt composition,
