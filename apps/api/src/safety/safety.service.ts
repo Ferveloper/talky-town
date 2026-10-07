@@ -1,0 +1,26 @@
+import { Injectable } from "@nestjs/common";
+import type { AiConversationResponse } from "@talkytown/ai-core";
+import { screenText, type SafetyDecision } from "./safety-rules";
+@Injectable()
+export class SafetyService {
+  screen(text: string): SafetyDecision {
+    return screenText(text);
+  }
+  screenOutput(output: AiConversationResponse): SafetyDecision {
+    for (const text of [
+      output.reply,
+      output.correction?.original,
+      output.correction?.corrected,
+      output.correction?.explanation,
+      ...output.newVocabulary,
+    ]) {
+      if (text) {
+        const decision = this.screen(text);
+        if (decision.flagged) return decision;
+      }
+    }
+    return output.safety.flagged
+      ? { flagged: true, reason: "provider-safety-flag", category: "provider-output" }
+      : { flagged: false };
+  }
+}

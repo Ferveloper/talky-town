@@ -22,3 +22,7 @@ docs/
 ```
 
 The documentation is part of the Master's Final Project delivery and should be kept updated during development.
+
+Phase 4: [backend contracts](api/phase4-backend-contracts.md),
+[Swagger demo](setup/phase4-demo-walkthrough.md),
+[acceptance checklist](development/phase4-functional-backend-checklist.md).

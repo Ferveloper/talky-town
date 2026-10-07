@@ -2,7 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "incremental": false,
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+      "@talkytown/shared": ["packages/shared/dist/index.d.ts"],
+      "@talkytown/ai-core": ["packages/ai-core/dist/index.d.ts"]
+    }
   },
   "exclude": ["node_modules", "dist", "test", "**/*.spec.ts", "prisma"]
 }

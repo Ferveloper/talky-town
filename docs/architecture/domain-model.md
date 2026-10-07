@@ -1,7 +1,8 @@
 # MVP Domain Model
 
 Phase 3 evolves the Phase 2 schema; it does not introduce CRUD endpoints or connect
-the existing frontend to PostgreSQL. The authoritative schema is
+the existing frontend to PostgreSQL. Phase 4 adds the functional backend while
+preserving that schema and leaving frontend integration deferred. The authoritative schema is
 `apps/api/prisma/schema.prisma` and its ordered migration history.
 
 ## Entities
@@ -96,7 +97,7 @@ The numeric and date checks are explicit PostgreSQL CHECK constraints in the Pha
 migration. Prisma cannot represent these in its schema DSL. Keep them in migration
 history, test them with `pnpm test:db`, and review future migrations for their preservation.
 
-Application-enforced in the next backend phase:
+Application-enforced in Phase 4:
 
 - Child ages must be 5-12; `ageBand` must match age. A child must be eligible before starting a mission.
 - Modes, statuses, turn roles, input modes and provider types use the shared contracts;
@@ -123,8 +124,13 @@ VocabularyItem. There is deliberately no `LearningProgress` table.
 - Missions: completed sessions, `missionId` and `missionProgress`, not a duplicate completion counter.
 - Badges: ChildBadge award records joined to Badge definitions.
 - Vocabulary: observed counters and timestamps, never generated mastery estimates.
-- Level and streak: basic cached profile values. Level thresholds, timezone-aware
-  streak rules and retention/recalculation jobs remain for the gamification phase.
+- Learning proficiency: ChildProfile.level is starter/explorer/hero, exposed as
+  learningLevel. It is not an XP cache or gamification level and never changes from XP.
+- Streak: existing cached streakDays; timezone-aware recalculation remains deferred.
+- Provider selection: adult-scoped AiProviderConfig is authoritative; only Mock runtime
+  is registered. Invalid/unsupported selection fails explicitly, without fallback.
+- Live mission strategy: isolated deterministic three-step engine, 0/33/67/100;
+  completion reward and explicit awards remain server-authoritative.
 
 ## Demo History
 

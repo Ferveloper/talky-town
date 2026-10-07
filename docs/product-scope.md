@@ -99,7 +99,7 @@ Diseño recomendado:
 
 Ejemplo de experiencia:
 
-> El avatar saluda, pregunta el nombre o color favorito, enseña 2 o 3 palabras y premia la participación.
+> El avatar saluda, pregunta por animales o colores favoritos, enseña 2 o 3 palabras y premia la participación, sin pedir nombres ni datos personales.
 
 ### 6.2 Niños de 8 a 10 años
 
@@ -309,7 +309,7 @@ El MVP incluirá las siguientes funcionalidades.
 
 - XP por interacción válida.
 - Bonus por misión completada.
-- Nivel del perfil infantil.
+- Nivel de competencia del perfil infantil (learningLevel), independiente del XP.
 - Racha básica.
 - Insignias iniciales.
 
@@ -823,3 +823,7 @@ Ese documento debe definir:
 - Textos base por franja de edad.
 - Flujo de demo para evaluación.
 - Estados de error y fallback.
+
+## Phase 4 backend boundary
+
+Functional backend is available through Swagger. Frontend screens remain unchanged and mock-driven. Only database-selected Mock executes/activates. Cloud/local activation returns 422 until adapters exist. Runtime JWT_SECRET is explicit. Session avatar comes exclusively from profile. Voice means client-transcribed text. learningLevel is proficiency, never derived from XP. Numeric gamification level and streak recalculation remain future work. See docs/api/phase4-backend-contracts.md.

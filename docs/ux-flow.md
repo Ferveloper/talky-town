@@ -1054,23 +1054,23 @@ Redirigir contenido no adecuado sin generar miedo, castigo o exceso de explicaci
 
 ### 14.1 Eventos de recompensa
 
-| Evento                            | Recompensa            |
-| --------------------------------- | --------------------- |
-| Primer mensaje                    | +5 XP                 |
-| Turno válido                      | +5 XP                 |
-| Uso de palabra nueva              | +5 XP                 |
-| Corrección repetida correctamente | +10 XP                |
-| Misión completada                 | +25 XP                |
-| Primera sesión                    | Badge First Talk      |
-| Tema animales completado          | Badge Animal Explorer |
-| 3 días de uso                     | Badge 3 Day Streak    |
+| Evento                            | Recompensa                                   |
+| --------------------------------- | -------------------------------------------- |
+| Primer mensaje válido             | +5 XP, sin bonus extra                       |
+| Turno válido, también corregido   | +5 XP                                        |
+| Uso de palabra nueva              | Registro de práctica, sin bonus XP en Fase 4 |
+| Corrección repetida correctamente | +5 XP como turno válido                      |
+| Misión completada                 | Recompensa del catálogo: 25/30/40/50 XP      |
+| Primer turno válido               | Badge First Talk                             |
+| Tema animales completado          | Badge Animal Explorer                        |
+| 3 días de uso                     | Badge histórico; cálculo de racha pendiente  |
 
 ### 14.2 Momentos de celebración
 
 - Al finalizar sesión.
 - Al completar misión.
 - Al desbloquear badge.
-- Al subir nivel.
+- El nivel de competencia no sube por XP; nivel numérico de gamificación fuera de Fase 4.
 
 ### 14.3 Criterios UX
 
@@ -1111,8 +1111,7 @@ Redirigir contenido no adecuado sin generar miedo, castigo o exceso de explicaci
 Objetivo:
 
 - Saludar.
-- Decir nombre o alias.
-- Decir edad opcionalmente sin almacenar como dato conversacional.
+- Expresar un gusto sobre un tema seguro, sin pedir nombre ni edad.
 - Decir un gusto simple.
 
 Edad:
@@ -1363,3 +1362,7 @@ El siguiente paso recomendado es crear los wireframes de las pantallas de priori
 4. Selector de perfil infantil.
 
 Una vez validadas esas pantallas, se podrán diseñar el resto y pasar a la Fase 2: setup técnico del proyecto.
+
+## Phase 4 implementation boundary
+
+Backend demonstration uses Swagger; frontend integration is deferred. MissionEvaluationService advances deterministic objectives through 0/33/67/100, not adaptive assessment. ChildProfile.level maps to learningLevel proficiency and never changes from XP. Streak is cached; numeric XP level remains future work. Session avatar uses profile selection only. Cloud/local activation fails explicitly without substitution.

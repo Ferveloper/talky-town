@@ -12,6 +12,7 @@
 ```bash
 pnpm install
 cp .env.example .env
+# Set JWT_SECRET to a private value of at least 32 characters before runtime startup.
 docker compose up -d --wait postgres
 pnpm db:migrate
 pnpm db:seed
@@ -22,6 +23,15 @@ pnpm dev
 The Prisma scripts load `.env` first, then fill missing values from `.env.example`.
 dotenv-cli keeps the first value, so local configuration takes precedence.
 The example defaults match the included Docker Compose PostgreSQL service.
+
+Runtime requires explicit JWT_SECRET; application never generates one. Generate a
+private value locally using Node crypto.randomBytes(32).toString('hex'), then save
+it in ignored .env. Tests inject their own deterministic secret. Never commit or
+share runtime secrets. Database-selected Mock provider requires no paid AI keys;
+AI_PROVIDER environment variable no longer selects or overrides adult settings.
+
+Use [Phase 4 Swagger walkthrough](phase4-demo-walkthrough.md) for the functional
+backend. Existing frontend screens remain mock-driven and are not API-integrated.
 
 Compose binds PostgreSQL to `127.0.0.1:55432`, forwarding to container port 5432.
 This avoids the native Windows PostgreSQL service on 5432. Host ports 5433/5434

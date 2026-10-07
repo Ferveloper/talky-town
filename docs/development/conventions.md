@@ -66,3 +66,18 @@ awards or vocabulary counters. Never reset a developer's existing database impli
 - No LearningProgress aggregate, child personal identifiers, raw audio or provider credentials.
 - Safety metadata uses controlled reason/category/action codes, never raw child snippets.
 - Screen conversation/correction text before persistence when live writes are introduced.
+
+## Phase 4 Application Rules
+
+- New transport calls proficiency learningLevel; map to Prisma level without XP changes.
+- Adult-scoped database configuration selects provider; environment never overrides it.
+- Only Mock executes/activates; invalid selection fails explicitly without substitution.
+- Use PersistenceIds for every request-linked ID; never hash child messages.
+- Provider calls remain outside DB transactions; openings use deterministic prompts.
+- Revalidate ownership/session/provider snapshots inside short locked persistence transactions.
+- First committed message requestId wins; replay returns safe stored operation/current summary.
+- Persist no unsafe input, correction or raw error log. Validation omits rejected values.
+- voice means client-transcribed text; raw audio/STT remain unsupported.
+- Vitest TypeScript transform emits decorator metadata required by Nest injection/DTOs.
+- Prettier accepts checkout-native line endings (endOfLine auto); this avoids
+  rewriting unchanged CRLF frontend/seed files on Windows. Git retains its existing normalization.

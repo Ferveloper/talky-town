@@ -15,8 +15,10 @@ owned by the domain and could drift after retries or partial updates.
 Do not add a LearningProgress Prisma model in the MVP. Build progress queries from
 ChildProfile, ConversationSession, XpEvent, ChildBadge and VocabularyItem.
 XpEvent is the XP source of truth; awards and vocabulary have explicit persistent
-records. Keep the existing ChildProfile `level`, `xpTotal`, `streakDays` and session
-`xpEarned` as basic/rebuildable cached values, not another progress table.
+records. Keep ChildProfile `xpTotal`, `streakDays` and session `xpEarned` as
+basic/rebuildable cached values, not another progress table. Phase 4 clarifies
+that ChildProfile `level` is learner proficiency, exposed as `learningLevel`;
+it is not an XP-derived cache and must never be recalculated from XP.
 
 ## Consequences
 
@@ -24,7 +26,8 @@ records. Keep the existing ChildProfile `level`, `xpTotal`, `streakDays` and ses
 - XP writes must update ledger and cached totals transactionally and be idempotent.
 - Read services must aggregate and authorize child-owned records; no CRUD/dashboard
   API is implemented in this phase.
-- Reward thresholds and timezone-aware streak calculation remain separate future work.
+- Numeric gamification levels and timezone-aware streak calculation remain future work.
+  Phase 4 implements server-owned practice/completion rewards and basic explicit badges.
 - If measured query cost eventually warrants a read projection, document its owner,
   refresh rules and rebuild process in a new ADR before adding it.
 

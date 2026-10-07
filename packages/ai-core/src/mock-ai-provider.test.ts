@@ -1,46 +1,47 @@
 import { describe, expect, it } from "vitest";
-
 import { MockAiProvider } from "./index";
-
 describe("MockAiProvider", () => {
-  it("returns a deterministic guided mission response with a friendly correction", async () => {
+  it("returns deterministic gentle correction without rewards", async () => {
     const provider = new MockAiProvider();
-
-    const response = await provider.generateConversationReply({
-      profileId: "demo-sofia",
-      ageBand: "8-10",
-      mode: "guided-mission",
-      missionId: "animal-adventure",
+    const input = {
+      ageBand: "8-10" as const,
+      learningLevel: "explorer" as const,
+      mode: "guided-mission" as const,
+      missionPrompt: "Name a different animal.",
       message: "I likes dogs",
-    });
-
-    expect(response.safety.flagged).toBe(false);
+    };
+    const response = await provider.generateConversationReply(input);
+    expect(response).toEqual(await provider.generateConversationReply(input));
     expect(response.correction).toEqual({
       needed: true,
       original: "I likes dogs",
       corrected: "I like dogs",
       explanation: 'Use "like" with "I".',
     });
-    expect(response.xp).toBe(10);
-    expect(response.missionProgress).toBe(25);
-    expect(response.avatarEmotion).toBe("thinking");
+    expect(response.reply).not.toContain(input.message);
+    expect(response).not.toHaveProperty("xp");
+    expect(response).not.toHaveProperty("missionProgress");
   });
-
-  it("redirects personal-data topics without awarding XP", async () => {
-    const provider = new MockAiProvider();
-
-    const response = await provider.generateConversationReply({
-      profileId: "demo-leo",
+  it("defensively redirects personal-data topics", async () => {
+    const response = await new MockAiProvider().generateConversationReply({
       ageBand: "5-7",
+      learningLevel: "starter",
       mode: "free-talk",
       message: "What is your phone number?",
     });
-
-    expect(response.safety).toEqual({
-      flagged: true,
-      reason: "personal-data-request",
+    expect(response.safety.flagged).toBe(true);
+    expect(response.reply).not.toContain("phone");
+  });
+  it("adapts prompt to proficiency while preserving simple young-child correction", async () => {
+    const provider = new MockAiProvider();
+    const response = await provider.generateConversationReply({
+      ageBand: "5-7",
+      learningLevel: "hero",
+      mode: "free-talk",
+      message: "I likes dogs",
     });
-    expect(response.xp).toBe(0);
-    expect(response.reply).toContain("fun and safe");
+    expect(response.correction?.explanation).toBe('Say "I like".');
+    expect(response.reply).toContain("Why do you like");
+    expect((await provider.checkStatus()).available).toBe(true);
   });
 });
