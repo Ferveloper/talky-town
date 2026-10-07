@@ -31,6 +31,9 @@ export function snapshotFingerprint(session: ConversationSnapshot) {
     session.childProfile.level,
     session.childProfile.avatarId,
     session.avatar?.isActive,
+    session.avatar?.updatedAt.toISOString(),
+    session.aiProviderType,
+    session.aiModel,
     session.mission?.updatedAt.toISOString(),
   ]);
 }
@@ -120,13 +123,13 @@ export class ConversationStoreService {
       async (db) => {
         const before = await this.read(userId, sessionId, db);
         await this.ownership.lock(userId, before.childProfileId, db);
-        // Activation locks the same adult row exclusively, preventing selection changes during commit.
+        // Configuration changes lock the same adult. Active selection does not affect this session.
         await db.$queryRaw`SELECT "id" FROM "User" WHERE "id" = ${userId} FOR SHARE`;
         const replay = await this.replay(userId, sessionId, operationId, db);
         if (replay) return replay;
         const session = await this.read(userId, sessionId, db);
         this.assertActive(session);
-        const provider = await this.providers.selected(userId, db);
+        const provider = await this.providers.forSession(userId, session, db);
         if (
           snapshotFingerprint(session) !== prepared.snapshot ||
           providerFingerprint(provider) !== prepared.provider
@@ -187,8 +190,12 @@ export class ConversationStoreService {
               inputMode: input.inputMode,
               xpAwarded: reward.practiceXp,
               correctionNeeded: prepared.output.correction?.needed ?? false,
-              correctedContent: prepared.output.correction?.corrected ?? null,
-              correctionExplanation: prepared.output.correction?.explanation ?? null,
+              correctedContent: prepared.output.correction?.needed
+                ? prepared.output.correction.corrected
+                : null,
+              correctionExplanation: prepared.output.correction?.needed
+                ? (prepared.output.correction.explanation ?? null)
+                : null,
               createdAt: at,
             },
           });

@@ -891,7 +891,7 @@ Permitir que el niño practique oralmente, aunque el backend trabaje internament
 | STT no disponible      | "Hoy usaremos el teclado para jugar."         |
 | TTS no disponible      | "Te muestro la respuesta en pantalla."        |
 | IA tarda demasiado     | "Estoy pensando..."                           |
-| Provider no disponible | "Usaremos el modo demo para seguir jugando."  |
+| Provider no disponible | "Vamos a intentarlo de nuevo."                |
 
 ### 10.4 Regla de MVP
 
@@ -1279,7 +1279,7 @@ Create an AI provider settings screen for TalkyTown. The parent can choose betwe
 | ---------------------- | ------------------------------------------ |
 | Login falla            | "We could not enter. Try demo mode."       |
 | IA falla               | "Luna needs a second. Let's try again."    |
-| Provider no disponible | "Demo mode is ready. We can keep playing." |
+| Provider no disponible | "Let's try again in a moment."             |
 | DB/API falla           | "Something went wrong. Please try again."  |
 | Voz falla              | "You can write your answer instead."       |
 | Safety redirection     | "Let's talk about something safe and fun." |
@@ -1366,3 +1366,12 @@ Una vez validadas esas pantallas, se podrán diseñar el resto y pasar a la Fase
 ## Phase 4 implementation boundary
 
 Backend demonstration uses Swagger; frontend integration is deferred. MissionEvaluationService advances deterministic objectives through 0/33/67/100, not adaptive assessment. ChildProfile.level maps to learningLevel proficiency and never changes from XP. Streak is cached; numeric XP level remains future work. Session avatar uses profile selection only. Cloud/local activation fails explicitly without substitution.
+
+## Phase 5 provider behavior
+
+The adult can configure, test and activate real providers through Swagger; frontend
+screens remain unchanged. Test verifies inference plus the strict pedagogical schema,
+without showing/storing its generated text. Activation checks configuration/key
+presence, not credential validity. Existing sessions retain provider/model; an adult
+may explicitly choose Mock for a new session after a real-provider failure.
+Real failures leave the operation uncommitted for retry. No automatic Mock switch.

@@ -233,7 +233,7 @@ TalkyTown debe demostrar aprovechamiento del máster en varias áreas.
 - Prompts adaptados por edad.
 - Respuestas estructuradas.
 - Abstracción multi-proveedor.
-- Fallback con proveedor mock.
+- Proveedor mock disponible por elección explícita para nuevas sesiones.
 - Guardrails de seguridad infantil.
 
 ### 9.6 DevOps y entrega
@@ -303,7 +303,7 @@ El MVP incluirá las siguientes funcionalidades.
 - Proveedor mock para demo y tests.
 - Proveedor cloud OpenAI-compatible.
 - Proveedor local OpenAI-compatible mediante `baseUrl`, pensado para Ollama o LM Studio.
-- Selección de proveedor desde configuración o variables de entorno.
+- Selección adulta en PostgreSQL; variables de entorno únicamente para claves IA.
 
 #### Gamificación
 
@@ -642,7 +642,7 @@ El sistema debe evitar o redirigir contenido no adecuado.
 
 ### RF-017 Configuración del proveedor
 
-El usuario adulto o el entorno debe poder seleccionar el proveedor activo.
+El usuario adulto selecciona el proveedor activo en PostgreSQL. El entorno no sustituye esa selección.
 
 ### RF-018 Demo reproducible
 
@@ -827,3 +827,13 @@ Ese documento debe definir:
 ## Phase 4 backend boundary
 
 Functional backend is available through Swagger. Frontend screens remain unchanged and mock-driven. Only database-selected Mock executes/activates. Cloud/local activation returns 422 until adapters exist. Runtime JWT_SECRET is explicit. Session avatar comes exclusively from profile. Voice means client-transcribed text. learningLevel is proficiency, never derived from XP. Numeric gamification level and streak recalculation remain future work. See docs/api/phase4-backend-contracts.md.
+
+## Phase 5 provider boundary
+
+Real cloud/local adapters now share Chat Completions execution. Adult-scoped DB
+selection, non-secret URL/model, environment-only keys and administrator destination
+policy govern execution. Provider/model stay fixed for each session. Real failure
+never substitutes Mock; choosing Mock affects new sessions only. Strict pedagogical
+JSON cannot control server rewards or mission evaluation. No frontend/audio/advanced
+AI changes. Final acceptance requires a documented manual real-runtime run; see
+docs/setup/phase5-real-provider-walkthrough.md.

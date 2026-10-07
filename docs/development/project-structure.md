@@ -81,3 +81,11 @@ AI provider abstraction:
 - Mock provider.
 - Mock runtime only in Phase 4; OpenAI-compatible adapters remain future work.
 - Safety-related types.
+
+Phase 5 extends ai-core with pedagogical Zod schema/parser, pure prompt composition,
+provider errors and the shared OpenAI-compatible adapter/transport interface.
+API ai-providers owns runtime registry, configuration/test routes, SSRF URL policy,
+safe fetch and the in-memory limiter. Non-secret server policy lives in
+config/ai-runtime-policy.json. Existing conversations retain orchestration and
+transactions with pinned-session resolution; domain rule owners remain unchanged.
+Tests include local fake HTTP servers and actual PostgreSQL persistence checks.

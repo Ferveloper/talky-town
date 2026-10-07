@@ -3,6 +3,12 @@ import { fail } from "../common/api-error";
 import { missionRules, missionProgressSteps } from "./mission-rules";
 @Injectable()
 export class MissionEvaluationService {
+  context(code: string, currentProgress: number, projectedProgress: number) {
+    return {
+      missionObjective: this.prompt(code, currentProgress),
+      missionPrompt: this.prompt(code, projectedProgress),
+    };
+  }
   private rule(code: string) {
     const rule = missionRules[code];
     if (!rule) fail(422, "MISSION_ENGINE_UNAVAILABLE");

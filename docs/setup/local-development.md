@@ -80,6 +80,20 @@ PostgreSQL must be reachable via `DATABASE_URL`. On Windows, start Docker Deskto
 before running Compose. A sandbox may lack access to Docker's named pipe or Prisma's
 native migration engine; run the same commands in your normal terminal when denied.
 
+## Real AI providers — Phase 5
+
+Mock requires no keys. Configure real URL/model through adult API endpoints, keys
+only in AI_CLOUD_API_KEY/AI_LOCAL_API_KEY. Authorize trusted cloud origins or
+additional local hosts/ports/CIDRs in config/ai-runtime-policy.json and restart API.
+Default policy permits local loopback at 11434/1234, no cloud destination.
+POST /ai-providers/:providerType/test verifies inference/schema, not just connectivity.
+PUT /ai-providers/active does not establish credential validity. Existing sessions
+retain provider/model; close active sessions before changing that provider URL.
+See [real-runtime setup and required manual evidence](phase5-real-provider-walkthrough.md).
+
+The seed preserves existing active selection. Tests explicitly inject test secrets
+and blank real-provider credentials. CI uses local fake HTTP plus PostgreSQL.
+
 ## URLs
 
 - Web: http://localhost:3000

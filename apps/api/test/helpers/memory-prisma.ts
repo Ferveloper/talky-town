@@ -266,6 +266,7 @@ export function memoryPrisma() {
         model,
         {
           findMany,
+          count: async (query: Query = {}) => (await findMany(query)).length,
           findFirst,
           findUnique: findFirst,
           findFirstOrThrow: async (query: Query) => {

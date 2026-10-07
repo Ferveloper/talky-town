@@ -284,7 +284,7 @@ describe("Phase 4 actual PostgreSQL vertical slice", () => {
       },
     );
     try {
-      await message(id, "dog").expect(422).expect({ code: "PROVIDER_NOT_IMPLEMENTED" });
+      await message(id, "dog").expect(422).expect({ code: "PROVIDER_NOT_CONFIGURED" });
       expect(await db.xpEvent.count({ where: { sessionId: id } })).toBe(0);
     } finally {
       await db.aiProviderConfig.updateMany({ where: { userId }, data: { providerType: "mock" } });

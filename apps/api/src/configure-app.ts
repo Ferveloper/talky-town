@@ -28,8 +28,8 @@ export function configureApp(app: INestApplication) {
   app.useGlobalFilters(new ApiExceptionFilter());
   const config = new DocumentBuilder()
     .setTitle("TalkyTown API")
-    .setDescription("Phase 4 Mock-only functional backend.")
-    .setVersion("0.4.0")
+    .setDescription("Phase 5 backend with Mock and real OpenAI-compatible runtimes.")
+    .setVersion("0.5.0")
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

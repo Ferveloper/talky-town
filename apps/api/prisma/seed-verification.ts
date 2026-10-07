@@ -67,7 +67,10 @@ export async function verifyDemoData(prisma: PrismaClient) {
   });
   assert.equal(provider.baseUrl, null);
   assert.equal(provider.model, "talkytown-mock");
-  assert.equal(provider.isActive, true);
+  const activeProviders = await prisma.aiProviderConfig.count({
+    where: { userId: user.id, isActive: true },
+  });
+  assert.equal(activeProviders, 1, "Exactly one adult provider must be active.");
 
   const profiles = [];
   for (const expected of demoProfiles) {

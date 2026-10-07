@@ -81,3 +81,16 @@ awards or vocabulary counters. Never reset a developer's existing database impli
 - Vitest TypeScript transform emits decorator metadata required by Nest injection/DTOs.
 - Prettier accepts checkout-native line endings (endOfLine auto); this avoids
   rewriting unchanged CRLF frontend/seed files on Windows. Git retains its existing normalization.
+
+## Phase 5 Application Rules
+
+- Extend existing providers/orchestration. Cloud/local share one protocol adapter.
+- Native fetch, per-request validated DNS dispatch, no vendor SDK/global dispatcher.
+- DB owns selection/URL/model; environment owns secrets; file owns server policy.
+- Activation checks key presence only; test verifies envelope/parser/same Zod schema.
+- Strict discriminator alternatives reject fields inappropriate to false states.
+- Real malformed output repairs once; errors write nothing and never substitute Mock.
+- Session provider/model stay fixed; only active owned sessions block URL updates.
+- Use the simple per-process limiter; no Redis/persistence/schema expansion.
+- Automated tests use injected transports/local fake servers, never real paid calls.
+- Final Phase 5 acceptance requires separate documented manual live-runtime evidence.

@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted — implemented progressively through Phase 5.
 
 ## Context
 
@@ -24,3 +24,7 @@ Initial providers:
 - Tests can be deterministic.
 - Provider-specific code remains isolated.
 - Conversation logic should not depend directly on a vendor SDK.
+
+Phase 5 uses one cloud/local Chat Completions adapter, injected transport, native
+fetch and strict runtime response validation. See ADR 0009/0010 for safe transport,
+configuration authority and session pinning. Mock/interface remain available.

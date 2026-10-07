@@ -8,6 +8,11 @@ export default defineConfig({
     hookTimeout: 60000,
     testTimeout: 30000,
     fileParallelism: false,
-    env: { JWT_SECRET: "talkytown-deterministic-test-secret-32-characters", NODE_ENV: "test" },
+    env: {
+      JWT_SECRET: "talkytown-deterministic-test-secret-32-characters",
+      NODE_ENV: "test",
+      AI_CLOUD_API_KEY: "",
+      AI_LOCAL_API_KEY: "",
+    },
   },
 });

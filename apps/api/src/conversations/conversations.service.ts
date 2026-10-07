@@ -66,7 +66,7 @@ export class ConversationsService {
         ? this.evaluation.prompt(mission.code, 0)
         : "Hi! What animal do you like?";
       await db.$queryRaw`SELECT "id" FROM "User" WHERE "id" = ${userId} FOR SHARE`;
-      await this.providers.selected(userId, db);
+      const selected = await this.providers.selected(userId, db);
       const at = this.clock.now();
       const session = await db.conversationSession.create({
         data: {
@@ -75,8 +75,8 @@ export class ConversationsService {
           avatarId: profile.avatarId,
           missionId: mission?.id,
           mode: input.mode,
-          aiProviderType: "mock",
-          aiModel: "talkytown-mock",
+          aiProviderType: selected.providerType,
+          aiModel: selected.model,
           startedAt: at,
         },
         include: sessionInclude,
@@ -128,10 +128,10 @@ export class ConversationsService {
       if (replay) return replay;
       const session = await this.store.read(userId, id);
       this.store.assertActive(session);
-      const selected = await this.providers.selected(userId);
+      const selected = await this.providers.forSession(userId, session);
       const decision = this.safety.screen(input.message);
       const history = session.turns
-        .filter((turn) => !this.safety.screen(turn.content).flagged)
+        .filter((turn) => turn.role !== "system" && !this.safety.screen(turn.content).flagged)
         .slice(-20);
       const projected =
         !decision.flagged && session.mission
@@ -149,16 +149,17 @@ export class ConversationsService {
             reply: SAFE_REDIRECTION,
             newVocabulary: [],
             avatarEmotion: "encouraging" as const,
-            safety: { flagged: true },
+            safety: { flagged: true as const, reason: "other" as const },
           }
-        : await this.providers.generate({
+        : await this.providers.generate(userId, selected, {
             ageBand: session.childProfile.ageBand as AgeBand,
             learningLevel: session.childProfile.level as LearningLevel,
             mode: session.mode as PracticeMode,
             message: input.message,
-            missionPrompt: session.mission
-              ? this.evaluation.prompt(session.mission.code, projected)
-              : undefined,
+            avatar: { name: session.avatar!.name, personality: session.avatar!.personality },
+            ...(session.mission
+              ? this.evaluation.context(session.mission.code, session.missionProgress, projected)
+              : {}),
             previousTurns: history.map((turn) => ({
               role: turn.role as "child" | "avatar" | "system",
               content: turn.content,

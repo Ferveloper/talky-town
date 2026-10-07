@@ -1,0 +1,11 @@
+{
+  "cloudOrigins": [],
+  "localHosts": [
+    { "host": "localhost", "ports": [11434, 1234], "addresses": ["127.0.0.1/32", "::1/128"] },
+    { "host": "127.0.0.1", "ports": [11434, 1234], "addresses": ["127.0.0.1/32"] },
+    { "host": "::1", "ports": [11434, 1234], "addresses": ["::1/128"] }
+  ],
+  "cloudTimeoutMs": 30000,
+  "localTimeoutMs": 60000,
+  "responseMaxBytes": 65536
+}
