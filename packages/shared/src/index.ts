@@ -1,5 +1,8 @@
 export type AgeBand = "5-7" | "8-10" | "11-12";
 
+export * from "./api-contracts";
+export * from "./conversation-contracts";
+
 export type LearningLevel = "starter" | "explorer" | "hero";
 
 export type PracticeMode = "free-talk" | "guided-mission";

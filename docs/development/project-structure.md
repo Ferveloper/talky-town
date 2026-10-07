@@ -53,7 +53,11 @@ Database assets live in `apps/api/prisma/`:
 - `verify-seed.ts` runs read-only checks from `seed-verification.ts`.
 - `test/domain-database.spec.ts` and `vitest.database.config.ts` provide opt-in PostgreSQL checks.
 
-Phase 3 adds persistence only; domain CRUD modules belong to the next backend phase.
+Phase 3 added persistence. Phase 4 adds auth, child-profiles, avatars, missions,
+conversations, ai-providers, safety, gamification and progress modules under src.
+Controllers expose transport; application services orchestrate; rule files hold
+deterministic mission/reward/safety/vocabulary policies. common/PersistenceIds
+centralizes idempotency IDs; MissionEvaluationService isolates mission strategy.
 
 ## Packages
 
@@ -75,5 +79,5 @@ AI provider abstraction:
 - Provider interface.
 - Conversation request/response types.
 - Mock provider.
-- OpenAI-compatible adapter.
+- Mock runtime only in Phase 4; OpenAI-compatible adapters remain future work.
 - Safety-related types.

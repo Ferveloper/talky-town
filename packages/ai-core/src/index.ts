@@ -1,133 +1,69 @@
-import type { AgeBand, AvatarEmotion, PracticeMode } from "@talkytown/shared";
-
+import type {
+  AgeBand,
+  AvatarEmotion,
+  LearningLevel,
+  PracticeMode,
+  TurnRole,
+} from "@talkytown/shared";
+export type ConversationMessage = { role: TurnRole; content: string };
 export type ConversationRequest = {
-  profileId: string;
   ageBand: AgeBand;
+  learningLevel: LearningLevel;
   mode: PracticeMode;
   message: string;
-  missionId?: string;
+  missionPrompt?: string;
   previousTurns?: ConversationMessage[];
 };
-
-export type ConversationMessage = {
-  role: "child" | "avatar" | "system";
-  content: string;
-};
-
-export type ConversationResponse = {
+export type AiConversationResponse = {
   reply: string;
-  correction?: {
-    needed: boolean;
-    original?: string;
-    corrected?: string;
-    explanation?: string;
-  };
-  xp: number;
+  correction?: { needed: boolean; original?: string; corrected?: string; explanation?: string };
   newVocabulary: string[];
-  missionProgress?: number;
   avatarEmotion: AvatarEmotion;
-  safety: {
-    flagged: boolean;
-    reason?: string;
-  };
+  safety: { flagged: boolean; reason?: string };
 };
-
-export type AiProviderStatus = {
-  available: boolean;
-  providerId: string;
-  detail?: string;
-};
-
+export type AiProviderStatus = { available: boolean; providerId: string; detail?: string };
 export interface AiProvider {
   id: string;
   name: string;
   checkStatus?(): Promise<AiProviderStatus>;
-  generateConversationReply(input: ConversationRequest): Promise<ConversationResponse>;
+  generateConversationReply(input: ConversationRequest): Promise<AiConversationResponse>;
 }
-
-const unsafePatterns = [
-  /\baddress\b/i,
-  /\bphone\b/i,
-  /\bwhere do you live\b/i,
-  /\bschool name\b/i,
-  /\bfull name\b/i,
-];
-
-function buildCorrection(message: string): NonNullable<ConversationResponse["correction"]> {
-  if (/\bI likes\b/i.test(message)) {
-    return {
-      needed: true,
-      original: message,
-      corrected: message.replace(/\bI likes\b/i, "I like"),
-      explanation: 'Use "like" with "I".',
-    };
-  }
-
-  return {
-    needed: false,
-  };
-}
-
-function buildReply(input: ConversationRequest): string {
-  if (input.mode === "guided-mission") {
-    return `Great mission answer. You said: "${input.message}". What can you add next?`;
-  }
-
-  if (input.ageBand === "5-7") {
-    return `Great job. You said: "${input.message}".`;
-  }
-
-  return `Nice answer. You said: "${input.message}". Let's keep practicing in English.`;
-}
-
 export class MockAiProvider implements AiProvider {
   id = "mock";
   name = "Mock Provider";
-
   async checkStatus(): Promise<AiProviderStatus> {
-    return {
-      available: true,
-      providerId: this.id,
-      detail: "Mock provider is ready and does not require API keys.",
-    };
+    return { available: true, providerId: this.id, detail: "Mock requires no API keys." };
   }
-
-  async generateConversationReply(input: ConversationRequest): Promise<ConversationResponse> {
-    const safetyHit = unsafePatterns.find((pattern) => pattern.test(input.message));
-
-    if (safetyHit) {
+  async generateConversationReply(input: ConversationRequest): Promise<AiConversationResponse> {
+    if (/\b(address|phone|full name|school name|where do you live)\b/i.test(input.message)) {
       return {
-        reply: "Let's talk about something fun and safe. How about animals, space or games?",
-        correction: {
-          needed: false,
-        },
-        xp: 0,
+        reply: "Let's talk about something fun and safe.",
         newVocabulary: [],
-        missionProgress: input.mode === "guided-mission" ? 0 : undefined,
         avatarEmotion: "encouraging",
-        safety: {
-          flagged: true,
-          reason: "personal-data-request",
-        },
+        safety: { flagged: true, reason: "personal-data-request" },
       };
     }
-
-    const correction = buildCorrection(input.message);
-
+    const needed = /\bI likes\b/i.test(input.message);
+    const correction = needed
+      ? {
+          needed: true,
+          original: input.message,
+          corrected: input.message.replace(/\bI likes\b/i, "I like"),
+          explanation: input.ageBand === "5-7" ? 'Say "I like".' : 'Use "like" with "I".',
+        }
+      : { needed: false };
+    const prompt =
+      input.missionPrompt ??
+      (input.learningLevel === "hero" ? "Why do you like that topic?" : "What animal do you like?");
     return {
-      reply: buildReply(input),
+      reply: input.ageBand === "5-7" ? `Great job! ${prompt}` : `Nice practice! ${prompt}`,
       correction,
-      xp: correction.needed ? 10 : 5,
-      newVocabulary: input.mode === "guided-mission" ? ["mission", "practice"] : ["practice"],
-      missionProgress: input.mode === "guided-mission" ? 25 : undefined,
-      avatarEmotion: correction.needed ? "thinking" : "encouraging",
-      safety: {
-        flagged: false,
-      },
+      newVocabulary: [],
+      avatarEmotion: needed ? "thinking" : "encouraging",
+      safety: { flagged: false },
     };
   }
 }
-
 export function createMockAiProvider(): AiProvider {
   return new MockAiProvider();
 }

@@ -113,7 +113,9 @@ pnpm install
 cp .env.example .env
 ```
 
-Edit `.env` if needed.
+Set a private `JWT_SECRET` of at least 32 characters in `.env`. Runtime startup
+requires it; no secret is generated automatically. Tests inject a deterministic
+test secret. Other example defaults work with the included Compose database.
 
 ### 5.4 Start PostgreSQL
 
@@ -188,7 +190,10 @@ Initial providers:
 | `openai-compatible-cloud` | Cloud LLM provider                              |
 | `local-openai-compatible` | Ollama / LM Studio using configurable `baseUrl` |
 
-The MVP must work using the mock provider without external API keys.
+Phase 4 executes and activates only Mock, without external API keys. Cloud/local
+types remain future capabilities; activation returns controlled 422 until runtime
+adapters exist. Adult-scoped AiProviderConfig records select the active provider;
+environment configuration never overrides that selection.
 
 ---
 
@@ -246,27 +251,31 @@ The final delivery should include:
 
 ## 11. Current phase
 
-Current phase: **Phase 3 - Domain Model and Database Consolidation**
+Current phase: **Phase 4 - Functional MVP Backend**
 
 Expected outcome:
 
-- Phase 2 monorepo and initial migration preserved.
-- Explicit child badge awards and practiced vocabulary.
-- Mission age eligibility using inclusive minAge/maxAge.
-- Conversation history with corrections, provider metadata and session-linked XP.
-- Privacy-aware safety metadata with no raw input snippets or API secrets.
-- Deterministic idempotent seed and database verification.
-- Learning progress derived from domain records, not a duplicated aggregate.
+- Explicit-secret demo authentication and adult ownership.
+- Child profiles with learningLevel proficiency and selected avatar.
+- Eligible missions, sessions, safe text/transcribed-voice messages and Mock responses.
+- Request-ID idempotency, atomic ledger rewards, vocabulary and basic badges.
+- Deterministic three-step mission progression and ledger-derived progress.
+- Database-authoritative Mock provider selection, explicit unsupported-provider errors.
+- Existing Prisma schema/migrations/seed preserved; frontend screens unchanged.
 
 See [domain model](docs/architecture/domain-model.md),
-[Phase 3 checklist](docs/development/phase3-domain-model-checklist.md) and
+[Phase 4 checklist](docs/development/phase4-functional-backend-checklist.md),
+[backend contracts](docs/api/phase4-backend-contracts.md),
+[Swagger walkthrough](docs/setup/phase4-demo-walkthrough.md) and
 [local development](docs/setup/local-development.md).
 
 The demo seed includes Sofia (age 9, 120 XP), Leo (age 6, 35 XP), Luna, Max,
 four missions and five badge definitions, plus four sessions, 22 turns, 14 XP
 events, four badge awards and six vocabulary items. Historical practice dates are
 fixed in May 2026; streak values describe the last demo practice date, not today.
-No new frontend screens, CRUD APIs or real AI calls are introduced in this phase.
+Phase 4 adds functional backend APIs without frontend integration or real AI calls.
+learningLevel is learner proficiency and never recalculated from XP; cached streak
+recalculation and future numeric gamification levels remain deferred.
 
 ---
 

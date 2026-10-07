@@ -10,6 +10,9 @@ jobs:
   validate:
     name: Validate
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://talkytown:talkytown@localhost:5432/talkytown?schema=public
+      JWT_SECRET: talkytown-ci-test-only-secret-at-least-32-characters
 
     services:
       postgres:
@@ -47,14 +50,21 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Apply existing migrations and seed
+        run: |
+          pnpm db:validate
+          pnpm db:migrate
+          pnpm db:seed
+          pnpm db:verify
+
       - name: Test
         run: pnpm test
-        env:
-          DATABASE_URL: postgresql://talkytown:talkytown@localhost:5432/talkytown?schema=public
-          AI_PROVIDER: mock
+
+      - name: PostgreSQL integration tests
+        run: pnpm test:db
 
       - name: Build
         run: pnpm build
-        env:
-          DATABASE_URL: postgresql://talkytown:talkytown@localhost:5432/talkytown?schema=public
-          AI_PROVIDER: mock
