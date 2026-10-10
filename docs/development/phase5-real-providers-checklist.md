@@ -1,7 +1,7 @@
 # Phase 5 — Real OpenAI-Compatible Providers
 
-Status: implementation and automated acceptance complete. Phase provisionally
-complete; final acceptance requires the documented manual real-runtime run.
+Status: implementation, automated acceptance and mandatory real-runtime checks
+passed. The documented llama.cpp acceptance run was completed on 2026-10-09.
 
 ## Implementation
 
@@ -35,7 +35,7 @@ Executed locally on 2026-10-07, Windows, Node v24.19.0 and pnpm 9.15.0.
 | Compiled API / Swagger                   | Startup passed; health, docs and docs-json returned 200; both new routes present                                     |
 | Compiled HTTP demo                       | Mock test passed; configuration errors controlled; mission 33/67/100, 45 XP, replay deduplicated, unsafe raw omitted |
 | `pnpm dev`                               | Web, API health and Swagger returned 200; watch compiler reported zero errors                                        |
-| Manual real-runtime validation           | Pending; no Ollama/LM Studio installation found and ports 11434/1234 were not listening                              |
+| Manual real-runtime validation           | Pending on 2026-10-07; superseded by the successful 2026-10-09 llama.cpp run below                                   |
 
 The first full build attempt overlapped a PostgreSQL test process and Windows
 locked Prisma's DLL during generation. After the test process exited, the same
@@ -50,6 +50,49 @@ PostgreSQL remains running.
 Existing CI already executes default/database suites on Node 20; its glob picks
 up Phase 5 tests without real provider credentials or Internet inference. No
 remote CI result or local Node 20 execution is claimed.
+
+## Final local acceptance — 2026-10-09
+
+Initial branch: clean `develop`, commit `2e3df04` (`v0.4-ai-providers`). Windows 11
+Pro 10.0.26200, Node v24.19.0, pnpm 9.15.0. All baseline commands were completed
+before real-model inference; default tests and builds were forced past Turbo cache.
+
+| Gate                                                    | Result                                                                                                                                                         |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Install / format / lint / typecheck / Prisma validation | Passed                                                                                                                                                         |
+| Default tests                                           | 140 passed: API 98, ai-core 37, shared 5                                                                                                                       |
+| PostgreSQL / migrations / seed / verification           | Healthy; two existing migrations, none pending; seed fingerprint unchanged                                                                                     |
+| PostgreSQL integration tests                            | 19 passed: Phase 3 five, Phase 4 seven, Phase 5 seven                                                                                                          |
+| Full build / compiled startup / Swagger                 | Four workspaces built; API health/docs/docs-json 200                                                                                                           |
+| Real runtime                                            | Existing llama-server 9354 (`9777256c3`), Qwen3-4B-Instruct-2507 Q4_K_M, Intel Iris Xe Vulkan, KV Q4, context 8192                                             |
+| Real `/test`                                            | 200, available=true, 20,823 ms; real inference/envelope/JSON/Zod; no generated-content return or persistence                                                   |
+| Real mission / progress / metadata                      | 33 → 67 → 100; 45 ledger XP; First Talk/Animal Explorer; dog/cat counters; proficiency hero unchanged; persisted local/original model                          |
+| Correction quality                                      | No correction observed for `I likes dogs`; model returned needed=false; optional quality check recorded honestly                                               |
+| Replay / pinning                                        | No duplicate turns, XP or vocabulary; replay did not infer; existing session kept local/original model after active/default changes; new session selected Mock |
+| URL protection                                          | Active session blocked URL change with 409/count 1; completed/abandoned sessions allowed it                                                                    |
+| Runtime down / retry                                    | 503 PROVIDER_UNAVAILABLE, no domain writes or Mock fallback; same UUID/message succeeded after identical restart                                               |
+| Input / output safety                                   | Live unsafe input bypassed runtime and stored only controlled redirection/event; automated unsafe-output coverage passed                                       |
+| Cleanup                                                 | Own profiles/data removed; original provider configs/selection restored; API/runtime stopped; PostgreSQL healthy; original seed fingerprint verified again     |
+
+**PHASE 5 REAL-PROVIDER ACCEPTANCE: PASS** for the mandatory live checks.
+The [walkthrough](../setup/phase5-real-provider-walkthrough.md) records the exact
+model revision/hash, launch flags, measurements, initial model/environment failures
+and recovery. These are real-model results, separate from the deterministic fake
+server used in automated tests. No production code, tests, schema, migrations,
+seed, CI or frontend changes were required for this validation.
+
+The successful run used the existing server policy and explicit configured JWT
+secret; no local API key or timeout/parser relaxation was introduced. Temporary
+diagnostics, a same-database IPv4 override and downloaded models stayed outside
+Git. The smaller trial models failed response-format compliance; CPU-only 4B
+timed out. The tested Vulkan/KV-Q4 configuration passed. Missing correction quality
+and limited machine memory remain observations for future model selection.
+
+The first final PostgreSQL suite produced a false positive in
+`real-provider.database-spec.ts:244`: its whole-record substring assertion matched
+`612` in a generated session ID, although stored content was safe. An unchanged
+rerun passed all 19 tests. The assertion needs a separately scoped correction;
+this validation did not change or skip tests.
 
 See [contracts](../api/phase5-provider-contracts.md),
 [manual real-runtime gate](../setup/phase5-real-provider-walkthrough.md),
