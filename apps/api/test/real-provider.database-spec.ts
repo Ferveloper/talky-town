@@ -13,6 +13,7 @@ import { PersistenceIds } from "../src/common/persistence-ids.service";
 import { fakeOpenAiServer } from "./helpers/fake-openai-server";
 import { seedDemo } from "../prisma/seed-demo";
 import { verifyDemoData } from "../prisma/seed-verification";
+import { SAFE_REDIRECTION, screenText } from "../src/safety/safety-rules";
 describe("real adapter with actual PostgreSQL", () => {
   let app: INestApplication;
   let db: PrismaService;
@@ -233,18 +234,86 @@ describe("real adapter with actual PostgreSQL", () => {
     spy.mockRestore();
     await message(id, "dog", operation).expect(200);
   });
-  it("never sends/persists unsafe input and awards nothing for unsafe output", async () => {
-    const id = await start();
-    await message(id, "my phone is 612 345 678").expect(200);
-    expect(fake.requests).toHaveLength(0);
-    fake.state.unsafe = true;
-    await message(id, "dog").expect(200);
-    const turns = await db.conversationTurn.findMany({ where: { sessionId: id } });
-    const safety = await db.safetyEvent.findMany({ where: { sessionId: id } });
-    expect(JSON.stringify([turns, safety])).not.toContain("612");
-    expect(turns.every((turn) => turn.role !== "child")).toBe(true);
-    expect(await db.xpEvent.count({ where: { sessionId: id } })).toBe(0);
-  });
+  it.each([false, true])(
+    "never sends/persists unsafe input and awards nothing for unsafe output (ID contains 612: %s)",
+    async (identifierContainsPhonePrefix) => {
+      if (identifierContainsPhonePrefix) {
+        const ids = app.get(PersistenceIds);
+        const original = ids.session.bind(ids);
+        vi.spyOn(ids, "session").mockImplementation((...scope) => original(...scope) + "-612");
+      }
+      const id = await start(true);
+      if (identifierContainsPhonePrefix) expect(id).toContain("612");
+      const blocked = await message(id, "my phone is 612 345 678").expect(200);
+      expect(blocked.body).toMatchObject({
+        childTurn: null,
+        xpAwarded: 0,
+        safety: { flagged: true, reason: "contact-data" },
+        session: { missionProgress: 0 },
+      });
+      expect(blocked.body.avatarTurn.content).toBe(SAFE_REDIRECTION);
+      expect(fake.requests).toHaveLength(0);
+      fake.state.unsafe = true;
+      const discarded = await message(id, "dog").expect(200);
+      expect(discarded.body).toMatchObject({
+        childTurn: null,
+        xpAwarded: 0,
+        safety: { flagged: true, reason: "unsafe-provider-output" },
+        session: { missionProgress: 0 },
+      });
+      expect(discarded.body.avatarTurn.content).toBe(SAFE_REDIRECTION);
+      expect(fake.requests).toHaveLength(1);
+      const turns = await db.conversationTurn.findMany({
+        where: { sessionId: id },
+        orderBy: { createdAt: "asc" },
+        select: { role: true, content: true, correctedContent: true, correctionExplanation: true },
+      });
+      const safety = await db.safetyEvent.findMany({
+        where: { sessionId: id },
+        orderBy: { createdAt: "asc" },
+        select: { category: true, action: true, reason: true, severity: true },
+      });
+      const content = turns.map(({ content, correctedContent, correctionExplanation }) => ({
+        content,
+        correctedContent,
+        correctionExplanation,
+      }));
+      expect(JSON.stringify([content, safety])).not.toContain("612");
+      expect(JSON.stringify(content)).not.toContain("phone");
+      expect(turns).toHaveLength(3);
+      expect(turns.every((turn) => turn.role !== "child")).toBe(true);
+      expect(turns.slice(1).map((turn) => turn.content)).toEqual([
+        SAFE_REDIRECTION,
+        SAFE_REDIRECTION,
+      ]);
+      for (const turn of turns) {
+        expect(turn.correctedContent).toBeNull();
+        expect(turn.correctionExplanation).toBeNull();
+        expect(screenText(turn.content).flagged).toBe(false);
+      }
+      expect(safety).toEqual([
+        {
+          category: "personal-data",
+          action: "redirect",
+          reason: "contact-data",
+          severity: "warning",
+        },
+        {
+          category: "provider-output",
+          action: "redirect",
+          reason: "unsafe-provider-output",
+          severity: "warning",
+        },
+      ]);
+      expect(await db.xpEvent.count({ where: { sessionId: id } })).toBe(0);
+      expect(await db.vocabularyItem.count({ where: { childProfileId: childId } })).toBe(0);
+      expect(await db.childBadge.count({ where: { childProfileId: childId } })).toBe(0);
+      expect(
+        (await db.conversationSession.findUniqueOrThrow({ where: { id } })).missionProgress,
+      ).toBe(0);
+      expect((await db.childProfile.findUniqueOrThrow({ where: { id: childId } })).xpTotal).toBe(0);
+    },
+  );
   it("seed reruns preserve an adult's selected real provider", async () => {
     const previous = process.env.DEMO_USER_EMAIL;
     process.env.DEMO_USER_EMAIL = (

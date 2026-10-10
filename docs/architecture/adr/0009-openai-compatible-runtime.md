@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted — Phase 5. Live-runtime acceptance remains a separate pending gate.
+Accepted — Phase 5. Live-runtime acceptance was pending when this ADR was adopted;
+the [documented llama.cpp validation](../../setup/phase5-real-provider-walkthrough.md#real-runtime-evidence--2026-10-09)
+passed on 2026-10-09. The upcoming PR requires its own successful remote CI run.
 
 ## Decision
 

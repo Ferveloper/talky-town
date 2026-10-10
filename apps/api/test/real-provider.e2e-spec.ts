@@ -163,8 +163,18 @@ describe("complete configured provider HTTP path", () => {
     const response = await message(id, "dog").expect(200);
     expect(response.body.childTurn).toBeNull();
     expect(fixture.rows("xpEvent")).toHaveLength(0);
-    expect(JSON.stringify(fixture.rows("conversationTurn"))).not.toContain("phone");
-    expect(JSON.stringify(fixture.rows("safetyEvent"))).not.toContain("612");
+    const turns = fixture
+      .rows("conversationTurn")
+      .map(({ content, correctedContent, correctionExplanation }) => ({
+        content,
+        correctedContent,
+        correctionExplanation,
+      }));
+    const safety = fixture
+      .rows("safetyEvent")
+      .map(({ category, action, reason, severity }) => ({ category, action, reason, severity }));
+    expect(JSON.stringify(turns)).not.toContain("phone");
+    expect(JSON.stringify([turns, safety])).not.toContain("612");
   });
   it("enforces ownership, rejects credentials and documents new routes", async () => {
     await configure().expect(200);

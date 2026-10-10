@@ -65,6 +65,7 @@ before real-model inference; default tests and builds were forced past Turbo cac
 | PostgreSQL integration tests                            | 19 passed: Phase 3 five, Phase 4 seven, Phase 5 seven                                                                                                          |
 | Full build / compiled startup / Swagger                 | Four workspaces built; API health/docs/docs-json 200                                                                                                           |
 | Real runtime                                            | Existing llama-server 9354 (`9777256c3`), Qwen3-4B-Instruct-2507 Q4_K_M, Intel Iris Xe Vulkan, KV Q4, context 8192                                             |
+| Real runtime configuration                              | `http://127.0.0.1:11434/v1`, model alias `talkytown-local`; exact model revision/hash and launch flags in the walkthrough                                      |
 | Real `/test`                                            | 200, available=true, 20,823 ms; real inference/envelope/JSON/Zod; no generated-content return or persistence                                                   |
 | Real mission / progress / metadata                      | 33 → 67 → 100; 45 ledger XP; First Talk/Animal Explorer; dog/cat counters; proficiency hero unchanged; persisted local/original model                          |
 | Correction quality                                      | No correction observed for `I likes dogs`; model returned needed=false; optional quality check recorded honestly                                               |
@@ -91,13 +92,67 @@ and limited machine memory remain observations for future model selection.
 The first final PostgreSQL suite produced a false positive in
 `real-provider.database-spec.ts:244`: its whole-record substring assertion matched
 `612` in a generated session ID, although stored content was safe. An unchanged
-rerun passed all 19 tests. The assertion needs a separately scoped correction;
-this validation did not change or skip tests.
+rerun passed all 19 tests. At that acceptance run, the assertion remained a
+follow-up; that validation did not change or skip tests. The correction and
+subsequent regression results are recorded below.
 
 See [contracts](../api/phase5-provider-contracts.md),
 [manual real-runtime gate](../setup/phase5-real-provider-walkthrough.md),
 [runtime ADR](../architecture/adr/0009-openai-compatible-runtime.md) and
 [pinning ADR](../architecture/adr/0010-session-provider-pinning.md).
+
+## Final cleanup — 2026-10-10
+
+The safety assertion issue is resolved. It inspected random identifiers as well
+as content. PostgreSQL assertions now select only persisted turn text/correction
+fields and coded safety metadata; HTTP tests project the same fields and exclude
+response identifiers. The same issue existed in Phase 4 database/HTTP safety
+tests and the Phase 5 HTTP safety test; all four affected tests were corrected.
+
+The Phase 5 database safety test now covers ordinary session identifiers and a
+deterministically injected identifier containing `612`, retaining a fresh unique
+request-derived prefix. Both cases verify blocked input, safe redirections, exact
+safety codes, no child turns/corrections, no XP/vocabulary/badges or mission
+advancement, and no inference for blocked input. Unsafe output is also discarded.
+No production behavior changed and no test was quarantined or weakened.
+
+The targeted two-case safety test passed first. The complete Phase 5 database
+file passed three separate executions, 8/8 each, with fresh identifiers. The full
+PostgreSQL suite passed 20/20: Phase 3 five, Phase 4 seven, Phase 5 eight. No tests
+were skipped in these complete runs. Default tests passed 140/140 (API 98,
+ai-core 37, shared 5), with Turbo cache bypassed. Install with frozen lockfile,
+lint, typecheck and Prisma validation passed; both existing migrations were
+already applied. The seed verification fingerprint above remained unchanged
+before and after regression. Repository format checks and the full four-workspace
+build passed, with the build forced past Turbo cache. No database reset or
+unrelated-record cleanup occurred.
+
+The original 2026-10-09 real-model results, latency/memory observations and missing
+grammar correction remain unchanged. No real runtime was restarted, reconfigured
+or invoked, and no model was downloaded during this cleanup.
+
+## Verified historical CI and new-PR gate
+
+- Historical workflow: **CI**, job **Validate**, event `pull_request`, conclusion
+  **success**, completed 2026-10-07. Head SHA:
+  `dd42cbbe426cbde540d9c7f36868d0d1f94a25ba`.
+  [Verified GitHub Actions run](https://github.com/Ferveloper/talky-town/actions/runs/37670073453).
+- The subsequent `develop` merge run, head
+  `2e3df0415676ecee52da7425a660856e198774c8`, **failed** with 18/19 PostgreSQL
+  tests at the same `612` whole-record assertion.
+  [Verified failed merge run](https://github.com/Ferveloper/talky-town/actions/runs/37670094670).
+- GitHub Actions uses Node 20 on Linux; these local checks use Node v24.19.0 and
+  pnpm 9.15.0 on Windows. Historical CI does not validate the new cleanup commit.
+- **New PR/head CI evidence: pending.** Record its actual run URL and head SHA
+  after the new PR is opened. Its head must pass CI before recreating a release tag.
+
+Read-only Git inspection on 2026-10-10 found a clean local Phase 5 branch at
+`2e25151`, based on local `develop` (`052c368`). GitHub still reported `develop`
+at the previous merge `2e3df04` and still exposed remote `v0.4-ai-providers`,
+although that tag was absent locally. At this snapshot the local PR diff includes
+Phase 5, while the merge base with remote `develop` already contains its
+implementation. Reconcile the intended remote base/release state before opening
+the replacement Phase 5 PR. This cleanup does not change Git history or remote refs.
 
 ## Scope and limitations
 

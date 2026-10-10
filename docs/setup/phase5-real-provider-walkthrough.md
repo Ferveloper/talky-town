@@ -188,9 +188,21 @@ The first final database regression reported 18/19 because an existing safety te
 searches `JSON.stringify([turns, safety])` for the phone prefix `612`, including IDs.
 A generated session hash contained that substring; persisted content contained
 only safe avatar prompts/redirections. The unchanged suite then passed 19/19.
-This test assertion is nondeterministic and remains a follow-up: inspect content
-and relevant safety fields rather than random identifiers. No test was changed
-or skipped to obtain acceptance.
+At that run the nondeterministic assertion remained a follow-up. No test was
+changed or skipped to obtain the 2026-10-09 acceptance.
+
+Follow-up — 2026-10-10: resolved after automated regression. The root cause was
+searching randomized identifiers instead of relevant persisted content. Turn
+content/correctedContent/correctionExplanation and SafetyEvent's coded
+category/action/reason/severity are now inspected without IDs. Equivalent database
+and HTTP assertions were corrected. A deterministic session ID containing `612`
+passes while all safety, reward, vocabulary and mission checks remain enforced.
+The targeted safety cases passed, the full Phase 5 database file passed three
+executions (8/8 each), and the complete PostgreSQL suite passed 20/20 with no
+skipped tests. Default tests passed 140/140. The original seed fingerprint was
+verified unchanged. These are offline/fake-runtime regression results; the real
+llama.cpp run above was not repeated. Historical CI and the pending new-head CI
+gate are linked in the [acceptance checklist](../development/phase5-real-providers-checklist.md#verified-historical-ci-and-new-pr-gate).
 
 Model JSON compliance and correction quality are configuration-dependent. The
 observed missing correction is a pedagogical limitation, not a successful
