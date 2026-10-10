@@ -40,7 +40,7 @@ describe("MockAiProvider", () => {
       mode: "free-talk",
       message: "I likes dogs",
     });
-    expect(response.correction?.explanation).toBe('Say "I like".');
+    expect(response.correction?.needed && response.correction.explanation).toBe('Say "I like".');
     expect(response.reply).toContain("Why do you like");
     expect((await provider.checkStatus()).available).toBe(true);
   });

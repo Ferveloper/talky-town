@@ -190,10 +190,14 @@ Initial providers:
 | `openai-compatible-cloud` | Cloud LLM provider                              |
 | `local-openai-compatible` | Ollama / LM Studio using configurable `baseUrl` |
 
-Phase 4 executes and activates only Mock, without external API keys. Cloud/local
-types remain future capabilities; activation returns controlled 422 until runtime
-adapters exist. Adult-scoped AiProviderConfig records select the active provider;
-environment configuration never overrides that selection.
+Phase 5 registers Mock and real cloud/local runtimes sharing one OpenAI-compatible
+Chat Completions adapter. Adult-scoped AiProviderConfig selects the provider and
+stores non-secret URL/model. Environment holds AI_CLOUD_API_KEY and optional
+AI_LOCAL_API_KEY only; server destinations/limits are authorized in
+config/ai-runtime-policy.json. Default policy permits local loopback servers and
+no cloud origin. Configure/test/activate through Swagger; activation checks key
+presence but only test/inference verifies it. Existing sessions retain their
+provider/model. Real failures return controlled errors without Mock substitution.
 
 ---
 
@@ -207,7 +211,7 @@ TalkyTown is designed for children, so the application must follow these princip
 - Redirect unsafe or inappropriate topics.
 - Use age-adapted prompts.
 - Keep corrections friendly and motivational.
-- Provide fallback when AI or voice features fail.
+- Provide safe error/retry guidance for AI failures and graceful voice fallbacks; switching to Mock requires explicit adult selection for new sessions.
 - Keep parent controls separate from the child experience.
 
 ---
@@ -251,7 +255,7 @@ The final delivery should include:
 
 ## 11. Current phase
 
-Current phase: **Phase 4 - Functional MVP Backend**
+Current phase: **Phase 5 - Real OpenAI-Compatible AI Providers**
 
 Expected outcome:
 
@@ -260,7 +264,9 @@ Expected outcome:
 - Eligible missions, sessions, safe text/transcribed-voice messages and Mock responses.
 - Request-ID idempotency, atomic ledger rewards, vocabulary and basic badges.
 - Deterministic three-step mission progression and ledger-derived progress.
-- Database-authoritative Mock provider selection, explicit unsupported-provider errors.
+- Database-authoritative provider configuration/selection and controlled runtime errors.
+- Real cloud/local inference, strict pedagogical JSON validation and safe native fetch.
+- Provider/model pinning, active-session URL protection and deterministic offline tests.
 - Existing Prisma schema/migrations/seed preserved; frontend screens unchanged.
 
 See [domain model](docs/architecture/domain-model.md),
@@ -273,11 +279,18 @@ The demo seed includes Sofia (age 9, 120 XP), Leo (age 6, 35 XP), Luna, Max,
 four missions and five badge definitions, plus four sessions, 22 turns, 14 XP
 events, four badge awards and six vocabulary items. Historical practice dates are
 fixed in May 2026; streak values describe the last demo practice date, not today.
-Phase 4 adds functional backend APIs without frontend integration or real AI calls.
+Phase 4 added functional backend APIs. Phase 5 adds real provider execution while
+frontend integration remains deferred. Automated acceptance is separate from the
+required manual real-runtime validation; do not claim final Phase 5 completion
+until that evidence is recorded.
 learningLevel is learner proficiency and never recalculated from XP; cached streak
 recalculation and future numeric gamification levels remain deferred.
 
 ---
+
+Phase 5: [provider contracts](docs/api/phase5-provider-contracts.md),
+[Ollama/LM Studio/cloud walkthrough and live gate](docs/setup/phase5-real-provider-walkthrough.md),
+[acceptance checklist](docs/development/phase5-real-providers-checklist.md).
 
 ## 12. License
 

@@ -80,11 +80,19 @@ export async function seedDemo(prisma: PrismaClient) {
         await db.badge.upsert({ where: { code: badge.code }, update: badge, create: badge });
       }
 
-      const providerData = { baseUrl: null, model: "talkytown-mock", isActive: true };
+      const providerData = { baseUrl: null, model: "talkytown-mock" };
+      const activeProviders = await db.aiProviderConfig.count({
+        where: { userId: user.id, isActive: true },
+      });
       await db.aiProviderConfig.upsert({
         where: { userId_providerType: { userId: user.id, providerType: "mock" } },
         update: providerData,
-        create: { userId: user.id, providerType: "mock", ...providerData },
+        create: {
+          userId: user.id,
+          providerType: "mock",
+          ...providerData,
+          isActive: activeProviders === 0,
+        },
       });
 
       for (const profile of demoProfiles) {

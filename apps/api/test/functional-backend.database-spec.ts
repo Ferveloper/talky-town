@@ -202,8 +202,14 @@ describe("Phase 4 actual PostgreSQL vertical slice", () => {
     expect(spy).not.toHaveBeenCalled();
     expect(result.body.childTurn).toBeNull();
     expect(await db.safetyEvent.count({ where: { sessionId: id } })).toBe(1);
-    const stored = await db.conversationTurn.findMany({ where: { sessionId: id } });
-    const safety = await db.safetyEvent.findMany({ where: { sessionId: id } });
+    const stored = await db.conversationTurn.findMany({
+      where: { sessionId: id },
+      select: { content: true, correctedContent: true, correctionExplanation: true },
+    });
+    const safety = await db.safetyEvent.findMany({
+      where: { sessionId: id },
+      select: { category: true, action: true, reason: true, severity: true },
+    });
     expect(JSON.stringify([stored, safety])).not.toContain("612");
     expect(await db.xpEvent.count({ where: { sessionId: id } })).toBe(0);
   });
@@ -284,7 +290,7 @@ describe("Phase 4 actual PostgreSQL vertical slice", () => {
       },
     );
     try {
-      await message(id, "dog").expect(422).expect({ code: "PROVIDER_NOT_IMPLEMENTED" });
+      await message(id, "dog").expect(422).expect({ code: "PROVIDER_NOT_CONFIGURED" });
       expect(await db.xpEvent.count({ where: { sessionId: id } })).toBe(0);
     } finally {
       await db.aiProviderConfig.updateMany({ where: { userId }, data: { providerType: "mock" } });

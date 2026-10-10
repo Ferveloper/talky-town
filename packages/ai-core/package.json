@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@talkytown/shared": "workspace:*"
+    "@talkytown/shared": "workspace:*",
+    "zod": "^4"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -15,3 +15,10 @@ Adult-scoped AiProviderConfig determines selection. Only Mock runtime registered
 ## Consequences
 
 Safety cannot be disabled. Deterministic English/Spanish patterns have coverage limits; no production certification, historical redaction or retention job claimed. Valid Mock generation failure uses controlled local response; unsafe output earns nothing. Configuration failure never masquerades as Mock execution.
+
+## Phase 5 extension
+
+ADR 0009 adds real runtimes without changing these safety boundaries. Strict Zod
+response parsing precedes SafetyService. Invalid real output may be regenerated
+once; failure writes nothing and never selects Mock. Provider/model are pinned by
+ADR 0010. Safe history alone leaves the process; no aliases/IDs or unsafe input.

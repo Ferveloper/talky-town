@@ -26,3 +26,9 @@ The documentation is part of the Master's Final Project delivery and should be k
 Phase 4: [backend contracts](api/phase4-backend-contracts.md),
 [Swagger demo](setup/phase4-demo-walkthrough.md),
 [acceptance checklist](development/phase4-functional-backend-checklist.md).
+
+Phase 5: [provider contracts](api/phase5-provider-contracts.md),
+[real-runtime walkthrough/live gate](setup/phase5-real-provider-walkthrough.md),
+[acceptance checklist](development/phase5-real-providers-checklist.md),
+[runtime ADR](architecture/adr/0009-openai-compatible-runtime.md),
+[pinning ADR](architecture/adr/0010-session-provider-pinning.md).

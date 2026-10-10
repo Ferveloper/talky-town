@@ -47,14 +47,9 @@ export type ProgressResponse = {
   lastPracticedAt: string | null;
   recentSessions: SessionResponse[];
 };
-export type ProviderCatalogResponse = {
-  activeProvider: AiProviderType;
-  items: {
-    providerType: AiProviderType;
-    executable: boolean;
-    activatable: boolean;
-    active: boolean;
-  }[];
-};
 export type SetActiveProviderRequest = { providerType: AiProviderType };
-export type ApiErrorResponse = { code: string; fields?: { field: string; rules: string[] }[] };
+export type ApiErrorResponse = {
+  code: string;
+  fields?: { field: string; rules: string[] }[];
+  activeSessionCount?: number;
+};

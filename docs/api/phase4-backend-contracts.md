@@ -1,5 +1,9 @@
 # Phase 4 Backend Contracts
 
+Historical Phase 4 baseline. [Phase 5 contracts](phase5-provider-contracts.md)
+extend provider configuration/execution and replace per-message active-selection
+checking with session provider/model pinning. Other Phase 4 domain rules remain.
+
 ## Runtime and authentication
 
 Configure private JWT_SECRET (at least 32 characters) in ignored .env; start PostgreSQL, apply existing migrations/seed, then run pnpm dev. Swagger: http://localhost:3001/docs; OpenAPI: http://localhost:3001/docs-json.

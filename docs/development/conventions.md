@@ -19,7 +19,7 @@ Recommended style:
 
 ```txt
 feat: add child profile module
-fix: handle mock provider fallback
+fix: handle provider timeout
 docs: update local setup instructions
 test: add gamification tests
 refactor: extract provider adapter interface
@@ -65,13 +65,13 @@ awards or vocabulary counters. Never reset a developer's existing database impli
 - Keep ISO timestamp strings at shared transport boundaries; Prisma uses Date values.
 - No LearningProgress aggregate, child personal identifiers, raw audio or provider credentials.
 - Safety metadata uses controlled reason/category/action codes, never raw child snippets.
-- Screen conversation/correction text before persistence when live writes are introduced.
+- Screen conversation/correction text before persistence.
 
-## Phase 4 Application Rules
+## Application Rules
 
 - New transport calls proficiency learningLevel; map to Prisma level without XP changes.
 - Adult-scoped database configuration selects provider; environment never overrides it.
-- Only Mock executes/activates; invalid selection fails explicitly without substitution.
+- Invalid provider selection fails explicitly without substitution.
 - Use PersistenceIds for every request-linked ID; never hash child messages.
 - Provider calls remain outside DB transactions; openings use deterministic prompts.
 - Revalidate ownership/session/provider snapshots inside short locked persistence transactions.
@@ -81,3 +81,29 @@ awards or vocabulary counters. Never reset a developer's existing database impli
 - Vitest TypeScript transform emits decorator metadata required by Nest injection/DTOs.
 - Prettier accepts checkout-native line endings (endOfLine auto); this avoids
   rewriting unchanged CRLF frontend/seed files on Windows. Git retains its existing normalization.
+
+## Phase 5 Application Rules
+
+- Supported types are `mock`, `openai-compatible-cloud` and `local-openai-compatible`.
+  Mock has its own runtime; cloud/local share the OpenAI-compatible runtime architecture.
+  Extend existing providers/orchestration.
+- Native fetch, per-request validated DNS dispatch, no vendor SDK/global dispatcher.
+- `AiProviderConfig` in PostgreSQL is the adult-scoped active-selection authority
+  and stores non-secret URL/model configuration. Environment variables hold secrets
+  and technical runtime settings, never the active user selection. Non-secret URL/SSRF
+  policy lives in `config/ai-runtime-policy.json`; API keys are never stored in PostgreSQL.
+- Cloud/local configuration and execution must obey that policy: cloud HTTPS origins
+  and public addresses; explicit local hosts/ports/CIDRs; validated DNS, no redirects.
+- Activation checks key presence only; test verifies envelope/parser/same Zod schema.
+- Strict discriminator alternatives reject fields inappropriate to false states.
+- Real malformed output repairs once; errors write nothing and never silently fall
+  back to Mock. Mock's deterministic local behavior cannot conceal real-provider failures.
+- Provider/model are pinned per `ConversationSession` at start. Changing the active
+  provider affects new sessions only; only active owned sessions block URL updates.
+- Learning, gamification and domain rules remain independent of provider implementation.
+  Providers return only `AiConversationResponse` pedagogical data; `GamificationService`
+  owns XP/badges, `MissionEvaluationService` evaluates progress, and application services
+  enforce safety and decide persistence even when providers return safety metadata.
+- Use the simple per-process limiter; no Redis/persistence/schema expansion.
+- Automated tests use injected transports/local fake servers, never real paid calls.
+- Final Phase 5 acceptance requires separate documented manual live-runtime evidence.

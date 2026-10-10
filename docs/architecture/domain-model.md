@@ -128,7 +128,8 @@ VocabularyItem. There is deliberately no `LearningProgress` table.
   learningLevel. It is not an XP cache or gamification level and never changes from XP.
 - Streak: existing cached streakDays; timezone-aware recalculation remains deferred.
 - Provider selection: adult-scoped AiProviderConfig is authoritative; only Mock runtime
-  is registered. Invalid/unsupported selection fails explicitly, without fallback.
+  was registered in Phase 4. Phase 5 adds cloud/local execution; invalid selection
+  still fails explicitly, without fallback. Existing session fields pin provider/model.
 - Live mission strategy: isolated deterministic three-step engine, 0/33/67/100;
   completion reward and explicit awards remain server-authoritative.
 
@@ -171,3 +172,13 @@ content is not retroactively screened by this schema migration.
 Review legacy safety `reason` values for raw personal/unsafe text before deploying
 to any non-demo database. No raw audio field or API credential field is introduced.
 Take a backup before applying migrations to any database that matters.
+
+## Phase 5 configuration invariants
+
+No schema/migration changes. AiProviderConfig stores adult non-secret URL/default
+model/active selection. ConversationSession pins provider type and model on creation.
+Changing selection/default model affects new sessions only. Base URL changes are
+blocked solely by active owned sessions of that type; completed/abandoned records
+never block. Message resolution ignores config.isActive and uses the pinned model.
+Keys are environment-only; administrator non-secret network policy lives in a file.
+Seed reruns preserve the adult's selected provider; new demo installs select Mock.

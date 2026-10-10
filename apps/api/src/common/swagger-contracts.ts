@@ -104,18 +104,46 @@ export function attachResponseContracts(document: OpenAPIObject) {
       lastPracticedAt: { ...date, nullable: true },
       recentSessions: array(ref("ApiSession")),
     }),
-    ApiProviders: object({
-      activeProvider: {
-        type: "string",
-        enum: ["mock", "openai-compatible-cloud", "local-openai-compatible"],
+    ApiProviderConfig: object(
+      {
+        providerType: text,
+        baseUrl: { ...text, nullable: true },
+        model: { ...text, nullable: true },
+        active: boolean,
+        configured: boolean,
+        credentialsConfigured: boolean,
+        configurationError: text,
       },
-      items: array(
-        object({ providerType: text, executable: boolean, activatable: boolean, active: boolean }),
-      ),
+      ["providerType", "baseUrl", "model", "active", "configured", "credentialsConfigured"],
+    ),
+    ApiProviderTest: object({
+      providerType: text,
+      model: text,
+      available: { type: "boolean", enum: [true] },
+      latencyMs: integer,
     }),
-    ApiError: object({ code: text, fields: array(object({ field: text, rules: array(text) })) }, [
-      "code",
-    ]),
+    ApiProviders: object(
+      {
+        activeProvider: {
+          type: "string",
+          enum: ["mock", "openai-compatible-cloud", "local-openai-compatible"],
+          nullable: true,
+        },
+        selectionError: text,
+        items: array({
+          allOf: [ref("ApiProviderConfig"), object({ executable: boolean, activatable: boolean })],
+        }),
+      },
+      ["activeProvider", "items"],
+    ),
+    ApiError: object(
+      {
+        code: text,
+        activeSessionCount: integer,
+        fields: array(object({ field: text, rules: array(text) })),
+      },
+      ["code"],
+    ),
   };
   document.components ??= {};
   document.components.schemas = { ...document.components.schemas, ...schemas };
@@ -145,6 +173,8 @@ export function attachResponseContracts(document: OpenAPIObject) {
     ["/child-profiles/{id}/progress", "get", ref("ApiProgress"), "200"],
     ["/ai-providers", "get", ref("ApiProviders"), "200"],
     ["/ai-providers/active", "put", ref("ApiProviders"), "200"],
+    ["/ai-providers/{providerType}/config", "put", ref("ApiProviderConfig"), "200"],
+    ["/ai-providers/{providerType}/test", "post", ref("ApiProviderTest"), "200"],
   ];
   for (const [path, method, schema, status] of routes) {
     const operation = document.paths[path]?.[method];
@@ -158,7 +188,7 @@ export function attachResponseContracts(document: OpenAPIObject) {
         description: "Idempotent session replay",
         content: { "application/json": { schema } },
       };
-    for (const code of ["400", "401", "404", "409", "422", "503"])
+    for (const code of ["400", "401", "404", "409", "422", "429", "502", "503", "504"])
       operation.responses[code] = {
         description: "Controlled error; no raw input",
         content: { "application/json": { schema: ref("ApiError") } },

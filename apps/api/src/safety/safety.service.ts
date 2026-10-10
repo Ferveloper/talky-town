@@ -9,9 +9,9 @@ export class SafetyService {
   screenOutput(output: AiConversationResponse): SafetyDecision {
     for (const text of [
       output.reply,
-      output.correction?.original,
-      output.correction?.corrected,
-      output.correction?.explanation,
+      output.correction?.needed ? output.correction.original : undefined,
+      output.correction?.needed ? output.correction.corrected : undefined,
+      output.correction?.needed ? output.correction.explanation : undefined,
       ...output.newVocabulary,
     ]) {
       if (text) {

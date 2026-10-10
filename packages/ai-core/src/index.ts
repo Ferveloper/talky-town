@@ -1,10 +1,11 @@
-import type {
-  AgeBand,
-  AvatarEmotion,
-  LearningLevel,
-  PracticeMode,
-  TurnRole,
-} from "@talkytown/shared";
+import type { AgeBand, LearningLevel, PracticeMode, TurnRole } from "@talkytown/shared";
+import type { AiConversationResponse } from "./ai-response.schema";
+export * from "./ai-response.schema";
+export * from "./ai-response.parser";
+export * from "./provider-errors";
+export * from "./conversation-prompt";
+export * from "./openai-compatible.transport";
+export * from "./openai-compatible.provider";
 export type ConversationMessage = { role: TurnRole; content: string };
 export type ConversationRequest = {
   ageBand: AgeBand;
@@ -12,14 +13,9 @@ export type ConversationRequest = {
   mode: PracticeMode;
   message: string;
   missionPrompt?: string;
+  missionObjective?: string;
+  avatar?: { name: string; personality: string };
   previousTurns?: ConversationMessage[];
-};
-export type AiConversationResponse = {
-  reply: string;
-  correction?: { needed: boolean; original?: string; corrected?: string; explanation?: string };
-  newVocabulary: string[];
-  avatarEmotion: AvatarEmotion;
-  safety: { flagged: boolean; reason?: string };
 };
 export type AiProviderStatus = { available: boolean; providerId: string; detail?: string };
 export interface AiProvider {
@@ -46,12 +42,12 @@ export class MockAiProvider implements AiProvider {
     const needed = /\bI likes\b/i.test(input.message);
     const correction = needed
       ? {
-          needed: true,
+          needed: true as const,
           original: input.message,
           corrected: input.message.replace(/\bI likes\b/i, "I like"),
           explanation: input.ageBand === "5-7" ? 'Say "I like".' : 'Use "like" with "I".',
         }
-      : { needed: false };
+      : { needed: false as const };
     const prompt =
       input.missionPrompt ??
       (input.learningLevel === "hero" ? "Why do you like that topic?" : "What animal do you like?");

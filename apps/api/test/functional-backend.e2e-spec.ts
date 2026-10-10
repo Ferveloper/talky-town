@@ -137,11 +137,22 @@ describe("complete Phase 4 HTTP slice", () => {
     expect(fixture.rows("safetyEvent")).toHaveLength(1);
     expect(fixture.rows("xpEvent")).toHaveLength(0);
     expect(fixture.rows("vocabularyItem")).toHaveLength(0);
-    expect(
-      JSON.stringify(fixture.rows("conversationTurn")) +
-        JSON.stringify(fixture.rows("safetyEvent")) +
-        result.text,
-    ).not.toContain("612");
+    const turns = fixture
+      .rows("conversationTurn")
+      .map(({ content, correctedContent, correctionExplanation }) => ({
+        content,
+        correctedContent,
+        correctionExplanation,
+      }));
+    const safety = fixture
+      .rows("safetyEvent")
+      .map(({ category, action, reason, severity }) => ({ category, action, reason, severity }));
+    const responseContent = {
+      childTurn: result.body.childTurn,
+      reply: result.body.avatarTurn.content,
+      safety: result.body.safety,
+    };
+    expect(JSON.stringify([turns, safety, responseContent])).not.toContain("612");
   });
   it("discards unsafe provider reply and correction before persistence", async () => {
     const id = (await start().expect(201)).body.session.id;

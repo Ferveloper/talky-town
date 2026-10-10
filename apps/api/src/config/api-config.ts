@@ -1,5 +1,14 @@
 export function validateApiConfig(config: Record<string, unknown>): Record<string, unknown> {
   const secret = config.JWT_SECRET;
+  for (const key of ["AI_CLOUD_API_KEY", "AI_LOCAL_API_KEY"]) {
+    if (
+      config[key] !== undefined &&
+      (typeof config[key] !== "string" ||
+        /[\r\n]/.test(String(config[key])) ||
+        String(config[key]).trim().length > 4096)
+    )
+      throw new Error("Invalid AI credential configuration.");
+  }
   if (typeof secret !== "string" || secret.trim().length < 32) {
     throw new Error("JWT_SECRET must be explicitly configured with at least 32 characters.");
   }
