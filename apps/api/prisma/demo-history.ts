@@ -103,7 +103,10 @@ export const demoBadgeAwards = [
   { alias: "Sofia", badgeCode: "first-talk", awardedAt: new Date("2026-05-16T16:00:30Z") },
   { alias: "Sofia", badgeCode: "animal-explorer", awardedAt: new Date("2026-05-17T16:04:00Z") },
   { alias: "Sofia", badgeCode: "three-day-streak", awardedAt: new Date("2026-05-18T16:04:00Z") },
+  { alias: "Sofia", badgeCode: "kind-corrector", awardedAt: new Date("2026-05-17T16:00:30Z") },
+  { alias: "Sofia", badgeCode: "mission-complete", awardedAt: new Date("2026-05-17T16:04:00Z") },
   { alias: "Leo", badgeCode: "first-talk", awardedAt: new Date("2026-05-18T15:00:30Z") },
+  { alias: "Leo", badgeCode: "mission-complete", awardedAt: new Date("2026-05-18T15:03:00Z") },
 ];
 
 const vocabularyTerms: Record<string, string[]> = {

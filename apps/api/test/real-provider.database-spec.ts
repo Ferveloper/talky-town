@@ -136,7 +136,7 @@ describe("real adapter with actual PostgreSQL", () => {
     });
     expect(await db.conversationTurn.count({ where: { sessionId: id } })).toBe(7);
     expect(await db.xpEvent.count({ where: { sessionId: id } })).toBe(4);
-    expect(await db.childBadge.count({ where: { childProfileId: childId } })).toBe(2);
+    expect(await db.childBadge.count({ where: { childProfileId: childId } })).toBe(4);
     expect((await db.childProfile.findUniqueOrThrow({ where: { id: childId } })).level).toBe(
       "hero",
     );

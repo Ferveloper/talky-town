@@ -23,11 +23,11 @@ describe("Phase 3 PostgreSQL domain", () => {
       profiles: 2,
       avatars: 2,
       missions: 4,
-      badges: 5,
+      badges: 7,
       sessions: 4,
       turns: 22,
       xpEvents: 14,
-      childBadges: 4,
+      childBadges: 7,
       vocabulary: 6,
     });
   });

@@ -842,3 +842,14 @@ never substitutes Mock; choosing Mock affects new sessions only. Strict pedagogi
 JSON cannot control server rewards or mission evaluation. No frontend/audio/advanced
 AI changes. Final acceptance requires a documented manual real-runtime run; see
 docs/setup/phase5-real-provider-walkthrough.md.
+
+## Phase 7 gamification boundary
+
+Backend now provides ledger-derived numeric levels, Madrid calendar streaks,
+seven event-based badges and atomic free-talk completion rewards. Proficiency
+and existing guided mission XP remain unchanged. Kind Corrector records receipt
+of a genuine correction; it does not certify later successful application.
+Canonical catalog initialization is independent of demo seed. Historical repair
+is an explicit administrative dry-run/apply workflow. No frontend or migrations.
+See [Phase 7 contracts](api/phase7-gamification-contracts.md); Phase 8 owns visual
+integration and deduplication of reward celebrations.

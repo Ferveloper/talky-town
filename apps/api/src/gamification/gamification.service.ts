@@ -2,11 +2,61 @@ import { Injectable } from "@nestjs/common";
 import type { Prisma } from "@prisma/client";
 import { normalizeVocabularyTerm } from "@talkytown/shared";
 import { PersistenceIds } from "../common/persistence-ids.service";
-import { practiceXp } from "./gamification-rules";
+import { acceptedPracticeEvents, practiceXp } from "./gamification-rules";
 import { practicedTerms } from "./vocabulary-rules";
+import { synchronizeBadgeCatalog } from "./badge-catalog";
+import { badgeEligibility, type BadgeEligibility } from "./badge-rules";
+import { readBadgeEvidence } from "./badge-evidence";
+import { streakDays } from "./streak-rules";
 @Injectable()
 export class GamificationService {
   constructor(private readonly ids: PersistenceIds) {}
+  async completeFreeTalk(
+    db: Prisma.TransactionClient,
+    childId: string,
+    sessionId: string,
+    at: Date,
+  ) {
+    const events = await db.xpEvent.findMany({ where: { childProfileId: childId, sessionId } });
+    if (acceptedPracticeEvents(events).length < 3) return;
+    await db.xpEvent.create({
+      data: {
+        id: this.ids.completionXp(sessionId),
+        childProfileId: childId,
+        sessionId,
+        amount: 10,
+        reason: "free-talk-completed",
+        source: `end:${sessionId}`,
+        createdAt: at,
+      },
+    });
+    const { evidence } = await readBadgeEvidence(db, childId);
+    await this.refreshCaches(db, childId, sessionId, evidence.practice, at);
+  }
+  private async refreshCaches(
+    db: Prisma.TransactionClient,
+    childId: string,
+    sessionId: string,
+    practice: Parameters<typeof streakDays>[0],
+    at: Date,
+  ) {
+    const total = await db.xpEvent.aggregate({
+      where: { childProfileId: childId },
+      _sum: { amount: true },
+    });
+    const sessionTotal = await db.xpEvent.aggregate({
+      where: { sessionId },
+      _sum: { amount: true },
+    });
+    await db.childProfile.update({
+      where: { id: childId },
+      data: { xpTotal: total._sum.amount ?? 0, streakDays: streakDays(practice, at) },
+    });
+    await db.conversationSession.update({
+      where: { id: sessionId },
+      data: { xpEarned: sessionTotal._sum.amount ?? 0 },
+    });
+  }
   async award(
     db: Prisma.TransactionClient,
     input: {
@@ -19,6 +69,7 @@ export class GamificationService {
       missionCode?: string;
       completionReward: number;
       at: Date;
+      before: BadgeEligibility;
     },
   ) {
     const xp = practiceXp(input.message);
@@ -75,11 +126,15 @@ export class GamificationService {
         },
       });
     }
-    const codes = [
-      ...(xp > 0 ? ["first-talk"] : []),
-      ...(input.completed && input.missionCode === "animal-adventure" ? ["animal-explorer"] : []),
-    ];
+    // Synchronize even fresh non-demo installations; a missing definition must not suppress an award.
+    await synchronizeBadgeCatalog(db);
+    const { evidence } = await readBadgeEvidence(db, input.childId);
+    // Mission termination and the avatar turn are stored one millisecond after the child event.
+    // Evaluate through that operation boundary, including a completion crossing Madrid midnight.
+    const after = badgeEligibility(evidence, new Date(input.at.getTime() + 1));
+    const codes = Object.keys(after).filter((code) => after[code] && !input.before[code]);
     const definitions = await db.badge.findMany({ where: { code: { in: codes } } });
+    if (definitions.length !== codes.length) throw new Error("BADGE_CATALOG_INCOMPLETE");
     for (const badge of definitions)
       await db.childBadge.upsert({
         where: { childProfileId_badgeId: { childProfileId: input.childId, badgeId: badge.id } },
@@ -87,26 +142,11 @@ export class GamificationService {
           childProfileId: input.childId,
           badgeId: badge.id,
           source: input.operationId,
-          awardedAt: input.at,
+          awardedAt: after[badge.code]!,
         },
         update: {},
       });
-    const total = await db.xpEvent.aggregate({
-      where: { childProfileId: input.childId },
-      _sum: { amount: true },
-    });
-    const sessionTotal = await db.xpEvent.aggregate({
-      where: { sessionId: input.sessionId },
-      _sum: { amount: true },
-    });
-    await db.childProfile.update({
-      where: { id: input.childId },
-      data: { xpTotal: total._sum.amount ?? 0 },
-    });
-    await db.conversationSession.update({
-      where: { id: input.sessionId },
-      data: { xpEarned: sessionTotal._sum.amount ?? 0 },
-    });
+    await this.refreshCaches(db, input.childId, input.sessionId, evidence.practice, input.at);
     return { practiceXp: xp, totalXp: xp + reward };
   }
 }

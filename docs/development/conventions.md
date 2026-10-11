@@ -119,3 +119,15 @@ awards or vocabulary counters. Never reset a developer's existing database impli
   keep internal reads, known-ID operations and termination usable.
 - Follow [safety policy](../safety.md) for controlled taxonomy, deterministic support,
   alias remediation and demo limitations. No external moderation or certification claim.
+
+## Phase 7 gamification rules
+
+- Derive totals from XpEvent, levels from 50-XP steps and streaks from Madrid dates.
+- Count positive practice-turn events, not XP divided by five or cached turn values.
+- Persist accepted corrections/session completion before evaluating badge transitions.
+- Reuse catalog synchronization in seed, administration and accepted reward writes.
+- Preserve existing badge timestamp/source with upsert update: {}.
+- Keep completionRewardXp a stable stored total; retries never issue another reward.
+- Reconciliation is administrative, dry-run by default, owner-qualified locks on apply;
+  no XP creation, provider calls, raw-text logging or retroactive completion bonuses.
+- Inject ApplicationClock for deterministic time tests. GET endpoints remain read-only.

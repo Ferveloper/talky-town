@@ -6,9 +6,17 @@ import { ProfileOwnershipService } from "../child-profiles/profile-ownership.ser
 import { PersistenceIds } from "../common/persistence-ids.service";
 import { ApplicationClock } from "../common/application-clock";
 import { fail } from "../common/api-error";
-import { sessionInclude, sessionResponse, turnResponse } from "../common/response-mappers";
+import {
+  sessionInclude,
+  sessionResponse,
+  turnResponse,
+  endSessionResponse,
+} from "../common/response-mappers";
 import { AiProvidersService, providerFingerprint } from "../ai-providers/ai-providers.service";
 import { GamificationService } from "../gamification/gamification.service";
+import { acceptedPracticeEvents, practiceXp } from "../gamification/gamification-rules";
+import { badgeEligibility } from "../gamification/badge-rules";
+import { readBadgeEvidence } from "../gamification/badge-evidence";
 import { practicedTerms } from "../gamification/vocabulary-rules";
 import { MissionEvaluationService } from "../missions/mission-evaluation.service";
 import { controlledSafetyReason } from "../safety/safety-rules";
@@ -155,6 +163,8 @@ export class ConversationStoreService {
             },
           });
         } else {
+          const { evidence } = await readBadgeEvidence(db, session.childProfileId);
+          const beforeEligibility = badgeEligibility(evidence, at);
           const evaluation = session.mission
             ? this.missions.evaluate(
                 session.mission.code,
@@ -166,17 +176,6 @@ export class ConversationStoreService {
                   .map((turn) => turn.content),
               )
             : { progress: 0, completed: false };
-          const reward = await this.gamification.award(db, {
-            childId: session.childProfileId,
-            sessionId,
-            operationId,
-            message: prepared.message,
-            corrected: prepared.output.correction?.needed ?? false,
-            completed: evaluation.completed,
-            missionCode: session.mission?.code,
-            completionReward: session.mission?.xpReward ?? 0,
-            at,
-          });
           await db.conversationTurn.create({
             data: {
               id: this.ids.turn(operationId, "child"),
@@ -184,7 +183,7 @@ export class ConversationStoreService {
               role: "child",
               content: prepared.message,
               inputMode: prepared.inputMode,
-              xpAwarded: reward.practiceXp,
+              xpAwarded: practiceXp(prepared.message),
               correctionNeeded: prepared.output.correction?.needed ?? false,
               correctedContent: prepared.output.correction?.needed
                 ? prepared.output.correction.corrected
@@ -203,6 +202,17 @@ export class ConversationStoreService {
                 ? { status: "completed", endedAt: new Date(at.getTime() + 1) }
                 : {}),
             },
+          });
+          await this.gamification.award(db, {
+            childId: session.childProfileId,
+            sessionId,
+            operationId,
+            message: prepared.message,
+            corrected: prepared.output.correction?.needed ?? false,
+            completed: evaluation.completed,
+            completionReward: session.mission?.xpReward ?? 0,
+            at,
+            before: beforeEligibility,
           });
         }
         await db.conversationTurn.create({
@@ -232,19 +242,22 @@ export class ConversationStoreService {
       const before = await this.read(userId, sessionId, db);
       await this.ownership.lock(userId, before.childProfileId, db);
       const session = await this.read(userId, sessionId, db);
-      if (session.status !== "active") return sessionResponse(session);
-      const complete =
-        session.mode === "free-talk" &&
-        session.turns.some((turn) => turn.role === "child" && turn.xpAwarded > 0);
+      if (session.status !== "active") return endSessionResponse(session);
+      const events = await db.xpEvent.findMany({
+        where: { childProfileId: session.childProfileId, sessionId },
+      });
+      const complete = session.mode === "free-talk" && acceptedPracticeEvents(events).length > 0;
       const endedAt = new Date(
         Math.max(this.clock.now().getTime(), session.turns.at(-1)?.createdAt.getTime() ?? 0),
       );
+      if (complete)
+        await this.gamification.completeFreeTalk(db, session.childProfileId, sessionId, endedAt);
       const updated = await db.conversationSession.update({
         where: { id: sessionId },
         data: { status: complete ? "completed" : "abandoned", endedAt },
         include: sessionInclude,
       });
-      return sessionResponse(updated);
+      return endSessionResponse(updated);
     });
   }
 }

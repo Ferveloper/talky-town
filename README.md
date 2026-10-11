@@ -255,7 +255,7 @@ The final delivery should include:
 
 ## 11. Current phase
 
-Current phase: **Phase 6 - Child Safety and Guardrails**
+Current phase: **Phase 7 - Gamification MVP**
 
 Expected outcome:
 
@@ -269,6 +269,8 @@ Expected outcome:
 - Provider/model pinning, active-session URL protection and deterministic offline tests.
 - Existing Prisma schema/migrations/seed preserved; frontend screens unchanged.
 - Contextual EN/ES guardrails, Spanish distress support and safe historical response boundaries.
+- Derived numeric levels, Madrid streaks, seven event-based badges and stable completion rewards.
+- Independent badge catalog synchronization and dry-run/apply historical reconciliation.
 
 See [safety policy and historical alias recovery](docs/safety.md) and
 [Phase 6 acceptance](docs/development/phase6-child-safety-checklist.md).
@@ -280,15 +282,27 @@ See [domain model](docs/architecture/domain-model.md),
 [local development](docs/setup/local-development.md).
 
 The demo seed includes Sofia (age 9, 120 XP), Leo (age 6, 35 XP), Luna, Max,
-four missions and five badge definitions, plus four sessions, 22 turns, 14 XP
-events, four badge awards and six vocabulary items. Historical practice dates are
-fixed in May 2026; streak values describe the last demo practice date, not today.
+four missions and seven badge definitions, plus four sessions, 22 turns, 14 XP
+events, seven badge awards and six vocabulary items. Historical practice dates are
+fixed in May 2026; current streaks are derived using Europe/Madrid calendar dates.
 Phase 4 added functional backend APIs. Phase 5 adds real provider execution while
 frontend integration remains deferred. Automated acceptance is separate from the
 required manual real-runtime validation; do not claim final Phase 5 completion
 until that evidence is recorded.
-learningLevel is learner proficiency and never recalculated from XP; cached streak
-recalculation and future numeric gamification levels remain deferred.
+learningLevel is learner proficiency and never recalculated from XP. Phase 7 adds
+separate numeric gamification levels, current streaks and seven event-based badges.
+XP remains ledger-authoritative; badges grant no bonus XP. Frontend integration is
+deferred to Phase 8.
+
+Phase 7: [API and badge criteria](docs/api/phase7-gamification-contracts.md),
+[Mock walkthrough and administration](docs/setup/phase7-gamification-walkthrough.md),
+[acceptance checklist](docs/development/phase7-gamification-checklist.md),
+[gamification ADR](docs/architecture/adr/0012-gamification-levels-streaks-and-achievements.md).
+
+Install canonical badge definitions independently of demo data with
+`pnpm gamification:catalog`. Preview historical repairs with
+`pnpm gamification:reconcile`; add `--apply` to persist repairs, optionally scoped
+with `--child-profile-id ID`. Reconciliation never creates XP or invokes AI.
 
 ---
 

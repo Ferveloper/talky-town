@@ -11,13 +11,16 @@ import { CreateChildProfileDto } from "./dto/create-child-profile.dto";
 @Controller("child-profiles")
 export class ChildProfilesController {
   constructor(private readonly profiles: ChildProfilesService) {}
-  @Get() list(@CurrentUser() user: AdultIdentity) {
+  @Get()
+  list(@CurrentUser() user: AdultIdentity) {
     return this.profiles.list(user.id);
   }
-  @Get(":id") get(@CurrentUser() user: AdultIdentity, @Param("id") id: string) {
+  @Get(":id")
+  get(@CurrentUser() user: AdultIdentity, @Param("id") id: string) {
     return this.profiles.get(user.id, id);
   }
-  @Post() create(@CurrentUser() user: AdultIdentity, @Body() body: CreateChildProfileDto) {
+  @Post()
+  create(@CurrentUser() user: AdultIdentity, @Body() body: CreateChildProfileDto) {
     return this.profiles.create(user.id, body);
   }
 }

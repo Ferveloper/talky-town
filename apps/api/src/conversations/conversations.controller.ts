@@ -50,7 +50,9 @@ export class ConversationsController {
   ) {
     return this.conversations.message(user.id, id, input);
   }
-  @Post(":id/end") @HttpCode(200) end(
+  @Post(":id/end")
+  @HttpCode(200)
+  end(
     @CurrentUser() user: AdultIdentity,
     @Param("id") id: string,
     @Body() body?: Record<string, unknown>,

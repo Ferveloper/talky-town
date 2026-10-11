@@ -3,6 +3,7 @@ import type {
   AgeBand,
   AiProviderType,
   ChildProfileResponse,
+  EndSessionResponse,
   InputMode,
   LearningLevel,
   PracticeMode,
@@ -11,17 +12,23 @@ import type {
   TurnResponse,
   TurnRole,
 } from "@talkytown/shared";
+import { levelProgress } from "../gamification/gamification-rules";
+import { streakDays } from "../gamification/streak-rules";
 export const sessionInclude = {
   avatar: true,
   mission: true,
-  xpEvents: { select: { amount: true } },
+  xpEvents: { select: { amount: true, reason: true } },
 } as const;
 export type SessionRecord = Prisma.ConversationSessionGetPayload<{
   include: typeof sessionInclude;
 }>;
-export const profileInclude = { avatar: true, xpEvents: { select: { amount: true } } } as const;
+export const profileInclude = {
+  avatar: true,
+  xpEvents: { select: { amount: true, reason: true, createdAt: true } },
+} as const;
 export type ProfileRecord = Prisma.ChildProfileGetPayload<{ include: typeof profileInclude }>;
-export function profileResponse(profile: ProfileRecord): ChildProfileResponse {
+export function profileResponse(profile: ProfileRecord, asOf: Date): ChildProfileResponse {
+  const xpTotal = profile.xpEvents.reduce((sum, event) => sum + event.amount, 0);
   return {
     id: profile.id,
     alias: profile.alias,
@@ -31,8 +38,9 @@ export function profileResponse(profile: ProfileRecord): ChildProfileResponse {
     targetLanguage: profile.targetLanguage,
     learningLevel: profile.level as LearningLevel,
     avatarCode: profile.avatar?.code ?? null,
-    xpTotal: profile.xpEvents.reduce((sum, event) => sum + event.amount, 0),
-    streakDays: profile.streakDays,
+    xpTotal,
+    gamificationLevel: levelProgress(xpTotal).gamificationLevel,
+    streakDays: streakDays(profile.xpEvents, asOf),
   };
 }
 export function sessionResponse(session: SessionRecord): SessionResponse {
@@ -64,5 +72,15 @@ export function turnResponse(turn: ConversationTurn): TurnResponse {
     },
     xpAwarded: turn.xpAwarded,
     createdAt: turn.createdAt.toISOString(),
+  };
+}
+export function endSessionResponse(session: SessionRecord): EndSessionResponse {
+  return {
+    ...sessionResponse(session),
+    completionRewardXp: session.xpEvents
+      .filter(
+        (event) => event.reason === "mission-completed" || event.reason === "free-talk-completed",
+      )
+      .reduce((sum, event) => sum + event.amount, 0),
   };
 }

@@ -12,8 +12,10 @@ import {
   getDemoVocabulary,
 } from "./demo-history";
 import { demoBadges } from "./seed-demo";
+import { streakDays } from "../src/gamification/streak-rules";
+import { ApplicationClock } from "../src/common/application-clock";
 
-export async function verifyDemoData(prisma: PrismaClient) {
+export async function verifyDemoData(prisma: PrismaClient, asOf = new ApplicationClock().now()) {
   const user = await prisma.user.findUniqueOrThrow({
     where: { email: process.env.DEMO_USER_EMAIL ?? "demo@talkytown.local" },
     select: { id: true, email: true, displayAlias: true, role: true },
@@ -53,7 +55,13 @@ export async function verifyDemoData(prisma: PrismaClient) {
     orderBy: { code: "asc" },
     select: { id: true, code: true, title: true, description: true, icon: true, xpRequired: true },
   });
-  assert.equal(badges.length, 5);
+  assert.equal(badges.length, 7);
+  for (const expected of demoBadges) {
+    const actual = badges.find((badge) => badge.code === expected.code);
+    assert(actual);
+    for (const key of ["title", "description", "icon", "xpRequired"] as const)
+      assert.equal(actual[key], expected[key]);
+  }
   const provider = await prisma.aiProviderConfig.findUniqueOrThrow({
     where: { userId_providerType: { userId: user.id, providerType: "mock" } },
     select: {
@@ -92,7 +100,8 @@ export async function verifyDemoData(prisma: PrismaClient) {
     });
     assert.equal(child.age, expected.age);
     assert.equal(child.avatarId, avatars.find((item) => item.code === expected.avatarCode)?.id);
-    assert.equal(child.streakDays, expected.streakDays);
+    const allXp = await prisma.xpEvent.findMany({ where: { childProfileId: child.id } });
+    assert.equal(child.streakDays, streakDays(allXp, asOf));
     const sessions = await prisma.conversationSession.findMany({
       where: { childProfileId: child.id, id: { startsWith: `demo-${child.id}-` } },
       orderBy: { id: "asc" },
@@ -145,7 +154,16 @@ export async function verifyDemoData(prisma: PrismaClient) {
     }
 
     const awards = await prisma.childBadge.findMany({
-      where: { childProfileId: child.id, source: "demo" },
+      where: {
+        childProfileId: child.id,
+        badge: {
+          code: {
+            in: demoBadgeAwards
+              .filter((item) => item.alias === expected.alias)
+              .map((item) => item.badgeCode),
+          },
+        },
+      },
       orderBy: { badgeId: "asc" },
     });
     const expectedAwards = demoBadgeAwards.filter((item) => item.alias === expected.alias);
@@ -154,7 +172,9 @@ export async function verifyDemoData(prisma: PrismaClient) {
       const badge = badges.find((item) => item.code === expectedAward.badgeCode);
       const award = awards.find((item) => item.badgeId === badge?.id);
       assert(award);
-      assert.equal(award.awardedAt.toISOString(), expectedAward.awardedAt.toISOString());
+      // Seed owns fixture dates only on first creation. Runtime provenance and dates are immutable.
+      if (award.source === "demo")
+        assert.equal(award.awardedAt.toISOString(), expectedAward.awardedAt.toISOString());
     }
     const expectedVocabulary = getDemoVocabulary(child.alias);
     const vocabulary = await prisma.vocabularyItem.findMany({
@@ -181,12 +201,22 @@ export async function verifyDemoData(prisma: PrismaClient) {
     assert.equal(child.xpTotal, xp._sum.amount ?? 0);
     const demoXp = sessions.reduce((sum, session) => sum + session.xpEarned, 0);
     assert.equal(demoXp, expected.xpTotal);
-    profiles.push({ child, sessions, awards, vocabulary });
+    profiles.push({ child: { ...child, streakDays: undefined }, sessions, awards, vocabulary });
   }
 
   const snapshot = { user, avatars, missions, badges, provider, profiles };
   return {
     fingerprint: createHash("sha256").update(JSON.stringify(snapshot)).digest("hex"),
+    awardProvenance: {
+      demo: profiles.reduce(
+        (sum, item) => sum + item.awards.filter((award) => award.source === "demo").length,
+        0,
+      ),
+      preservedNonDemo: profiles.reduce(
+        (sum, item) => sum + item.awards.filter((award) => award.source !== "demo").length,
+        0,
+      ),
+    },
     counts: {
       users: 1,
       profiles: profiles.length,

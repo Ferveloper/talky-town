@@ -10,7 +10,8 @@ import { ProgressService } from "./progress.service";
 @Controller("child-profiles")
 export class ProgressController {
   constructor(private readonly progress: ProgressService) {}
-  @Get(":id/progress") get(@CurrentUser() user: AdultIdentity, @Param("id") id: string) {
+  @Get(":id/progress")
+  get(@CurrentUser() user: AdultIdentity, @Param("id") id: string) {
     return this.progress.get(user.id, id);
   }
 }

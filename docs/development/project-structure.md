@@ -94,3 +94,12 @@ Phase 6 extends existing safety rules/service with pure safety-responses templat
 Conversations use a prepared-operation union and content-bearing response guards.
 Safety unit/HTTP/PostgreSQL suites cover contextual rules and Phase 4/5 invariants;
 policy and administrative alias recovery live in docs/safety.md.
+
+Phase 7 expands gamification with pure level/calendar/badge rules, canonical
+catalog synchronization, persisted evidence linkage and historical reconciliation.
+Existing conversation persistence orchestrates atomic awards and completion XP.
+Response mappers/progress derive values on reads using ApplicationClock.
+`prisma/sync-badge-catalog.ts` and `prisma/reconcile-gamification.ts` expose
+administrative commands. Seed shares the synchronizer and preserves award provenance.
+Shared API contracts include numeric level, progress catalog and EndSessionResponse.
+No Prisma schema/migration or frontend files change.

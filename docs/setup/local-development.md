@@ -76,6 +76,15 @@ catalog/profile `updatedAt` may change. Existing non-demo records are not remove
 The seed updates named demo profiles/catalog rows, so use a local demo database.
 The default unit suite (`pnpm test`) needs neither PostgreSQL nor API keys.
 
+Phase 7 also supports `pnpm gamification:catalog` without demo seeding. Run
+`pnpm gamification:reconcile` to preview historical awards/cache repairs and add
+`--apply` to persist them, optionally with `--child-profile-id ID`. Catalog sync
+and repeated reconciliation preserve existing awards. Seed-owned historical award
+timestamps are checked exactly; runtime awards are preserved and counted separately.
+Current streak caches are rebuilt from all ledger practice using Madrid dates;
+the fingerprint excludes this time-dependent value. See
+[Phase 7 Mock walkthrough and administration](phase7-gamification-walkthrough.md).
+
 PostgreSQL must be reachable via `DATABASE_URL`. On Windows, start Docker Desktop
 before running Compose. A sandbox may lack access to Docker's named pipe or Prisma's
 native migration engine; run the same commands in your normal terminal when denied.

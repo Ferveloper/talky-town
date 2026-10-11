@@ -1,5 +1,8 @@
 import type { PrismaClient } from "@prisma/client";
 import { demoProfiles, initialAvatars, initialMissions } from "@talkytown/shared";
+import { badgeCatalog, synchronizeBadgeCatalog } from "../src/gamification/badge-catalog";
+import { ApplicationClock } from "../src/common/application-clock";
+import { streakDays } from "../src/gamification/streak-rules";
 
 import {
   demoBadgeAwards,
@@ -9,45 +12,9 @@ import {
   getDemoVocabulary,
 } from "./demo-history";
 
-export const demoBadges = [
-  {
-    code: "first-talk",
-    title: "First Talk",
-    description: "Sent the first practice message.",
-    icon: "message-circle",
-    xpRequired: 5,
-  },
-  {
-    code: "animal-explorer",
-    title: "Animal Explorer",
-    description: "Completed an animal mission.",
-    icon: "paw-print",
-    xpRequired: 30,
-  },
-  {
-    code: "kind-corrector",
-    title: "Kind Corrector",
-    description: "Practiced a corrected sentence.",
-    icon: "sparkles",
-    xpRequired: 50,
-  },
-  {
-    code: "three-day-streak",
-    title: "3 Day Streak",
-    description: "Practiced three days in a row.",
-    icon: "flame",
-    xpRequired: 75,
-  },
-  {
-    code: "mission-hero",
-    title: "Mission Hero",
-    description: "Completed several guided missions.",
-    icon: "badge-check",
-    xpRequired: 120,
-  },
-];
+export const demoBadges = badgeCatalog;
 
-export async function seedDemo(prisma: PrismaClient) {
+export async function seedDemo(prisma: PrismaClient, asOf = new ApplicationClock().now()) {
   return prisma.$transaction(
     async (db) => {
       const userData = {
@@ -76,9 +43,7 @@ export async function seedDemo(prisma: PrismaClient) {
         await db.mission.upsert({ where: { code: mission.code }, update: data, create: data });
       }
 
-      for (const badge of demoBadges) {
-        await db.badge.upsert({ where: { code: badge.code }, update: badge, create: badge });
-      }
+      await synchronizeBadgeCatalog(db);
 
       const providerData = { baseUrl: null, model: "talkytown-mock" };
       const activeProviders = await db.aiProviderConfig.count({
@@ -105,7 +70,6 @@ export async function seedDemo(prisma: PrismaClient) {
           targetLanguage: profile.targetLanguage,
           level: profile.level,
           avatarId: avatar.id,
-          streakDays: profile.streakDays,
         };
         const child = await db.childProfile.upsert({
           where: { userId_alias: { userId: user.id, alias: profile.alias } },
@@ -198,7 +162,7 @@ export async function seedDemo(prisma: PrismaClient) {
           const data = { awardedAt: award.awardedAt, source: "demo" };
           await db.childBadge.upsert({
             where: { childProfileId_badgeId: { childProfileId: child.id, badgeId: badge.id } },
-            update: data,
+            update: {},
             create: { childProfileId: child.id, badgeId: badge.id, ...data },
           });
         }
@@ -217,13 +181,15 @@ export async function seedDemo(prisma: PrismaClient) {
           });
         }
 
-        const xp = await db.xpEvent.aggregate({
+        const xp = await db.xpEvent.findMany({
           where: { childProfileId: child.id },
-          _sum: { amount: true },
         });
         await db.childProfile.update({
           where: { id: child.id },
-          data: { xpTotal: xp._sum.amount ?? 0 },
+          data: {
+            xpTotal: xp.reduce((total, event) => total + event.amount, 0),
+            streakDays: streakDays(xp, asOf),
+          },
         });
       }
       return user;
