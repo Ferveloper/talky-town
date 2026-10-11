@@ -9,7 +9,7 @@ import {
   Res,
   UseGuards,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags, ApiOkResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import type { AdultIdentity } from "@talkytown/shared";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -52,22 +52,6 @@ export class ConversationsController {
   }
   @Post(":id/end")
   @HttpCode(200)
-  @ApiOkResponse({
-    description:
-      "SessionResponse plus the stable total completion reward recorded for this session",
-    schema: {
-      type: "object",
-      properties: {
-        completionRewardXp: {
-          type: "integer",
-          minimum: 0,
-          description:
-            "Stored total, never a new-XP delta; repeated end calls return the same reward",
-        },
-      },
-      required: ["completionRewardXp"],
-    },
-  })
   end(
     @CurrentUser() user: AdultIdentity,
     @Param("id") id: string,

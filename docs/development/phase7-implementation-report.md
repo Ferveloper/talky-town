@@ -148,27 +148,27 @@ sessions and one distinct completed mission. Repeated ends remained stable.
 
 44 files: 26 modified and 18 added, including this report. Paths are repository-relative.
 
-| Area                    | Files and purpose                                                                                                                              |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gamification rules      | apps/api/src/gamification/gamification-rules.ts; streak-rules.ts; badge-rules.ts — ledger practice, levels, Madrid calendar and seven criteria |
-| Catalog/evidence        | apps/api/src/gamification/badge-catalog.ts; badge-evidence.ts — independent sync and persisted correction/session linkage                      |
-| Rewards/admin           | apps/api/src/gamification/gamification.service.ts; reconcile-gamification.ts — atomic rewards/caches and historical repair                     |
-| Swagger additions       | apps/api/src/gamification/gamification-openapi.ts                                                                                              |
-| Profiles                | apps/api/src/child-profiles/child-profiles.controller.ts; child-profiles.service.ts — clock-derived fields and documentation                   |
-| Response mappers        | apps/api/src/common/response-mappers.ts — ledger selections, derived profile fields and end total                                              |
-| Conversations           | apps/api/src/conversations/conversation-store.service.ts; conversations.controller.ts — persist evidence first and atomic end semantics        |
-| Progress                | apps/api/src/progress/progress.service.ts; progress.controller.ts — read-only derived progress/catalog and documentation                       |
-| Seed fixtures           | apps/api/prisma/demo-history.ts; seed-demo.ts; seed-verification.ts — historical fixtures, immutable awards and provenance-aware checks        |
-| Administrative CLIs     | apps/api/prisma/sync-badge-catalog.ts; reconcile-gamification.ts                                                                               |
-| New tests               | apps/api/test/gamification-rules.spec.ts; gamification-reconciliation.spec.ts; gamification.e2e-spec.ts; gamification.database-spec.ts         |
-| Existing database tests | apps/api/test/domain-database.spec.ts; functional-backend.database-spec.ts; real-provider.database-spec.ts — updated canonical counts          |
-| Shared transport        | packages/shared/src/api-contracts.ts; conversation-contracts.ts                                                                                |
-| Root commands           | package.json — catalog and reconciliation scripts                                                                                              |
-| Main documentation      | README.md; docs/README.md; docs/product-scope.md; docs/ux-flow.md                                                                              |
-| Architecture            | docs/architecture/domain-model.md; docs/architecture/adr/0012-gamification-levels-streaks-and-achievements.md                                  |
-| Development             | docs/development/conventions.md; project-structure.md; phase7-gamification-checklist.md; phase7-implementation-report.md                       |
-| Setup                   | docs/setup/local-development.md; phase7-gamification-walkthrough.md                                                                            |
-| Design/handoff          | docs/design/design-system.md — documented existing shell and future reward behavior                                                            |
+| Area                      | Files and purpose                                                                                                                              |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Gamification rules        | apps/api/src/gamification/gamification-rules.ts; streak-rules.ts; badge-rules.ts — ledger practice, levels, Madrid calendar and seven criteria |
+| Catalog/evidence          | apps/api/src/gamification/badge-catalog.ts; badge-evidence.ts — independent sync and persisted correction/session linkage                      |
+| Rewards/admin             | apps/api/src/gamification/gamification.service.ts; reconcile-gamification.ts — atomic rewards/caches and historical repair                     |
+| Original Swagger fragment | apps/api/src/gamification/gamification-openapi.ts (superseded by the correction below)                                                         |
+| Profiles                  | apps/api/src/child-profiles/child-profiles.controller.ts; child-profiles.service.ts — clock-derived fields and documentation                   |
+| Response mappers          | apps/api/src/common/response-mappers.ts — ledger selections, derived profile fields and end total                                              |
+| Conversations             | apps/api/src/conversations/conversation-store.service.ts; conversations.controller.ts — persist evidence first and atomic end semantics        |
+| Progress                  | apps/api/src/progress/progress.service.ts; progress.controller.ts — read-only derived progress/catalog and documentation                       |
+| Seed fixtures             | apps/api/prisma/demo-history.ts; seed-demo.ts; seed-verification.ts — historical fixtures, immutable awards and provenance-aware checks        |
+| Administrative CLIs       | apps/api/prisma/sync-badge-catalog.ts; reconcile-gamification.ts                                                                               |
+| New tests                 | apps/api/test/gamification-rules.spec.ts; gamification-reconciliation.spec.ts; gamification.e2e-spec.ts; gamification.database-spec.ts         |
+| Existing database tests   | apps/api/test/domain-database.spec.ts; functional-backend.database-spec.ts; real-provider.database-spec.ts — updated canonical counts          |
+| Shared transport          | packages/shared/src/api-contracts.ts; conversation-contracts.ts                                                                                |
+| Root commands             | package.json — catalog and reconciliation scripts                                                                                              |
+| Main documentation        | README.md; docs/README.md; docs/product-scope.md; docs/ux-flow.md                                                                              |
+| Architecture              | docs/architecture/domain-model.md; docs/architecture/adr/0012-gamification-levels-streaks-and-achievements.md                                  |
+| Development               | docs/development/conventions.md; project-structure.md; phase7-gamification-checklist.md; phase7-implementation-report.md                       |
+| Setup                     | docs/setup/local-development.md; phase7-gamification-walkthrough.md                                                                            |
+| Design/handoff            | docs/design/design-system.md — documented existing shell and future reward behavior                                                            |
 
 Raw acceptance logs are retained locally in ignored `.codex-logs/phase7-*.log`.
 They are not part of the proposed source change.
@@ -190,3 +190,28 @@ They are not part of the proposed source change.
 
 The implementation is ready to review and prepare as a PR. Publishing actions
 remain pending explicit user authorization.
+
+## OpenAPI contract correction
+
+An independent review found that `attachResponseContracts()` overwrote the Phase 7
+controller response fragments after Swagger generated the document. The central
+registry now defines complete `ApiChildProfile`, `ApiProgress` and `ApiEndSession`
+responses, including required fields, nullability, enums and numeric constraints.
+The duplicate controller fragments and the original gamification OpenAPI helper
+were removed. Swagger now identifies the completed Phase 7 backend as version
+`0.7.0`.
+
+The follow-up changes nine files relative to the original Phase 7 commit: the
+central registry and Swagger setup; three controllers; the removed helper; a
+new `/docs-json` regression test; this report; and the Phase 7 API contract doc.
+The five targeted tests request the final generated document and check routes,
+response statuses, complete old and new fields, required and nullable properties,
+enums, numeric bounds, and every component reference. The original 44-file table
+above describes the preceding implementation before this follow-up correction.
+
+Final follow-up acceptance passed: five targeted `/docs-json` tests; 515 unit/HTTP
+tests across the repository (API 469, ai-core 41, shared 5); 150 PostgreSQL tests;
+formatting, lint and typecheck in all workspaces; and the full four-workspace build.
+The final generated document has version `0.7.0`. The correction changed only
+OpenAPI definitions, their controllers' redundant annotations, related documentation
+and the new regression test. No commit, push, PR or tag was created for this follow-up.

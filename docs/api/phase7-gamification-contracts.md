@@ -4,6 +4,13 @@ All existing endpoints, authentication, ownership checks, safety boundaries and
 provider pinning remain in place. No migrations or new HTTP routes. Shared types
 live in `packages/shared/src/api-contracts.ts` and `conversation-contracts.ts`.
 
+The generated OpenAPI document is available at `/docs-json` with version `0.7.0`.
+`attachResponseContracts()` is the single source for response schemas after
+`SwaggerModule.createDocument()`. `ApiChildProfile`, `ApiProgress` and
+`ApiEndSession` include the complete response fields, required lists and nullable
+timestamps. `ApiLevelProgress` and `ApiBadgeCatalogItem` define the nested Phase 7
+fields. Regression tests request the final JSON document and resolve its references.
+
 ## Ledger, levels and practice
 
 `XpEvent` is authoritative for profile/session totals. `ChildProfile.xpTotal`,

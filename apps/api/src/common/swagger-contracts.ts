@@ -2,6 +2,7 @@ import type { OpenAPIObject } from "@nestjs/swagger";
 import type { SchemaObject } from "@nestjs/swagger/dist/interfaces/open-api-spec.interface";
 const text: SchemaObject = { type: "string" };
 const integer: SchemaObject = { type: "integer" };
+const nonnegativeInteger: SchemaObject = { type: "integer", minimum: 0 };
 const boolean: SchemaObject = { type: "boolean" };
 const date: SchemaObject = { type: "string", format: "date-time" };
 const ref = (name: string) => ({ $ref: "#/components/schemas/" + name });
@@ -12,6 +13,24 @@ const object = (
 ): SchemaObject => ({ type: "object", properties, required });
 const items = (name: string) => object({ items: array(ref(name)) });
 export function attachResponseContracts(document: OpenAPIObject) {
+  const sessionProperties: NonNullable<SchemaObject["properties"]> = {
+    id: text,
+    childProfileId: text,
+    avatarCode: { ...text, nullable: true },
+    missionCode: { ...text, nullable: true },
+    mode: { type: "string", enum: ["free-talk", "guided-mission"] },
+    status: { type: "string", enum: ["active", "completed", "abandoned"] },
+    missionProgress: { type: "integer", minimum: 0, maximum: 100 },
+    xpEarned: nonnegativeInteger,
+    aiProviderType: {
+      type: "string",
+      enum: ["mock", "openai-compatible-cloud", "local-openai-compatible"],
+      nullable: true,
+    },
+    aiModel: { ...text, nullable: true },
+    startedAt: date,
+    endedAt: { ...date, nullable: true },
+  };
   const schemas: Record<string, SchemaObject> = {
     AdultIdentity: object({
       id: text,
@@ -33,8 +52,9 @@ export function attachResponseContracts(document: OpenAPIObject) {
       targetLanguage: text,
       learningLevel: { type: "string", enum: ["starter", "explorer", "hero"] },
       avatarCode: { ...text, nullable: true },
-      xpTotal: integer,
-      streakDays: integer,
+      xpTotal: nonnegativeInteger,
+      gamificationLevel: { type: "integer", minimum: 1 },
+      streakDays: nonnegativeInteger,
     }),
     ApiAvatar: object({ code: text, name: text, personality: text }),
     ApiMission: object({
@@ -56,19 +76,15 @@ export function attachResponseContracts(document: OpenAPIObject) {
       xpAwarded: integer,
       createdAt: date,
     }),
-    ApiSession: object({
-      id: text,
-      childProfileId: text,
-      avatarCode: { ...text, nullable: true },
-      missionCode: { ...text, nullable: true },
-      mode: { type: "string", enum: ["free-talk", "guided-mission"] },
-      status: { type: "string", enum: ["active", "completed", "abandoned"] },
-      missionProgress: { type: "integer", minimum: 0, maximum: 100 },
-      xpEarned: integer,
-      aiProviderType: { ...text, nullable: true },
-      aiModel: { ...text, nullable: true },
-      startedAt: date,
-      endedAt: { ...date, nullable: true },
+    ApiSession: object(sessionProperties),
+    ApiEndSession: object({
+      ...sessionProperties,
+      completionRewardXp: {
+        type: "integer",
+        minimum: 0,
+        description:
+          "Total completion reward already recorded for this session, including on replay.",
+      },
     }),
     ApiSafety: object(
       {
@@ -100,11 +116,28 @@ export function attachResponseContracts(document: OpenAPIObject) {
       firstSeenAt: date,
       lastPracticedAt: date,
     }),
+    ApiLevelProgress: object({
+      xpIntoLevel: { type: "integer", minimum: 0, maximum: 49 },
+      xpToNextLevel: { type: "integer", minimum: 1, maximum: 50 },
+      xpPerLevel: { type: "integer", enum: [50] },
+    }),
+    ApiBadgeCatalogItem: object({
+      code: text,
+      title: text,
+      description: text,
+      icon: text,
+      unlocked: boolean,
+      awardedAt: { ...date, nullable: true },
+    }),
     ApiProgress: object({
       childProfileId: text,
       learningLevel: { type: "string", enum: ["starter", "explorer", "hero"] },
-      streakDays: integer,
-      xpTotal: integer,
+      streakDays: nonnegativeInteger,
+      xpTotal: nonnegativeInteger,
+      gamificationLevel: { type: "integer", minimum: 1 },
+      levelProgress: ref("ApiLevelProgress"),
+      practiceTimezone: { type: "string", enum: ["Europe/Madrid"] },
+      badgeCatalog: array(ref("ApiBadgeCatalogItem")),
       completedSessions: integer,
       completedMissionCount: integer,
       completedMissionCodes: array(text),
@@ -178,7 +211,7 @@ export function attachResponseContracts(document: OpenAPIObject) {
       "200",
     ],
     ["/conversations/sessions/{id}/messages", "post", ref("ApiMessage"), "200"],
-    ["/conversations/sessions/{id}/end", "post", ref("ApiSession"), "200"],
+    ["/conversations/sessions/{id}/end", "post", ref("ApiEndSession"), "200"],
     ["/child-profiles/{id}/progress", "get", ref("ApiProgress"), "200"],
     ["/ai-providers", "get", ref("ApiProviders"), "200"],
     ["/ai-providers/active", "put", ref("ApiProviders"), "200"],
