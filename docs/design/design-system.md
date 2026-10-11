@@ -25,3 +25,7 @@ Keep rewards secondary to learning. Avoid pressure, competitive rankings and
 celebrations repeated on retry. Track message celebrations by session/request ID
 and completion celebrations by session ID; completionRewardXp is a stored total.
 See [Phase 7 API contract](../api/phase7-gamification-contracts.md).
+
+## Phase 9 speech controls
+
+Retain the cream/sky/green palette, rounded cards and at least 48px interaction targets. Microphone activation, Stop/Discard, transcript confirmation and manual Listen/Replay/Stop have visible labels. Listening uses an amber ring/timer; speaking uses a subtle avatar motion only after actual playback starts. Reduced motion replaces animation with a static ring. Controls wrap on 360px screens. The taller voice composer follows normal page flow on mobile so it cannot cover the avatar reply or playback controls. Missing speech uses calm readable guidance and keeps typing available. English/Spanish language labels are explicit; no sensitive response autoplays.

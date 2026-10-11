@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./speech-test";
 import AxeBuilder from "@axe-core/playwright";
 import { login, bff } from "./helpers";
 test("recovers a committed profile after response loss only after adult confirmation", async ({

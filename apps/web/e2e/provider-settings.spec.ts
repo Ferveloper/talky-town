@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./speech-test";
 import { createServer, type Server } from "node:http";
 import { createProfile, startFree, send, bff } from "./helpers";
 let server: Server;

@@ -68,7 +68,7 @@ export function AvatarDisplay({
   compact = false,
 }: {
   code: string | null;
-  state?: "idle" | "thinking" | "encouraging" | "celebrating";
+  state?: "idle" | "thinking" | "encouraging" | "celebrating" | "listening" | "speaking";
   compact?: boolean;
 }) {
   const name = code === "luna" ? "Luna" : code === "max" ? "Max" : "Acompañante";
@@ -77,6 +77,8 @@ export function AvatarDisplay({
     thinking: "Preparando una respuesta",
     encouraging: "Vamos paso a paso",
     celebrating: "¡Buen trabajo!",
+    listening: "Escuchando tu frase",
+    speaking: "Hablando contigo",
   };
   return (
     <div className={cn("avatar-display", compact && "compact", state)}>

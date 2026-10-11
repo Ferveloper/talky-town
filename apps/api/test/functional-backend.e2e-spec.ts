@@ -52,6 +52,21 @@ describe("complete Phase 4 HTTP slice", () => {
     vi.restoreAllMocks();
     await fixture?.app.close();
   });
+  it("voice means confirmed text and rejects raw audio fields without rewards", async () => {
+    const id = (await start("free-talk").expect(201)).body.session.id;
+    await request(api())
+      .post(`/conversations/sessions/${id}/messages`)
+      .auth(token, { type: "bearer" })
+      .send({
+        requestId: randomUUID(),
+        message: "dog",
+        inputMode: "voice",
+        audio: "fictional-bytes",
+      })
+      .expect(400);
+    expect(fixture.rows("xpEvent")).toHaveLength(0);
+    expect(fixture.rows("conversationTurn")).toHaveLength(1);
+  });
   it("completes mission, persists rewards, replays without duplication, exposes proficiency", async () => {
     const requestId = randomUUID();
     const mock = vi.spyOn(fixture.app.get(MockAiProvider), "generateConversationReply");

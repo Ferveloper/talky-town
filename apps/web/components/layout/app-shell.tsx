@@ -6,7 +6,13 @@ import { BookOpen, LogOut, ShieldCheck, Users } from "lucide-react";
 import type { AdultIdentity } from "@talkytown/shared";
 import { api, errorText } from "@/lib/api";
 import { clearBrowserSession, sweepPending } from "@/lib/pending";
-type AppState = { adult: AdultIdentity; vocabulary: Map<string, string[]> };
+import type { RecognitionMode } from "@/lib/speech/contracts";
+type AppState = {
+  adult: AdultIdentity;
+  vocabulary: Map<string, string[]>;
+  recognitionMode: RecognitionMode;
+  setRecognitionMode: (mode: RecognitionMode) => void;
+};
 const Context = createContext<AppState | null>(null);
 export function useAdult() {
   const context = useContext(Context);
@@ -18,6 +24,9 @@ export function AppShell({ adult, children }: { adult: AdultIdentity; children: 
   const vocabulary = useRef(new Map<string, string[]>()).current;
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [speechChoice, setSpeechChoice] = useState<{ owner: string; mode: RecognitionMode }>();
+  const recognitionMode = speechChoice?.owner === adult.id ? speechChoice.mode : "local-only";
+  const setRecognitionMode = (mode: RecognitionMode) => setSpeechChoice({ owner: adult.id, mode });
   useEffect(() => {
     try {
       sweepPending(sessionStorage, Date.now(), adult.id);
@@ -25,11 +34,19 @@ export function AppShell({ adult, children }: { adult: AdultIdentity; children: 
       /* Storage unavailable. */
     }
     vocabulary.clear();
+    setSpeechChoice(undefined);
   }, [adult.id, vocabulary]);
   useEffect(() => {
-    const clear = () => vocabulary.clear();
+    const clear = () => {
+      vocabulary.clear();
+      setSpeechChoice(undefined);
+    };
     window.addEventListener("talkytown:auth-expired", clear);
-    return () => window.removeEventListener("talkytown:auth-expired", clear);
+    window.addEventListener("talkytown:session-cleared", clear);
+    return () => {
+      window.removeEventListener("talkytown:auth-expired", clear);
+      window.removeEventListener("talkytown:session-cleared", clear);
+    };
   }, [vocabulary]);
   async function logout() {
     setBusy(true);
@@ -45,7 +62,7 @@ export function AppShell({ adult, children }: { adult: AdultIdentity; children: 
     }
   }
   return (
-    <Context.Provider value={{ adult, vocabulary }}>
+    <Context.Provider value={{ adult, vocabulary, recognitionMode, setRecognitionMode }}>
       <header className="site-header">
         <Link className="brand" href="/profiles">
           <BookOpen aria-hidden />

@@ -82,6 +82,27 @@ describe("Phase 4 actual PostgreSQL vertical slice", () => {
     outsider = await app.get(JwtService).signAsync({ sub: otherId, role: "adult" });
   });
   afterEach(() => vi.restoreAllMocks());
+  it("persists confirmed voice text and replays the same committed turn/reward", async () => {
+    const childId = await child();
+    const id = await session(childId, false);
+    const requestId = randomUUID();
+    const sendVoice = () =>
+      request(api())
+        .post(`/conversations/sessions/${id}/messages`)
+        .set(headers())
+        .send({ requestId, message: "dog", inputMode: "voice" });
+    const first = await sendVoice().expect(200);
+    const replay = await sendVoice().expect(200);
+    expect(replay.body).toEqual(first.body);
+    expect(first.body.childTurn.inputMode).toBe("voice");
+    expect(first.body.xpAwarded).toBe(5);
+    expect(
+      await db.conversationTurn.count({
+        where: { sessionId: id, role: "child", inputMode: "voice", content: "dog" },
+      }),
+    ).toBe(1);
+    expect(await db.xpEvent.count({ where: { sessionId: id } })).toBe(1);
+  });
   afterAll(async () => {
     if (db) {
       // Safety metadata otherwise survives cascading deletion with null references.

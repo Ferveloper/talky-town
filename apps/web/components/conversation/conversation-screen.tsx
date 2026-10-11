@@ -1,7 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { MicOff, Send, Flag } from "lucide-react";
+import { Send, Flag } from "lucide-react";
+import { safetyResponseLocale } from "@talkytown/shared";
+import { useSpeechInput } from "./use-speech-input";
+import { useSpeechOutput } from "./use-speech-output";
+import { MicrophoneControl } from "./microphone-control";
+import { SpeechOutputControls } from "./speech-output-controls";
 import type {
   ChildProfileResponse,
   EndSessionResponse,
@@ -35,11 +40,17 @@ type Phase =
   | "completed"
   | "abandoned"
   | "expired";
-export function ConversationBubble({ turn }: { turn: TurnResponse }) {
+export function ConversationBubble({
+  turn,
+  children,
+}: {
+  turn: TurnResponse;
+  children?: React.ReactNode;
+}) {
   return (
     <div className={`bubble ${turn.role}`}>
       <span className="bubble-author">{turn.role === "child" ? "Tú" : "Tu acompañante"}</span>
-      <p lang={turn.role === "avatar" && /[áéíóúñ¿¡]/i.test(turn.content) ? "es" : "en"}>
+      <p lang={turn.role === "avatar" ? safetyResponseLocale(turn.content) || "en" : "en"}>
         {turn.content}
       </p>
       {turn.correction.needed && turn.correction.corrected && (
@@ -49,6 +60,7 @@ export function ConversationBubble({ turn }: { turn: TurnResponse }) {
           {turn.correction.explanation && <p>{turn.correction.explanation}</p>}
         </div>
       )}
+      {children}
     </div>
   );
 }
@@ -74,13 +86,14 @@ export function ConversationScreen({
   );
 }
 function ScopedConversation({ profileId, sessionId }: { profileId: string; sessionId: string }) {
-  const { adult, vocabulary } = useAdult();
+  const { adult, vocabulary, recognitionMode = "local-only" } = useAdult();
   const [profile, setProfile] = useState<ChildProfileResponse>();
   const [session, setSession] = useState<SessionResponse>();
   const [turns, setTurns] = useState<TurnResponse[]>([]);
   const [phase, setPhase] = useState<Phase>("restoring");
   const [error, setError] = useState("");
   const [text, setText] = useState("");
+  const [inputMode, setInputMode] = useState<"text" | "voice">("text");
   const [pending, setPending] = useState<Pending | null>(null);
   const [celebration, setCelebration] = useState("");
   const [badgeCelebration, setBadgeCelebration] = useState("");
@@ -90,6 +103,28 @@ function ScopedConversation({ profileId, sessionId }: { profileId: string; sessi
   const composer = useRef<HTMLTextAreaElement>(null);
   const transcript = useRef<HTMLDivElement>(null);
   const nearBottom = useRef(true);
+  const output = useSpeechOutput(profile?.avatarCode || "luna");
+  const input = useSpeechInput(recognitionMode, phase === "ready" && !pending, (value) => {
+    if (value || inputMode === "voice") {
+      setText(value);
+      setInputMode(value ? "voice" : "text");
+    }
+  });
+  function discardDraft() {
+    input.cancel();
+    setText("");
+    setInputMode("text");
+  }
+  useEffect(() => {
+    if (phase !== "ready") {
+      input.cancel();
+      output.cancel();
+    }
+  }, [phase, input.cancel, output.cancel]);
+  useEffect(() => {
+    setText("");
+    setInputMode("text");
+  }, [recognitionMode]);
   const capture = useOperationScope(`${adult.id}:${profileId}:${sessionId}`, () => {
     setTurns([]);
     setText("");
@@ -206,7 +241,12 @@ function ScopedConversation({ profileId, sessionId }: { profileId: string; sessi
   }, [celebration, badgeCelebration]);
   async function send(retry?: Pending) {
     const current = capture();
-    if (inflight.current || (!retry && !text.trim())) return;
+    if (
+      inflight.current ||
+      (!retry &&
+        (phase !== "ready" || pending || input.busy || !text.trim() || text.trim().length > 500))
+    )
+      return;
     const operation: Pending = retry || {
       version: 1,
       owner: adult.id,
@@ -214,19 +254,24 @@ function ScopedConversation({ profileId, sessionId }: { profileId: string; sessi
       session: sessionId,
       createdAt: Date.now(),
       kind: "message",
-      payload: { requestId: crypto.randomUUID(), message: text.trim(), inputMode: "text" },
+      payload: { requestId: crypto.randomUUID(), message: text.trim(), inputMode },
     };
     if (operation.kind !== "message" || Date.now() - operation.createdAt >= RETENTION_MS) {
       setPhase("expired");
       return;
     }
+    Object.freeze(operation.payload);
+    Object.freeze(operation);
     inflight.current = true;
+    input.cancel();
+    output.cancel();
     setPhase("sending");
     setError("");
     setCelebration("");
     setBadgeCelebration("");
     setPending(operation);
     setText("");
+    setInputMode("text");
     if (!savePending(operation)) setStorageWarning(true);
     try {
       const response = await api<MessageResponse>(
@@ -270,6 +315,8 @@ function ScopedConversation({ profileId, sessionId }: { profileId: string; sessi
   async function end() {
     const current = capture();
     if (inflight.current || (pending && pending.kind !== "expired")) return;
+    discardDraft();
+    output.cancel();
     inflight.current = true;
     setPhase("ending");
     setError("");
@@ -312,11 +359,15 @@ function ScopedConversation({ profileId, sessionId }: { profileId: string; sessi
             <AvatarDisplay
               code={profile?.avatarCode || null}
               state={
-                phase === "sending"
-                  ? "thinking"
-                  : celebration || badgeCelebration
-                    ? "celebrating"
-                    : "encouraging"
+                input.phase === "listening"
+                  ? "listening"
+                  : output.phase === "speaking"
+                    ? "speaking"
+                    : phase === "sending"
+                      ? "thinking"
+                      : celebration || badgeCelebration
+                        ? "celebrating"
+                        : "encouraging"
               }
             />
             <p>Usa palabras inventadas y temas divertidos. No compartas datos personales.</p>
@@ -343,7 +394,15 @@ function ScopedConversation({ profileId, sessionId }: { profileId: string; sessi
               }}
             >
               {turns.map((turn) => (
-                <ConversationBubble key={turn.id} turn={turn} />
+                <ConversationBubble key={turn.id} turn={turn}>
+                  {turn.role === "avatar" && (
+                    <SpeechOutputControls
+                      turn={turn}
+                      output={output}
+                      disabled={input.busy || !["ready", "completed", "abandoned"].includes(phase)}
+                    />
+                  )}
+                </ConversationBubble>
               ))}
               {phase === "sending" && (
                 <p className="thinking" role="status">
@@ -420,10 +479,10 @@ function ScopedConversation({ profileId, sessionId }: { profileId: string; sessi
                   <textarea
                     ref={composer}
                     id="message"
-                    lang="en"
+                    lang={inputMode === "voice" ? input.language : "en"}
                     value={text}
                     maxLength={500}
-                    disabled={blocked}
+                    disabled={blocked || input.busy}
                     placeholder="Escribe aquí…"
                     rows={2}
                     onChange={(event) => setText(event.target.value)}
@@ -441,20 +500,46 @@ function ScopedConversation({ profileId, sessionId }: { profileId: string; sessi
                   <button
                     className="talky-button"
                     type="submit"
-                    disabled={blocked || !text.trim()}
-                    aria-label="Enviar mensaje"
+                    disabled={blocked || input.busy || !text.trim() || text.trim().length > 500}
+                    aria-label={
+                      inputMode === "voice" ? "Confirmar y enviar transcripción" : "Enviar mensaje"
+                    }
                   >
                     <Send aria-hidden />
-                    <span>Enviar</span>
+                    <span>{inputMode === "voice" ? "Confirmar y enviar" : "Enviar"}</span>
                   </button>
                 </div>
                 <div className="row between">
                   <small>{text.length}/500</small>
-                  <button type="button" className="voice-placeholder" disabled>
-                    <MicOff size={18} aria-hidden />
-                    Voz disponible en fase 9
-                  </button>
+                  {text && (
+                    <button
+                      type="button"
+                      className="text-button"
+                      disabled={blocked}
+                      onClick={discardDraft}
+                    >
+                      Descartar borrador
+                    </button>
+                  )}
                 </div>
+                {inputMode === "voice" && (
+                  <p role="status">
+                    Revisa y edita la transcripción antes de confirmar. No se envía automáticamente.
+                  </p>
+                )}
+                {text.length > 500 && (
+                  <p role="alert">Acorta la transcripción a 500 caracteres para enviarla.</p>
+                )}
+                {text && <small>Envía o descarta el borrador antes de usar el micrófono.</small>}
+                <MicrophoneControl
+                  input={input}
+                  disabled={blocked || Boolean(text)}
+                  discard={discardDraft}
+                />
+                <small>
+                  Si la voz no está disponible, sigue escribiendo. Un adulto puede revisar el
+                  procesamiento en <Link href="/adult">la zona de adultos</Link>.
+                </small>
               </form>
             )}
             {session?.status === "active" && phase !== "auth-expired" && (

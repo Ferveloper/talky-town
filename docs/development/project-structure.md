@@ -120,3 +120,7 @@ Response mappers/progress derive values on reads using ApplicationClock.
 administrative commands. Seed shares the synchronizer and preserves award provenance.
 Shared API contracts include numeric level, progress catalog and EndSessionResponse.
 No Prisma schema/migration or frontend files change.
+
+## Phase 9 browser speech
+
+`apps/web/lib/speech` owns narrow speech interfaces, capability checks, native adapters, voice selection and cancellation coordination. Feature hooks/controls stay in `components/conversation`; no new global hooks/state library. `components/parent/voice-preferences.tsx` is separate from LLM settings. `packages/shared/src/safety-response-templates.ts` holds exact reviewed presentation strings/locale only; API moderation and response selection remain unchanged. Unit/component speech fakes live in web test; Playwright fakes only replace native APIs while Next/Nest/PostgreSQL stay real. No speech service/package, Prisma changes or ML runtime.

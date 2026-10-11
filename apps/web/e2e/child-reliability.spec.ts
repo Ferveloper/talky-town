@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./speech-test";
 import { createHmac } from "node:crypto";
 import { createProfile, startFree, send, bff } from "./helpers";
 import { execFileSync } from "node:child_process";

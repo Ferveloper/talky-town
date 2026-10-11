@@ -108,7 +108,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: phase8-browser-report
+          name: phase9-browser-report
           path: |
             playwright-report/
             test-results/

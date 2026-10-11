@@ -146,3 +146,7 @@ awards or vocabulary counters. Never reset a developer's existing database impli
 - Reconciliation is administrative, dry-run by default, owner-qualified locks on apply;
   no XP creation, provider calls, raw-text logging or retroactive completion bonuses.
 - Inject ApplicationClock for deterministic time tests. GET endpoints remain read-only.
+
+## Speech lifecycle and replay
+
+Precompute read-only local speech capabilities; call native start synchronously from a user action. Never download language packs, call getUserMedia as a permission probe, auto-restart, translate or switch processing mode on error. Invalidate native callbacks and dispose handlers/timers/resources on every scope boundary. Only actual start events drive listening/speaking. Confirmed voice text reuses the ordinary immutable UUID/body/mode/context/creation-time contract, without new rewards or auto-retry. Tests use deterministic browser speech fakes; real-device evidence must be labelled separately. Catalogue extraction must preserve every reviewed UTF-8 response byte and all backend safety behavior.

@@ -329,3 +329,9 @@ Phase 5: [provider contracts](docs/api/phase5-provider-contracts.md),
 ## 12. License
 
 This project uses the license defined in `LICENSE`.
+
+## Phase 9 — Essential browser voice
+
+The conversation supports explicit, bounded browser recognition, editable transcription and manual local-voice playback. Local-only is the default and requires verified on-device support plus an already-installed language pack. An adult may explicitly choose browser-service recognition in **Adultos** after reading that audio may leave the device. This memory-only demo choice resets on reload/logout/identity change; it is not verified legal parental consent. Typing always works without speech.
+
+No audio is persisted. Unconfirmed recognition stays in memory; confirmed submitted text is an ordinary message, including accepted server history and up to 15-minute scoped pending sessionStorage retention. No complete browser transcript history is stored. Voice does not grant extra XP. See [voice walkthrough](docs/setup/phase9-voice-walkthrough.md), [ADR 0015](docs/architecture/adr/0015-essential-browser-voice.md) and [acceptance evidence](docs/development/phase9-implementation-report.md). Level 2 model services remain deferred and require separate approval.

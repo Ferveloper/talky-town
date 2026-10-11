@@ -1,18 +1,18 @@
 # TalkyTown — UX Flow
 
-The current Phase 8 flow is: landing → adult demo login → select/create a fictional
-profile → child home/eligible mission → text conversation → stored summary/rewards.
+The current Phase 9 Level 1 flow is: landing → adult demo login → select/create a fictional
+profile → child home/eligible mission → text or confirmed browser-voice conversation → stored summary/rewards.
 Adultos links to profile progress and explicit provider save/activate/test actions.
 Login preserves provider selection. The demo account and profiles are shared.
-The detailed voice/map concepts below remain future design, not current controls.
+Native voice controls follow the Phase 9 section below; map and enhanced speech-service concepts remain future design.
 
 Conversation states cover restoration, ready, sending, explicit retry, expired auth,
 safety review, ending and completed/abandoned. Restore every history page before
 composition. Display only accepted backend turns and exact support text. A failed
 write can already be committed: reuse its UUID/body. Pending text expires in fifteen
 minutes and is deleted on resolution/logout. Safety review hides all cached history.
-Summaries are read-only; restored rewards have no celebrations. Voice is disabled
-until Phase 9. See [replay ADR](architecture/adr/0014-frontend-replay-and-celebrations.md).
+Summaries are read-only; restored rewards have no celebrations. Voice uses explicit capture/review/confirmation and manual local-voice playback with complete text fallback.
+See [replay ADR](architecture/adr/0014-frontend-replay-and-celebrations.md) and [voice ADR](architecture/adr/0015-essential-browser-voice.md).
 
 ## 1. Propósito del documento
 
@@ -823,7 +823,7 @@ Adulto / evaluador.
 
 - No se piden datos personales al niño.
 - Se recomienda usar alias.
-- No se almacena audio bruto por defecto.
+- No se almacena audio bruto.
 - Se redirigen temas no adecuados.
 - El contenido se adapta a la edad.
 - El adulto puede revisar progreso.
@@ -836,7 +836,7 @@ Adulto / evaluador.
 |                                                  |
 | - Usa alias, no nombres completos.               |
 | - TalkyTown no pide datos personales al niño.    |
-| - El audio no se guarda por defecto.             |
+| - El audio no se guarda.                         |
 | - Los temas no adecuados se redirigen.           |
 | - Las respuestas se adaptan a la edad.           |
 +--------------------------------------------------+
@@ -891,7 +891,7 @@ Permitir que el niño practique oralmente, aunque el backend trabaje internament
 2. Navegador solicita permiso.
 3. El sistema transcribe voz a texto.
 4. El texto aparece en el input.
-5. El niño confirma o se envía automáticamente.
+5. El niño revisa, puede editar y confirma explícitamente antes de enviar.
 6. Backend genera respuesta.
 7. El avatar responde.
 8. El navegador lee la respuesta con TTS.
@@ -1410,3 +1410,9 @@ session reward and deduplicate celebrations by session ID. Guided completion was
 already celebrated on its completing message; end must not celebrate it again.
 Show correction help gently; Kind Corrector means a recorded correction received.
 See [Phase 7 contract](api/phase7-gamification-contracts.md).
+
+## Phase 9 voice flow (supersedes earlier automatic-send sketches)
+
+Adultos offers an informed memory-only processing choice: verified local-only by default, or explicitly selected browser service that may process audio remotely. Return with internal navigation; reload resets the choice. Child activation is always a microphone button. Capture lasts at most 30 seconds; Stop finalizes, Discard aborts. English is default; Spanish is an explicit separate language. Final text stays editable and is never sent until confirmation. Send/confirm freezes the existing immutable operation; pending recovery remains manual. A draft must be sent or discarded before another capture.
+
+Replies expose manual Listen/Replay/Stop using local voices and exact safe backend text. The avatar listens/speaks only after actual native activity. Spanish wellbeing support never autoplays or uses an English substitute. Missing capabilities give the Stitch-style readable-text fallback. Hiding/navigation/logout/expiry/closure dispose speech resources and drafts while valid confirmed pending operations retain their original policy.

@@ -137,6 +137,35 @@ describe("Phase 6 actual PostgreSQL safety invariants", () => {
       }),
     };
   }
+  it.each(["nadie me quiere", "my phone number is 123456789"])(
+    "confirmed voice safety keeps zero learning state for %s",
+    async (message) => {
+      const id = (await start().expect(201)).body.session.id;
+      const before = await learningState(id);
+      const requestId = randomUUID();
+      const sendVoice = () =>
+        request(api())
+          .post(`/conversations/sessions/${id}/messages`)
+          .set(auth())
+          .send({ requestId, message, inputMode: "voice" });
+      const result = await sendVoice().expect(200);
+      const replay = await sendVoice().expect(200);
+      expect(replay.body).toEqual(result.body);
+      expect(result.body).toMatchObject({
+        childTurn: null,
+        xpAwarded: 0,
+        practicedVocabulary: [],
+        awardedBadges: [],
+        safety: { flagged: true },
+      });
+      expect(await learningState(id)).toEqual(before);
+      expect(fake.requests).toHaveLength(0);
+      const turns = await db.conversationTurn.findMany({ where: { sessionId: id } });
+      expect(turns.every((turn) => turn.role === "avatar")).toBe(true);
+      expect(JSON.stringify(turns)).not.toContain(message);
+      expect(await db.safetyEvent.count({ where: { sessionId: id } })).toBe(1);
+    },
+  );
   it.each(blockedFixtures)(
     "blocks $id with only coded auditing and a controlled turn",
     async ({ text, reason, support }) => {

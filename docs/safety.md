@@ -182,7 +182,7 @@ stored nor hashed. Validation hides values and unknown property names. The appli
 does not log request bodies, rejected text, credentials or raw provider errors. Historical
 unsafe rows are an existing-data exposure concern, not retroactively erased by read guards.
 
-Voice remains client-transcribed text. Audio upload/STT/raw audio retention are not
+Voice remains client-transcribed text. Audio upload/server-side STT/raw audio retention are not
 implemented. The guardrail and raw-audio environment placeholders are not disable switches.
 
 Remaining limitations:
@@ -201,3 +201,11 @@ Remaining limitations:
 
 See [ADR 0011](architecture/adr/0011-contextual-safety-policy.md) and the
 [Phase 6 acceptance checklist](development/phase6-child-safety-checklist.md).
+
+## Phase 9 voice privacy and limitations
+
+TalkyTown never persists microphone recordings, raw audio or audio blobs. Unconfirmed/interim recognition lives only in transient memory and is discarded on lifecycle cleanup. Reviewed, confirmed, submitted text is an ordinary conversation message: accepted text may persist in PostgreSQL and unresolved text in the existing adult/profile/session sessionStorage record for at most fifteen minutes from original creation. Existing identifier-only expiry tombstones and logout/expiry cleanup remain. No full browser transcript history is stored in sessionStorage/localStorage/IndexedDB. Suspended tabs purge expired content on resume before recovery.
+
+Local-only recognition is default and requires verified on-device availability plus an installed language pack; missing APIs, policy failures or packs never trigger remote recognition or downloads. An adult can make an informed ephemeral browser-service choice after disclosure that audio may leave the device. This is not verified legal parental consent, genuine adult verification or visitor privacy in the shared demo. The choice is cleared on reload/logout/auth expiry/identity change.
+
+Confirmed voice input passes the existing server child safety pipeline. Only safe returned avatar content can be synthesized. Blocked voice operations have no learning XP, badges, mission progress or vocabulary. Spanish deterministic support keeps its exact wording/locale and never uses an unrelated English voice or autoplay. No voice cloning, provider-internal speech, frontend-only moderation, LLM-provider switch or pronunciation scoring. Recognition may normalize errors or miss disclosures; speech output may mispronounce safe text. This remains a controlled educational demo, not a certified child-audio processing system.

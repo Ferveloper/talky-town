@@ -43,6 +43,40 @@ beforeEach(() => {
 });
 afterEach(() => vi.useRealTimers());
 describe("operation-scoped immutable recovery", () => {
+  it.each(["text", "voice"] as const)(
+    "preserves all immutable fields, session isolation and expiry for %s",
+    (inputMode) => {
+      const port = storage();
+      port.removeItem(pendingKey(operation));
+      const value = { ...operation, payload: { ...operation.payload, inputMode } };
+      expect(savePending(value, port)).toBe(true);
+      expect(readPending(port, "adult", "profile", "session")).toEqual(value);
+      expect(
+        savePending(
+          {
+            ...value,
+            payload: { ...value.payload, inputMode: inputMode === "text" ? "voice" : "text" },
+          },
+          port,
+        ),
+      ).toBe(false);
+      expect(savePending({ ...value, createdAt: 101 }, port)).toBe(false);
+      expect(savePending({ ...value, payload: { ...value.payload, message: "cat" } }, port)).toBe(
+        false,
+      );
+      const other = { ...value, session: "B" };
+      expect(savePending(other, port)).toBe(true);
+      clearPending(value, port);
+      expect(readPending(port, "adult", "profile", "B")).toEqual(other);
+      sweepPending(port, value.createdAt + RETENTION_MS);
+      expect(readPending(port, "adult", "profile", "B", value.createdAt + RETENTION_MS)?.kind).toBe(
+        "expired",
+      );
+      expect(port.getItem(pendingKey(other))).not.toContain("dog");
+      sweepPending(port, Date.now(), "new-adult");
+      expect(port.length).toBe(0);
+    },
+  );
   it("keeps the in-memory fallback when accessing browser storage itself is denied", () => {
     Object.defineProperty(globalThis, "sessionStorage", {
       configurable: true,
