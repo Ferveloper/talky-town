@@ -3,6 +3,7 @@ export type AgeBand = "5-7" | "8-10" | "11-12";
 export * from "./api-contracts";
 export * from "./conversation-contracts";
 export * from "./provider-contracts";
+export * from "./frontend-contracts";
 
 export type LearningLevel = "starter" | "explorer" | "hero";
 

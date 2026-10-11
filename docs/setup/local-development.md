@@ -31,7 +31,8 @@ share runtime secrets. Database-selected Mock provider requires no paid AI keys;
 AI_PROVIDER environment variable no longer selects or overrides adult settings.
 
 Use [Phase 4 Swagger walkthrough](phase4-demo-walkthrough.md) for the functional
-backend. Existing frontend screens remain mock-driven and are not API-integrated.
+backend, or the [Phase 8 browser walkthrough](phase8-frontend-walkthrough.md) for the
+functional frontend. Successful UI data always comes from NestJS.
 
 Compose binds PostgreSQL to `127.0.0.1:55432`, forwarding to container port 5432.
 This avoids the native Windows PostgreSQL service on 5432. Host ports 5433/5434
@@ -104,6 +105,26 @@ The seed preserves existing active selection. Tests explicitly inject test secre
 and blank real-provider credentials. CI uses local fake HTTP plus PostgreSQL.
 
 ## URLs
+
+## Phase 8 BFF and browser configuration
+
+The web dev/start scripts load root .env and then .env.example. Production start
+explicitly sets NODE_ENV=production. TALKYTOWN_API_URL points to Nest from Next's
+server; WEB_APP_ORIGIN is the exact browser origin, including its port. The legacy
+NEXT_PUBLIC_API_URL is not used for browser API calls. Do not expose API keys.
+
+BFF_READ_TIMEOUT_MS defaults to 10000; BFF_OPERATION_TIMEOUT_MS defaults to 150000.
+The existing local provider can spend up to 120 seconds across attempts. Your
+hosting runtime/proxy must allow the chosen timeout; Next configuration cannot
+extend a platform's hard request limit. A shorter timeout leaves an ambiguous
+write and the client must preserve its UUID/body. Cookies are Secure on HTTPS
+WEB_APP_ORIGIN, host-only, HttpOnly, SameSite=Lax and last at most two hours.
+
+See [isolated browser setup](phase8-frontend-walkthrough.md). E2E_DATABASE_URL must
+name a separate existing local database ending in \_e2e. Do not point it at the
+developer database. Fixtures are qualified by the run's unique adult email.
+
+### Development addresses
 
 - Web: http://localhost:3000
 - API: http://localhost:3001

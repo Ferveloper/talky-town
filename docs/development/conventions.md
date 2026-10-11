@@ -6,6 +6,21 @@
 - Use strict types.
 - Avoid `any` unless explicitly justified.
 
+## Phase 8 frontend boundaries
+
+- Spanish UI, English practice marked lang=en, exact backend safety-support text.
+- Never synthesize successful profile, mission, provider or progress responses from fixtures.
+- Keep pages thin, reusable view components and simple React state; authenticated layouts verify identity.
+- Same-origin browser API only. JWT lives in an HttpOnly cookie; secrets remain in Nest.
+- Exact Origin/custom header/JSON on mutations, including operations with no body.
+- No optimistic child turns. Capture one immutable UUID/body and retry explicitly.
+- Never interpret a timeout as a failed commit or completionRewardXp as a reward delta.
+- No transcript persistence. Pending text is bounded to fifteen minutes; clear on resolution, logout, auth expiry and review.
+- Fetch profile ownership before dependent child data; avoid bursts of progress transactions in adult views.
+- Separate provider save/activate/test; login has no provider side effects; no automatic fallback.
+- Real browser tests require a dedicated loopback \_e2e database and uniquely owned fixtures.
+- Traces stay off; artifacts contain fictional test data only. Never call a real paid provider in automated tests.
+
 ## Naming
 
 - Use kebab-case for files.

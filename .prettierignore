@@ -8,6 +8,8 @@ coverage
 .temp
 .codex-logs
 .design
+playwright-report
+test-results
 pnpm-lock.yaml
 package-lock.json
 yarn.lock

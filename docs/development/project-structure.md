@@ -22,6 +22,23 @@ talkytown/
 
 Next.js application.
 
+Phase 8 structure:
+
+- app/(public): landing, demo login and safe-use guidance.
+- app/(authenticated): verified adult layout, profiles, child routes and adult routes.
+- app/api: explicit same-origin BFF Route Handlers; no arbitrary catch-all proxy.
+- lib/server: server-only cookie/BFF and layout identity verification.
+- lib/api.ts and lib/pending.ts: typed browser transport and bounded immutable operations.
+- components: reusable UI/layout/profile/conversation/gamification/parent/provider/safety groups.
+- public/avatars: local Luna and dedicated Max PNGs.
+- test: actual Route Handler, pending-storage and React boundary tests.
+- e2e: real Next/Nest/PostgreSQL/Mock journeys, controlled HTTP faults and visual/axe checks.
+- scripts/run-e2e.mjs: isolated database gate, fixture ownership, production servers and cleanup.
+
+Shared frontend-contracts.ts names existing start/list wrappers without changing wire
+responses. API test/helpers/browser-fixtures.ts and browser-admin.ts are test-owned
+CLI fixtures only, with no HTTP test endpoint and no production domain changes.
+
 Responsibilities:
 
 - Child-facing UI.
