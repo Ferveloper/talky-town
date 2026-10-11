@@ -1375,3 +1375,13 @@ without showing/storing its generated text. Activation checks configuration/key
 presence, not credential validity. Existing sessions retain provider/model; an adult
 may explicitly choose Mock for a new session after a real-provider failure.
 Real failures leave the operation uncommitted for retry. No automatic Mock switch.
+
+## Phase 6 safety behavior
+
+Avatar-name questions remain valid English practice. Blocked disclosures receive
+English redirection or, for serious child distress/bullying, age-adapted Spanish
+trusted-adult support. No reward or claim that the app notified anyone. Unsafe
+historical transcript/replay/profile responses return SAFETY_REVIEW_REQUIRED;
+known-ID metadata/conversation operations and termination remain available.
+No frontend changes; [safety policy](safety.md) documents alias-list availability
+and administrative recovery without new profile-management routes.

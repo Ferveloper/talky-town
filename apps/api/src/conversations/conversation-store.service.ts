@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import type { Prisma } from "@prisma/client";
-import type { AiConversationResponse } from "@talkytown/ai-core";
-import type { MessageResponse } from "@talkytown/shared";
+import type { AgeBand, MessageResponse } from "@talkytown/shared";
 import { PrismaService } from "../prisma/prisma.service";
 import { ProfileOwnershipService } from "../child-profiles/profile-ownership.service";
 import { PersistenceIds } from "../common/persistence-ids.service";
@@ -12,8 +11,9 @@ import { AiProvidersService, providerFingerprint } from "../ai-providers/ai-prov
 import { GamificationService } from "../gamification/gamification.service";
 import { practicedTerms } from "../gamification/vocabulary-rules";
 import { MissionEvaluationService } from "../missions/mission-evaluation.service";
-import { SAFE_REDIRECTION, type SafetyDecision } from "../safety/safety-rules";
-import type { SendMessageDto } from "./dto/send-message.dto";
+import { controlledSafetyReason } from "../safety/safety-rules";
+import { safetyResponse } from "../safety/safety-responses";
+import type { PreparedOperation } from "./prepared-operation";
 const snapshotInclude = {
   ...sessionInclude,
   childProfile: true,
@@ -103,7 +103,9 @@ export class ConversationStoreService {
       xpAwarded: xp._sum.amount ?? 0,
       practicedVocabulary: child ? practicedTerms(child.content) : [],
       awardedBadges: awards.map((award) => award.badge.code),
-      safety: safety ? { flagged: true, reason: safety.reason } : { flagged: false },
+      safety: safety
+        ? { flagged: true, reason: controlledSafetyReason(safety.reason) }
+        : { flagged: false },
       session: sessionResponse(session),
     };
   }
@@ -111,13 +113,7 @@ export class ConversationStoreService {
     userId: string,
     sessionId: string,
     operationId: string,
-    input: SendMessageDto,
-    prepared: {
-      snapshot: string;
-      provider: string;
-      output: AiConversationResponse;
-      safety: SafetyDecision;
-    },
+    prepared: PreparedOperation,
   ) {
     return this.prisma.$transaction(
       async (db) => {
@@ -129,12 +125,11 @@ export class ConversationStoreService {
         if (replay) return replay;
         const session = await this.read(userId, sessionId, db);
         this.assertActive(session);
-        const provider = await this.providers.forSession(userId, session, db);
-        if (
-          snapshotFingerprint(session) !== prepared.snapshot ||
-          providerFingerprint(provider) !== prepared.provider
-        )
-          throw new StaleConversation();
+        if (snapshotFingerprint(session) !== prepared.snapshot) throw new StaleConversation();
+        if (prepared.kind !== "blocked-input") {
+          const provider = await this.providers.forSession(userId, session, db);
+          if (providerFingerprint(provider) !== prepared.provider) throw new StaleConversation();
+        }
         const latest = await db.conversationTurn.findFirst({
           where: { session: { childProfileId: session.childProfileId } },
           orderBy: { createdAt: "desc" },
@@ -146,16 +141,16 @@ export class ConversationStoreService {
             (latest?.createdAt.getTime() ?? 0) + 1,
           ),
         );
-        if (prepared.safety.flagged) {
+        if (prepared.kind !== "accepted") {
           await db.safetyEvent.create({
             data: {
               id: this.ids.safety(operationId),
               childProfileId: session.childProfileId,
               sessionId,
-              category: prepared.safety.category ?? "provider-output",
-              action: "redirect",
-              reason: prepared.safety.reason ?? "provider-safety-flag",
-              severity: "warning",
+              category: prepared.decision.category,
+              action: prepared.decision.action,
+              reason: prepared.decision.reason,
+              severity: prepared.decision.severity,
               createdAt: at,
             },
           });
@@ -164,7 +159,8 @@ export class ConversationStoreService {
             ? this.missions.evaluate(
                 session.mission.code,
                 session.missionProgress,
-                input.message,
+                prepared.message,
+                // Keep accepted mission evidence consistent with projected evaluation.
                 session.turns
                   .filter((turn) => turn.role === "child" && turn.xpAwarded > 0)
                   .map((turn) => turn.content),
@@ -174,7 +170,7 @@ export class ConversationStoreService {
             childId: session.childProfileId,
             sessionId,
             operationId,
-            message: input.message,
+            message: prepared.message,
             corrected: prepared.output.correction?.needed ?? false,
             completed: evaluation.completed,
             missionCode: session.mission?.code,
@@ -186,8 +182,8 @@ export class ConversationStoreService {
               id: this.ids.turn(operationId, "child"),
               sessionId,
               role: "child",
-              content: input.message,
-              inputMode: input.inputMode,
+              content: prepared.message,
+              inputMode: prepared.inputMode,
               xpAwarded: reward.practiceXp,
               correctionNeeded: prepared.output.correction?.needed ?? false,
               correctedContent: prepared.output.correction?.needed
@@ -214,7 +210,13 @@ export class ConversationStoreService {
             id: this.ids.turn(operationId, "avatar"),
             sessionId,
             role: "avatar",
-            content: prepared.safety.flagged ? SAFE_REDIRECTION : prepared.output.reply,
+            content:
+              prepared.kind === "accepted"
+                ? prepared.output.reply
+                : safetyResponse(
+                    prepared.decision.template,
+                    session.childProfile.ageBand as AgeBand,
+                  ),
             inputMode: "text",
             xpAwarded: 0,
             createdAt: new Date(at.getTime() + 1),

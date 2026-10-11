@@ -70,7 +70,16 @@ export function attachResponseContracts(document: OpenAPIObject) {
       startedAt: date,
       endedAt: { ...date, nullable: true },
     }),
-    ApiSafety: object({ flagged: boolean, reason: text }, ["flagged"]),
+    ApiSafety: object(
+      {
+        flagged: boolean,
+        reason: {
+          ...text,
+          description: "Controlled safety code. Blocked operations grant no learning rewards.",
+        },
+      },
+      ["flagged"],
+    ),
     ApiMessage: object({
       childTurn: { allOf: [ref("ApiTurn")], nullable: true },
       avatarTurn: ref("ApiTurn"),
@@ -190,7 +199,10 @@ export function attachResponseContracts(document: OpenAPIObject) {
       };
     for (const code of ["400", "401", "404", "409", "422", "429", "502", "503", "504"])
       operation.responses[code] = {
-        description: "Controlled error; no raw input",
+        description:
+          code === "409"
+            ? "Controlled conflict; SAFETY_REVIEW_REQUIRED prevents disclosure of detectable unsafe historical turns or aliases. Metadata and session termination remain available."
+            : "Controlled error; no raw input",
         content: { "application/json": { schema: ref("ApiError") } },
       };
   }

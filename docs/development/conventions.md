@@ -107,3 +107,15 @@ awards or vocabulary counters. Never reset a developer's existing database impli
 - Use the simple per-process limiter; no Redis/persistence/schema expansion.
 - Automated tests use injected transports/local fake servers, never real paid calls.
 - Final Phase 5 acceptance requires separate documented manual live-runtime evidence.
+
+## Phase 6 Safety Rules
+
+- Use existing SafetyService with explicit child/provider/alias context and trusted
+  catalogue avatar identity; never use a fictional preface as a general bypass.
+- Blocked prepared-operation variants contain no raw child/provider content.
+- Filter unsafe provider history; keep accepted mission evidence unchanged in both
+  projected and transactional evaluation. Do not recalculate historical rewards.
+- Review unsafe historical turns/aliases at HTTP response boundaries after commits;
+  keep internal reads, known-ID operations and termination usable.
+- Follow [safety policy](../safety.md) for controlled taxonomy, deterministic support,
+  alias remediation and demo limitations. No external moderation or certification claim.

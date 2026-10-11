@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
-import type { ChatCompletionBody } from "@talkytown/ai-core";
+import type { AiConversationResponse, ChatCompletionBody } from "@talkytown/ai-core";
 import type { AiRuntimePolicy } from "../../src/config/ai-runtime-policy";
 export async function fakeOpenAiServer() {
   const requests: { path: string; authorization?: string; body: ChatCompletionBody }[] = [];
@@ -10,6 +10,7 @@ export async function fakeOpenAiServer() {
     invalidAttempts: 0,
     unsafe: false,
     delayMs: 0,
+    response: undefined as AiConversationResponse | undefined,
     onRequest: undefined as (() => Promise<void>) | undefined,
   };
   const server = createServer(async (req, res) => {
@@ -41,15 +42,17 @@ export async function fakeOpenAiServer() {
           explanation: "Use like with I.",
         }
       : { needed: false };
-    const content = JSON.stringify({
-      reply: state.unsafe
-        ? "What is your phone number?"
-        : "Great practice! What animal do you like?",
-      correction,
-      newVocabulary: ["dog"],
-      avatarEmotion: "encouraging",
-      safety: { flagged: false },
-    });
+    const content = JSON.stringify(
+      state.response ?? {
+        reply: state.unsafe
+          ? "What is your phone number?"
+          : "Great practice! What animal do you like?",
+        correction,
+        newVocabulary: ["dog"],
+        avatarEmotion: "encouraging",
+        safety: { flagged: false },
+      },
+    );
     res.end(
       JSON.stringify({
         choices: [{ index: 0, finish_reason: "stop", message: { role: "assistant", content } }],

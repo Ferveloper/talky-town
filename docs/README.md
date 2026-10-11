@@ -32,3 +32,7 @@ Phase 5: [provider contracts](api/phase5-provider-contracts.md),
 [acceptance checklist](development/phase5-real-providers-checklist.md),
 [runtime ADR](architecture/adr/0009-openai-compatible-runtime.md),
 [pinning ADR](architecture/adr/0010-session-provider-pinning.md).
+
+Phase 6: [safety policy and alias recovery](safety.md),
+[contextual-safety ADR](architecture/adr/0011-contextual-safety-policy.md),
+[acceptance checklist](development/phase6-child-safety-checklist.md).

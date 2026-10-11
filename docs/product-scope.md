@@ -331,6 +331,11 @@ El MVP incluirá las siguientes funcionalidades.
 - Validación básica de entrada y salida.
 - Registro de eventos de seguridad.
 
+Phase 6 concreta estas reglas en [docs/safety.md](safety.md): contexto educativo
+de avatares ficticios, protección de datos detectables y apoyo determinista en español
+ante revelaciones de malestar grave. No hay avisos automáticos, moderación humana
+ni certificación de seguridad infantil. Los proveedores no deciden recompensas.
+
 #### Documentación y entrega
 
 - README completo.

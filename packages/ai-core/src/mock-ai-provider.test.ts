@@ -1,6 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { MockAiProvider } from "./index";
 describe("MockAiProvider", () => {
+  it.each(["What is your name?", "My mother uses a phone", "Can you address this question?"])(
+    "allows educational language: %s",
+    async (message) => {
+      const output = await new MockAiProvider().generateConversationReply({
+        ageBand: "8-10",
+        learningLevel: "starter",
+        mode: "free-talk",
+        message,
+      });
+      expect(output.safety.flagged).toBe(false);
+    },
+  );
   it("returns deterministic gentle correction without rewards", async () => {
     const provider = new MockAiProvider();
     const input = {

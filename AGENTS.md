@@ -193,6 +193,14 @@ Never implement features that ask children for:
 
 Unsafe or unsuitable topics must be redirected in a friendly way.
 
+Phase 6 policy lives in `docs/safety.md`. Use existing SafetyService with explicit
+child/provider/alias contexts; fictional avatar-name questions are legitimate learning.
+Distress support must follow child disclosures, never generated provider text.
+Blocked prepared operations carry no raw input/output and earn no learning rewards.
+Filter provider history without retroactively changing accepted mission evidence.
+Guard unsafe historical content at response boundaries after commits, not internal
+reads or session termination. Unsafe aliases require documented administrative recovery.
+
 Example redirections:
 
 - "Let's talk about something fun and safe."
