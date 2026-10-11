@@ -24,6 +24,8 @@ export type SessionResponse = {
   startedAt: string;
   endedAt: string | null;
 };
+/** Total completion reward recorded for this session, including on a repeated end request. */
+export type EndSessionResponse = SessionResponse & { completionRewardXp: number };
 export type TurnResponse = {
   id: string;
   role: TurnRole;

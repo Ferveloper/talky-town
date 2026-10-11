@@ -182,3 +182,15 @@ blocked solely by active owned sessions of that type; completed/abandoned record
 never block. Message resolution ignores config.isActive and uses the pinned model.
 Keys are environment-only; administrator non-secret network policy lives in a file.
 Seed reruns preserve the adult's selected provider; new demo installs select Mock.
+
+## Phase 7 gamification invariants
+
+No schema or migration changes. XpEvent remains authoritative, including historical
+practice amounts. Numeric levels are derived in 50-XP steps; learningLevel remains
+proficiency. Active streaks use positive practice events on Madrid calendar dates.
+Seven canonical Badge definitions use event criteria with null xpRequired;
+ChildBadge uniqueness preserves one award per profile, with immutable time/source.
+Catalog synchronization is independent of seed. New free-talk completion events use
+the deterministic session completion ID and reason free-talk-completed. End returns
+the stored completion total; no guided reward is granted twice. Reconciliation
+repairs caches/missing supported awards without adding XP or changing existing awards.

@@ -36,3 +36,11 @@ Phase 5: [provider contracts](api/phase5-provider-contracts.md),
 Phase 6: [safety policy and alias recovery](safety.md),
 [contextual-safety ADR](architecture/adr/0011-contextual-safety-policy.md),
 [acceptance checklist](development/phase6-child-safety-checklist.md).
+
+Phase 7: [gamification contracts](api/phase7-gamification-contracts.md),
+[Mock walkthrough/administration](setup/phase7-gamification-walkthrough.md),
+[acceptance checklist](development/phase7-gamification-checklist.md),
+[levels/streaks/badges ADR](architecture/adr/0012-gamification-levels-streaks-and-achievements.md),
+[design system and Phase 8 handoff](design/design-system.md).
+
+[Phase 7 full implementation and acceptance report](development/phase7-implementation-report.md).

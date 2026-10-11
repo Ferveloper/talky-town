@@ -113,7 +113,7 @@ describe("Phase 4 actual PostgreSQL vertical slice", () => {
     expect(ledger._sum.amount).toBe(45);
     expect(await db.xpEvent.count({ where: { sessionId: id } })).toBe(4);
     expect(await db.conversationTurn.count({ where: { sessionId: id } })).toBe(7);
-    expect(await db.childBadge.count({ where: { childProfileId: childId } })).toBe(2);
+    expect(await db.childBadge.count({ where: { childProfileId: childId } })).toBe(4);
     expect(
       await db.vocabularyItem.findUnique({
         where: {

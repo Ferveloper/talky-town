@@ -31,6 +31,7 @@ export type ChildProfileResponse = {
   learningLevel: LearningLevel;
   avatarCode: string | null;
   xpTotal: number;
+  gamificationLevel: number;
   streakDays: number;
 };
 export type MissionResponse = MissionSummary & { id: string };
@@ -39,6 +40,17 @@ export type ProgressResponse = {
   learningLevel: LearningLevel;
   streakDays: number;
   xpTotal: number;
+  gamificationLevel: number;
+  levelProgress: { xpIntoLevel: number; xpToNextLevel: number; xpPerLevel: 50 };
+  practiceTimezone: "Europe/Madrid";
+  badgeCatalog: {
+    code: string;
+    title: string;
+    description: string;
+    icon: string;
+    unlocked: boolean;
+    awardedAt: string | null;
+  }[];
   completedSessions: number;
   completedMissionCount: number;
   completedMissionCodes: string[];

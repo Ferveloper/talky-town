@@ -1385,3 +1385,14 @@ historical transcript/replay/profile responses return SAFETY_REVIEW_REQUIRED;
 known-ID metadata/conversation operations and termination remain available.
 No frontend changes; [safety policy](safety.md) documents alias-list availability
 and administrative recovery without new profile-management routes.
+
+## Phase 7 progress and Phase 8 handoff
+
+Phase 7 supersedes the deferred numeric level/streak work described under Phase 4.
+Backend reads now show current Madrid streaks, a numeric XP level independent of
+proficiency, and seven badges with explicit unlock descriptions. Frontend remains
+mock-driven. Future session summaries must use completionRewardXp as the stored
+session reward and deduplicate celebrations by session ID. Guided completion was
+already celebrated on its completing message; end must not celebrate it again.
+Show correction help gently; Kind Corrector means a recorded correction received.
+See [Phase 7 contract](api/phase7-gamification-contracts.md).

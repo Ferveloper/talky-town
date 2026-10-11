@@ -23,6 +23,8 @@
     "db:migrate:dev": "dotenv -e .env -e .env.example -- prisma migrate dev --schema apps/api/prisma/schema.prisma",
     "db:seed": "dotenv -e .env -e .env.example -- pnpm --filter @talkytown/api exec tsx prisma/seed.ts",
     "db:verify": "dotenv -e .env -e .env.example -- pnpm --filter @talkytown/api exec tsx prisma/verify-seed.ts",
+    "gamification:catalog": "dotenv -e .env -e .env.example -- pnpm --filter @talkytown/api exec tsx prisma/sync-badge-catalog.ts",
+    "gamification:reconcile": "dotenv -e .env -e .env.example -- pnpm --filter @talkytown/api exec tsx prisma/reconcile-gamification.ts",
     "db:validate": "dotenv -e .env -e .env.example -- prisma validate --schema apps/api/prisma/schema.prisma",
     "db:studio": "dotenv -e .env -e .env.example -- prisma studio --schema apps/api/prisma/schema.prisma",
     "e2e": "playwright test",
