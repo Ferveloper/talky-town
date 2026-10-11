@@ -15,11 +15,13 @@ import { api, ApiError, errorText } from "@/lib/api";
 import {
   celebrateOnce,
   clearPending,
+  expirePending,
   readPending,
   RETENTION_MS,
   savePending,
   type Pending,
 } from "@/lib/pending";
+import { useOperationScope } from "@/lib/use-operation-scope";
 import { useAdult } from "@/components/layout/app-shell";
 import { AvatarDisplay, FallbackStateCard, LoadingCard, TalkyCard } from "@/components/ui/talky";
 type Phase =
@@ -62,6 +64,16 @@ export function ConversationScreen({
   profileId: string;
   sessionId: string;
 }) {
+  const { adult } = useAdult();
+  return (
+    <ScopedConversation
+      key={`${adult.id}:${profileId}:${sessionId}`}
+      profileId={profileId}
+      sessionId={sessionId}
+    />
+  );
+}
+function ScopedConversation({ profileId, sessionId }: { profileId: string; sessionId: string }) {
   const { adult, vocabulary } = useAdult();
   const [profile, setProfile] = useState<ChildProfileResponse>();
   const [session, setSession] = useState<SessionResponse>();
@@ -71,20 +83,35 @@ export function ConversationScreen({
   const [text, setText] = useState("");
   const [pending, setPending] = useState<Pending | null>(null);
   const [celebration, setCelebration] = useState("");
+  const [badgeCelebration, setBadgeCelebration] = useState("");
   const [storageWarning, setStorageWarning] = useState(false);
   const [endFailed, setEndFailed] = useState(false);
   const inflight = useRef(false);
   const composer = useRef<HTMLTextAreaElement>(null);
   const transcript = useRef<HTMLDivElement>(null);
   const nearBottom = useRef(true);
-  function failure(error: unknown) {
+  const capture = useOperationScope(`${adult.id}:${profileId}:${sessionId}`, () => {
+    setTurns([]);
+    setText("");
+    setPending(null);
+    setCelebration("");
+    setBadgeCelebration("");
+    setPhase("auth-expired");
+    setError(errorText(new ApiError(401, { code: "UNAUTHORIZED" })));
+  });
+  function discardPending() {
+    const operation = readPending(sessionStorage, adult.id, profileId, sessionId);
+    if (operation) clearPending(operation);
+  }
+  function failure(error: unknown, operation?: Pending) {
     if (
       error instanceof ApiError &&
       (error.detail.code === "SAFETY_REVIEW_REQUIRED" || error.status === 401)
     ) {
       setTurns([]);
       setText("");
-      clearPending();
+      if (operation) clearPending(operation);
+      else discardPending();
       setPending(null);
       vocabulary.delete(sessionId);
       setPhase(error.status === 401 ? "auth-expired" : "safety-review");
@@ -92,6 +119,7 @@ export function ConversationScreen({
     setError(errorText(error));
   }
   async function restore() {
+    const current = capture();
     setError("");
     setTurns([]);
     setPhase("restoring");
@@ -100,8 +128,8 @@ export function ConversationScreen({
         api<SessionResponse>(`/conversations/sessions/${sessionId}`),
         api<ChildProfileResponse>(`/child-profiles/${profileId}`),
       ]);
+      if (!current()) return;
       if (found.childProfileId !== profileId) {
-        clearPending();
         setPending(null);
         vocabulary.delete(sessionId);
         throw new ApiError(404, { code: "RESOURCE_NOT_FOUND" });
@@ -115,6 +143,7 @@ export function ConversationScreen({
         const page: TurnsResponse = await api<TurnsResponse>(
           `/conversations/sessions/${sessionId}/turns?limit=50${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`,
         );
+        if (!current()) return;
         loaded = appendTurns(loaded, page.items);
         cursor = page.nextCursor;
         if (cursor && seen.has(cursor)) throw new ApiError(502, { code: "INVALID_RESPONSE" });
@@ -138,7 +167,7 @@ export function ConversationScreen({
               : found.status,
       );
     } catch (error) {
-      failure(error);
+      if (current()) failure(error);
     }
   }
   useEffect(() => {
@@ -148,15 +177,7 @@ export function ConversationScreen({
     if (!pending || pending.kind === "expired") return;
     const timer = setTimeout(
       () => {
-        const expired: Pending = {
-          version: 1,
-          owner: adult.id,
-          profile: profileId,
-          session: sessionId,
-          createdAt: pending.createdAt,
-          kind: "expired",
-        };
-        savePending(expired);
+        const expired = expirePending(pending);
         setPending(expired);
         setText("");
         setPhase("expired");
@@ -176,11 +197,15 @@ export function ConversationScreen({
     if (phase === "ready") composer.current?.focus({ preventScroll: true });
   }, [phase]);
   useEffect(() => {
-    if (!celebration) return;
-    const timer = setTimeout(() => setCelebration(""), 5000);
+    if (!celebration && !badgeCelebration) return;
+    const timer = setTimeout(() => {
+      setCelebration("");
+      setBadgeCelebration("");
+    }, 5000);
     return () => clearTimeout(timer);
-  }, [celebration]);
+  }, [celebration, badgeCelebration]);
   async function send(retry?: Pending) {
+    const current = capture();
     if (inflight.current || (!retry && !text.trim())) return;
     const operation: Pending = retry || {
       version: 1,
@@ -199,6 +224,7 @@ export function ConversationScreen({
     setPhase("sending");
     setError("");
     setCelebration("");
+    setBadgeCelebration("");
     setPending(operation);
     setText("");
     if (!savePending(operation)) setStorageWarning(true);
@@ -208,7 +234,8 @@ export function ConversationScreen({
         "POST",
         operation.payload,
       );
-      clearPending();
+      clearPending(operation);
+      if (!current()) return;
       setPending(null);
       setTurns((old) =>
         appendTurns(old, [
@@ -229,18 +256,19 @@ export function ConversationScreen({
         const newBadges = response.awardedBadges.filter((code) =>
           celebrateOnce(`${adult.id}:${profileId}:badge:${code}`),
         );
-        if (newBadges.length) setCelebration(`¡Nueva insignia! +${response.xpAwarded} XP`);
+        if (newBadges.length) setBadgeCelebration("¡Nueva insignia!");
         if (response.session.status === "completed")
           celebrateOnce(`${adult.id}:${sessionId}:completed`);
       }
       setPhase(response.session.status === "active" ? "ready" : response.session.status);
     } catch (error) {
-      failure(error);
+      if (current()) failure(error, operation);
     } finally {
       inflight.current = false;
     }
   }
   async function end() {
+    const current = capture();
     if (inflight.current || (pending && pending.kind !== "expired")) return;
     inflight.current = true;
     setPhase("ending");
@@ -251,13 +279,15 @@ export function ConversationScreen({
         `/conversations/sessions/${sessionId}/end`,
         "POST",
       );
-      clearPending();
+      if (pending) clearPending(pending);
+      if (!current()) return;
       setPending(null);
       setSession(response);
       setPhase(response.status === "active" ? "ready" : response.status);
       if (response.status === "completed" && celebrateOnce(`${adult.id}:${sessionId}:completed`))
         setCelebration("¡Práctica terminada!");
     } catch (error) {
+      if (!current()) return;
       setEndFailed(true);
       failure(error);
     } finally {
@@ -281,7 +311,13 @@ export function ConversationScreen({
           <aside>
             <AvatarDisplay
               code={profile?.avatarCode || null}
-              state={phase === "sending" ? "thinking" : celebration ? "celebrating" : "encouraging"}
+              state={
+                phase === "sending"
+                  ? "thinking"
+                  : celebration || badgeCelebration
+                    ? "celebrating"
+                    : "encouraging"
+              }
             />
             <p>Usa palabras inventadas y temas divertidos. No compartas datos personales.</p>
             {session?.mode === "guided-mission" && (
@@ -318,6 +354,11 @@ export function ConversationScreen({
             {celebration && (
               <p className="celebration" role="status">
                 {celebration}
+              </p>
+            )}
+            {badgeCelebration && (
+              <p className="celebration" role="status">
+                {badgeCelebration}
               </p>
             )}
             {error && (
@@ -454,7 +495,6 @@ export function SessionSummaryScreen({
     ])
       .then(([session, progress]) => {
         if (session.childProfileId !== profileId) {
-          clearPending();
           vocabulary.delete(sessionId);
           throw new ApiError(404, { code: "RESOURCE_NOT_FOUND" });
         }

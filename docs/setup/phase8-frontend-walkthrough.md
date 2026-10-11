@@ -20,7 +20,11 @@ Try a free conversation with three accepted words and close it explicitly: it ea
 
 ## Demonstrate recovery and safety
 
-Only accepted child messages appear as bubbles. Failed requests retain one UUID/body for an explicit retry, including after reload when sessionStorage is available. A lost response can represent a committed write. Text expires after fifteen minutes; recover history and close the old conversation before starting another. Keep the tab open when browser storage is unavailable.
+Only accepted child messages appear as bubbles. Failed requests retain one UUID/body for an explicit retry, including after navigating through the child home, rewards, another session or profile, and after reload when sessionStorage is available. Each context has an independent pending slot; late responses clear only their own UUID. A lost response can represent a committed write. Text expires fifteen minutes from the first attempt across all slots; retries never renew this deadline. Logout/authentication expiry clears all slots and an adult identity change purges foreign records. Recover history and close the old conversation before starting another. Keep the tab open when browser storage is unavailable.
+
+If a profile-creation response is lost, TalkyTown checks the owned profiles for an exact match of all submitted attributes. It stays on the creation screen: choose **Usar este perfil** only after reviewing the matching alias, age, level and avatar. A shared-demo match may already have existed. **Comprobar de nuevo** repeats only the GET; **Revisar perfiles** returns to the owned list. No automatic POST retry or profile selection occurs.
+
+Earned message XP and a new badge appear separately. Unlocking a badge adds no XP; restoring or replaying a completed request does not replay its celebration.
 
 Use the existing [safety policy](../safety.md). Unsafe child input and provider output produce controlled redirection/support, no raw child bubble or learning reward. A historical safe-read error hides the entire loaded history; an administrator must perform the documented recovery. Do not promise automated parent alerts or safety certification.
 
@@ -44,3 +48,11 @@ pnpm e2e
 On Bash, prefix E2E_DATABASE_URL to pnpm e2e. The runner rejects non-loopback hosts or database names without \_e2e, applies migrations, creates a uniquely owned demo adult, builds all packages, starts real production Next/Nest on 3100/3101, and cleans only that adult's fixtures. Ports must be free. E2E_SKIP_BUILD=1 is for a known current build only. Use --project=desktop for a targeted run.
 
 The scripted provider test binds 127.0.0.1:1234. It fails if the port is occupied and never connects to an existing LLM. Real keys are blank. Browser traces are off; screenshots and HTML reports use fictional test fixtures. GitHub Actions uses Node 20/Linux and its own PostgreSQL service.
+
+## Final reliability acceptance
+
+The final correction passes 558 unit/HTTP/component tests, including 43 web tests, and all 150 PostgreSQL integration tests on Windows and Node 20.20.2/Linux. The complete five-viewport real-browser suite passes 51 tests with the four existing intentional provider skips on both platforms. Animal Adventure remains 45 XP and four badges. Formatting, lint, typecheck, Prisma validation and production builds pass.
+
+For reproduction of lost responses, the automated tests use route.fetch to let PostgreSQL commit, then abort the browser response. The message regression navigates through home and rewards, returns/reloads the conversation, and retries the identical UUID/body; one child turn and one 5-XP award remain. Another regression holds A's committed response while B has an unresolved message, then verifies B's independent replay. Profile creation uses one POST, loses the committed response, performs an owned-profile lookup and waits for explicit confirmation.
+
+Local Linux runs against the shared PostgreSQL service encountered transient Prisma transaction timeouts. The final matrix passed with a dedicated temporary PostgreSQL container, the existing migrations and unchanged production transaction limits. Use a dedicated isolated PostgreSQL service when reproducing the full suite under local resource contention. See the [implementation report](../development/phase8-implementation-report.md) for the complete inventory, results and earlier-run evidence.

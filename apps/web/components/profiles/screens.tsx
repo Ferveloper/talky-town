@@ -12,7 +12,15 @@ import type {
   StartSessionResponse,
 } from "@talkytown/shared";
 import { api, ApiError, errorText } from "@/lib/api";
-import { clearPending, readPending, savePending, type Pending, RETENTION_MS } from "@/lib/pending";
+import {
+  clearPending,
+  expirePending,
+  readPending,
+  savePending,
+  type Pending,
+  RETENTION_MS,
+} from "@/lib/pending";
+import { useOperationScope } from "@/lib/use-operation-scope";
 import { useAdult } from "@/components/layout/app-shell";
 import {
   AvatarDisplay,
@@ -67,11 +75,24 @@ export function ProfilesScreen() {
   );
 }
 export function NewProfileScreen() {
+  const { adult } = useAdult();
+  return <ScopedNewProfile key={adult.id} />;
+}
+function ScopedNewProfile() {
   const router = useRouter();
   const [avatars, setAvatars] = useState<AvatarsResponse>();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const guard = useRef(false);
+  const [recovery, setRecovery] = useState<{
+    submitted: CreateChildProfileRequest;
+    candidate?: ChildProfileResponse;
+  }>();
+  const capture = useOperationScope("new-profile", () => {
+    setRecovery(undefined);
+    setAvatars(undefined);
+    setBusy(true);
+  });
   const [form, setForm] = useState<CreateChildProfileRequest>({
     alias: "",
     age: 8,
@@ -81,32 +102,69 @@ export function NewProfileScreen() {
     avatarCode: "",
   });
   function load() {
+    const current = capture();
     setError("");
     void api<AvatarsResponse>("/avatars")
       .then((data) => {
+        if (!current()) return;
         setAvatars(data);
         setForm((f) => ({ ...f, avatarCode: data.items[0]?.code || "" }));
       })
-      .catch((e) => setError(errorText(e)));
+      .catch((e) => {
+        if (current()) setError(errorText(e));
+      });
   }
   useEffect(load, []);
+  async function recover(submitted: CreateChildProfileRequest) {
+    const current = capture();
+    setBusy(true);
+    setRecovery({ submitted });
+    try {
+      const owned = await api<ChildProfilesResponse>("/child-profiles");
+      if (!current()) return;
+      const candidate = owned.items.find(
+        (profile) =>
+          profile.alias === submitted.alias &&
+          profile.age === submitted.age &&
+          profile.nativeLanguage === submitted.nativeLanguage &&
+          profile.targetLanguage === submitted.targetLanguage &&
+          profile.learningLevel === submitted.learningLevel &&
+          profile.avatarCode === submitted.avatarCode,
+      );
+      setRecovery({ submitted, candidate });
+      setError(
+        candidate
+          ? ""
+          : "No hemos encontrado un perfil que coincida. Comprueba de nuevo o revisa los perfiles antes de crear otro.",
+      );
+    } catch (error) {
+      if (current()) setError(errorText(error));
+    } finally {
+      if (current()) setBusy(false);
+    }
+  }
   async function submit(event: React.FormEvent) {
     event.preventDefault();
-    if (guard.current) return;
+    if (guard.current || recovery) return;
+    const current = capture();
+    const submitted = { ...form, alias: form.alias.trim() };
     guard.current = true;
     setBusy(true);
     setError("");
     try {
-      const profile = await api<ChildProfileResponse>("/child-profiles", "POST", {
-        ...form,
-        alias: form.alias.trim(),
-      });
-      router.push(`/child/${profile.id}`);
+      const profile = await api<ChildProfileResponse>("/child-profiles", "POST", submitted);
+      if (current()) router.push(`/child/${profile.id}`);
     } catch (e) {
-      setError(errorText(e));
+      if (!current()) return;
+      if (
+        e instanceof ApiError &&
+        ["BACKEND_UNAVAILABLE", "BACKEND_TIMEOUT", "INVALID_RESPONSE"].includes(e.detail.code)
+      ) {
+        await recover(submitted);
+      } else setError(errorText(e));
     } finally {
       guard.current = false;
-      setBusy(false);
+      if (current()) setBusy(false);
     }
   }
   return (
@@ -117,76 +175,112 @@ export function NewProfileScreen() {
       <h1>Crea tu explorador</h1>
       <p>Un adulto prepara este perfil. Usa un alias inventado, nunca un nombre real.</p>
       {error && <FallbackStateCard text={error} retry={!avatars ? load : undefined} />}
+      {recovery && (
+        <TalkyCard>
+          <h2>Comprobar el perfil creado</h2>
+          <p>
+            La respuesta se perdió. La demo comparte perfiles: una coincidencia puede existir desde
+            antes. Confirma que quieres usarla.
+          </p>
+          {recovery.candidate && (
+            <>
+              <p>
+                {recovery.candidate.alias} · {recovery.candidate.age} años ·{" "}
+                {recovery.candidate.learningLevel} · {recovery.candidate.avatarCode}
+              </p>
+              <button
+                className="talky-button"
+                disabled={busy}
+                onClick={() => router.push(`/child/${recovery.candidate!.id}`)}
+              >
+                Usar este perfil
+              </button>
+            </>
+          )}
+          <button
+            className="talky-button secondary"
+            disabled={busy}
+            onClick={() => void recover(recovery.submitted)}
+          >
+            Comprobar de nuevo
+          </button>
+          <Link className="back-link" href="/profiles">
+            Revisar perfiles
+          </Link>
+        </TalkyCard>
+      )}
       {!avatars ? (
         !error && <LoadingCard />
       ) : (
         <form onSubmit={submit} className="talky-card form-stack">
-          <label>
-            Alias ficticio
-            <input
-              required
-              minLength={2}
-              maxLength={24}
-              autoComplete="off"
-              pattern="[\p{L}\p{N} _\-]+"
-              value={form.alias}
-              onChange={(e) => setForm({ ...form, alias: e.target.value })}
-              placeholder="Por ejemplo: EstrellaAzul"
-            />
-          </label>
-          <label>
-            Edad
-            <select
-              value={form.age}
-              onChange={(e) => setForm({ ...form, age: Number(e.target.value) })}
-            >
-              {Array.from({ length: 8 }, (_, i) => i + 5).map((age) => (
-                <option key={age} value={age}>
-                  {age} años
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Nivel de inglés
-            <select
-              value={form.learningLevel}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  learningLevel: e.target.value as CreateChildProfileRequest["learningLevel"],
-                })
-              }
-            >
-              <option value="starter">Primeros pasos</option>
-              <option value="explorer">Explorador</option>
-              <option value="hero">Héroe</option>
-            </select>
-          </label>
-          <p>Español → Inglés</p>
-          <fieldset>
-            <legend>Elige un acompañante</legend>
-            <div className="avatar-choices">
-              {avatars.items.map((avatar) => (
-                <label
-                  className={`avatar-choice ${form.avatarCode === avatar.code ? "selected" : ""}`}
-                  key={avatar.code}
-                >
-                  <input
-                    type="radio"
-                    name="avatar"
-                    value={avatar.code}
-                    checked={form.avatarCode === avatar.code}
-                    onChange={() => setForm({ ...form, avatarCode: avatar.code })}
-                  />
-                  <AvatarDisplay code={avatar.code} compact />
-                </label>
-              ))}
-            </div>
+          <fieldset disabled={busy || !!recovery} className="form-stack">
+            <label>
+              Alias ficticio
+              <input
+                required
+                minLength={2}
+                maxLength={24}
+                autoComplete="off"
+                pattern="[\p{L}\p{N} _\-]+"
+                value={form.alias}
+                onChange={(e) => setForm({ ...form, alias: e.target.value })}
+                placeholder="Por ejemplo: EstrellaAzul"
+              />
+            </label>
+            <label>
+              Edad
+              <select
+                value={form.age}
+                onChange={(e) => setForm({ ...form, age: Number(e.target.value) })}
+              >
+                {Array.from({ length: 8 }, (_, i) => i + 5).map((age) => (
+                  <option key={age} value={age}>
+                    {age} años
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Nivel de inglés
+              <select
+                value={form.learningLevel}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    learningLevel: e.target.value as CreateChildProfileRequest["learningLevel"],
+                  })
+                }
+              >
+                <option value="starter">Primeros pasos</option>
+                <option value="explorer">Explorador</option>
+                <option value="hero">Héroe</option>
+              </select>
+            </label>
+            <p>Español → Inglés</p>
+            <fieldset>
+              <legend>Elige un acompañante</legend>
+              <div className="avatar-choices">
+                {avatars.items.map((avatar) => (
+                  <label
+                    className={`avatar-choice ${form.avatarCode === avatar.code ? "selected" : ""}`}
+                    key={avatar.code}
+                  >
+                    <input
+                      type="radio"
+                      name="avatar"
+                      value={avatar.code}
+                      checked={form.avatarCode === avatar.code}
+                      onChange={() => setForm({ ...form, avatarCode: avatar.code })}
+                    />
+                    <AvatarDisplay code={avatar.code} compact />
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <button className="talky-button" disabled={busy || !form.avatarCode}>
+              {busy ? "Creando…" : "Crear perfil"}
+            </button>
           </fieldset>
-          <button className="talky-button" disabled={busy || !form.avatarCode}>
-            {busy ? "Creando…" : "Crear perfil"}
-          </button>
         </form>
       )}
     </div>
@@ -198,6 +292,22 @@ export function ChildHomeScreen({
 }: {
   profileId: string;
   missionsOnly?: boolean;
+}) {
+  const { adult } = useAdult();
+  return (
+    <ScopedChildHome
+      key={`${adult.id}:${profileId}`}
+      profileId={profileId}
+      missionsOnly={missionsOnly}
+    />
+  );
+}
+function ScopedChildHome({
+  profileId,
+  missionsOnly,
+}: {
+  profileId: string;
+  missionsOnly: boolean;
 }) {
   const router = useRouter();
   const { adult } = useAdult();
@@ -211,7 +321,13 @@ export function ChildHomeScreen({
   const [busy, setBusy] = useState(false);
   const [storageWarning, setStorageWarning] = useState(false);
   const guard = useRef(false);
+  const capture = useOperationScope(`${adult.id}:${profileId}`, () => {
+    setPending(null);
+    setData(undefined);
+    setBusy(true);
+  });
   function load() {
+    const current = capture();
     setError("");
     setData(undefined);
     void (async () => {
@@ -220,8 +336,11 @@ export function ChildHomeScreen({
       const missions = await api<MissionsResponse>(`/child-profiles/${profileId}/missions`);
       return { profile, progress, missions };
     })()
-      .then(setData)
+      .then((data) => {
+        if (current()) setData(data);
+      })
       .catch((e) => {
+        if (!current()) return;
         setData(undefined);
         setError(errorText(e));
       });
@@ -238,15 +357,7 @@ export function ChildHomeScreen({
     if (!pending || pending.kind === "expired") return;
     const timer = setTimeout(
       () => {
-        const expired: Pending = {
-          version: 1,
-          owner: adult.id,
-          profile: profileId,
-          session: "start",
-          createdAt: pending.createdAt,
-          kind: "expired",
-        };
-        savePending(expired);
+        const expired = expirePending(pending);
         setPending(expired);
       },
       Math.max(0, pending.createdAt + RETENTION_MS - Date.now()),
@@ -254,6 +365,7 @@ export function ChildHomeScreen({
     return () => clearTimeout(timer);
   }, [pending, adult.id, profileId]);
   async function start(missionCode?: string, retry?: Pending) {
+    const current = capture();
     if (guard.current) return;
     guard.current = true;
     setBusy(true);
@@ -285,15 +397,17 @@ export function ChildHomeScreen({
         "POST",
         operation.payload,
       );
-      clearPending();
+      clearPending(operation);
+      if (!current()) return;
       setPending(null);
       router.push(`/child/${profileId}/sessions/${response.session.id}`);
     } catch (e) {
+      if (!current()) return;
       if (
         e instanceof ApiError &&
         (e.status === 401 || e.detail.code === "SAFETY_REVIEW_REQUIRED")
       ) {
-        clearPending();
+        clearPending(operation);
         setPending(null);
       }
       setError(errorText(e));
@@ -344,7 +458,7 @@ export function ChildHomeScreen({
           <button
             className="talky-button secondary"
             onClick={() => {
-              clearPending();
+              clearPending(pending);
               setPending(null);
             }}
           >

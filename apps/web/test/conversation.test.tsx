@@ -12,7 +12,14 @@ import type {
 import { api, ApiError } from "../lib/api";
 import { ConversationScreen } from "../components/conversation/conversation-screen";
 import { PendingRetention } from "../components/safety/pending-retention";
-import { PENDING_KEY, RETENTION_MS } from "../lib/pending";
+import {
+  PENDING_KEY,
+  pendingKey,
+  readPending,
+  savePending,
+  clearBrowserSession,
+  RETENTION_MS,
+} from "../lib/pending";
 const state = vi.hoisted(() => ({ vocabulary: new Map<string, string[]>() }));
 vi.mock("../lib/api", async (original) => ({
   ...(await original<typeof import("../lib/api")>()),
@@ -85,6 +92,103 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 describe("conversation boundaries", () => {
+  it("late A completion preserves B and never paints A into the new screen", async () => {
+    let resolve!: (response: MessageResponse) => void;
+    const late = new Promise<MessageResponse>((r) => {
+      resolve = r;
+    });
+    vi.mocked(api).mockImplementation(((path: string, method?: string) =>
+      method === "POST"
+        ? late
+        : path === "/conversations/sessions/B"
+          ? Promise.resolve({ ...session, id: "B" })
+          : defaultApi(path)) as typeof api);
+    const view = render(<ConversationScreen profileId="profile" sessionId="session" />);
+    await waitFor(() => expect(screen.getByLabelText("Tu mensaje en inglés")).toBeEnabled());
+    fireEvent.change(screen.getByLabelText("Tu mensaje en inglés"), { target: { value: "dog" } });
+    fireEvent.click(screen.getByRole("button", { name: "Enviar mensaje" }));
+    const b = {
+      version: 1 as const,
+      owner: "adult",
+      profile: "profile",
+      session: "B",
+      createdAt: Date.now(),
+      kind: "message" as const,
+      payload: {
+        requestId: "00000000-0000-4000-8000-000000000002",
+        message: "cat",
+        inputMode: "text" as const,
+      },
+    };
+    savePending(b);
+    view.rerender(<ConversationScreen profileId="profile" sessionId="B" />);
+    await screen.findByRole("button", { name: "Reintentar mensaje" });
+    await act(async () => resolve(reply));
+    expect(readPending(sessionStorage, "adult", "profile", "B")).toEqual(b);
+    expect(readPending(sessionStorage, "adult", "profile", "session")).toBeNull();
+    expect(view.container.querySelectorAll(".bubble.child")).toHaveLength(0);
+    expect(view.container.querySelectorAll(".celebration")).toHaveLength(0);
+    expect(state.vocabulary.size).toBe(0);
+  });
+  it("logout removes every pending key and invalidates a late response", async () => {
+    let resolve!: (response: MessageResponse) => void;
+    const late = new Promise<MessageResponse>((r) => {
+      resolve = r;
+    });
+    vi.mocked(api).mockImplementation(((path: string, method?: string) =>
+      method === "POST" ? late : defaultApi(path)) as typeof api);
+    const view = render(<ConversationScreen profileId="profile" sessionId="session" />);
+    await waitFor(() => expect(screen.getByLabelText("Tu mensaje en inglés")).toBeEnabled());
+    fireEvent.change(screen.getByLabelText("Tu mensaje en inglés"), { target: { value: "dog" } });
+    fireEvent.click(screen.getByRole("button", { name: "Enviar mensaje" }));
+    savePending({
+      version: 1,
+      owner: "adult",
+      profile: "profile",
+      session: "B",
+      createdAt: Date.now(),
+      kind: "message",
+      payload: {
+        requestId: "00000000-0000-4000-8000-000000000002",
+        message: "cat",
+        inputMode: "text",
+      },
+    });
+    sessionStorage.setItem("talkytown.celebrations.v1", '["identifier-only"]');
+    act(() => clearBrowserSession());
+    await act(async () => resolve(reply));
+    expect(sessionStorage.length).toBe(0);
+    expect(view.container.querySelectorAll(".bubble")).toHaveLength(0);
+    expect(state.vocabulary.size).toBe(0);
+  });
+  it("announces message XP separately from badges and suppresses replay celebrations", async () => {
+    vi.mocked(api).mockImplementation(((path: string, method?: string) =>
+      method === "POST"
+        ? Promise.resolve({ ...reply, awardedBadges: ["first-conversation"] })
+        : defaultApi(path)) as typeof api);
+    const view = render(<ConversationScreen profileId="profile" sessionId="session" />);
+    await waitFor(() => expect(screen.getByLabelText("Tu mensaje en inglés")).toBeEnabled());
+    fireEvent.change(screen.getByLabelText("Tu mensaje en inglés"), { target: { value: "dog" } });
+    fireEvent.click(screen.getByRole("button", { name: "Enviar mensaje" }));
+    await screen.findByText("¡Nueva insignia!");
+    expect(screen.getByText("¡Buen trabajo! +5 XP")).toBeVisible();
+    expect(screen.getByText("¡Nueva insignia!")).not.toHaveTextContent("XP");
+    const body = vi.mocked(api).mock.calls.find((call) => call[1] === "POST")![2];
+    view.unmount();
+    savePending({
+      version: 1,
+      owner: "adult",
+      profile: "profile",
+      session: "session",
+      createdAt: Date.now(),
+      kind: "message",
+      payload: body as import("@talkytown/shared").SendMessageRequest,
+    });
+    const replay = render(<ConversationScreen profileId="profile" sessionId="session" />);
+    fireEvent.click(await screen.findByRole("button", { name: "Reintentar mensaje" }));
+    await waitFor(() => expect(screen.getByLabelText("Tu mensaje en inglés")).toBeEnabled());
+    expect(replay.container.querySelectorAll(".celebration")).toHaveLength(0);
+  });
   it("waits for every history page, deduplicates turns and then enables composition", async () => {
     let resolve!: (value: TurnsResponse) => void;
     const second = new Promise<TurnsResponse>((r) => {
@@ -138,7 +242,7 @@ describe("conversation boundaries", () => {
     await waitFor(() => expect(container.querySelector(".bubble.child")).toHaveTextContent("dog"));
     const posts = vi.mocked(api).mock.calls.filter((call) => call[1] === "POST");
     expect(posts[0]?.[2]).toEqual(posts[1]?.[2]);
-    expect(sessionStorage.getItem(PENDING_KEY)).toBeNull();
+    expect(readPending(sessionStorage, "adult", "profile", "session")).toBeNull();
     expect(container.querySelector(".celebration")).toHaveTextContent("+5 XP");
   });
   it("clears all cached turns and raw pending text on a safety-review response", async () => {
@@ -152,7 +256,7 @@ describe("conversation boundaries", () => {
     fireEvent.click(screen.getByRole("button", { name: "Enviar mensaje" }));
     await waitFor(() => expect(screen.getByText(/revisión de un administrador/)).toBeVisible());
     expect(container.querySelectorAll(".bubble")).toHaveLength(0);
-    expect(sessionStorage.getItem(PENDING_KEY)).toBeNull();
+    expect(readPending(sessionStorage, "adult", "profile", "session")).toBeNull();
     expect(screen.getByLabelText("Tu mensaje en inglés")).toBeDisabled();
   });
   it("never renders a session under a different profile route", async () => {
@@ -179,7 +283,8 @@ describe("conversation boundaries", () => {
     const { container } = render(<ConversationScreen profileId="profile" sessionId="session" />);
     await waitFor(() => expect(screen.getByRole("alert")).toBeVisible());
     expect(container.querySelectorAll(".bubble")).toHaveLength(0);
-    expect(sessionStorage.getItem(PENDING_KEY)).toBeNull();
+    expect(readPending(sessionStorage, "adult", "profile", "session")).toBeNull();
+    expect(readPending(sessionStorage, "adult", "other", "session")?.kind).toBe("message");
     expect(vi.mocked(api).mock.calls.some((call) => call[0].includes("turns"))).toBe(false);
   });
   it("deletes pending raw text in an idle tab at the retention deadline", () => {
@@ -194,12 +299,38 @@ describe("conversation boundaries", () => {
         session: "session",
         createdAt: 1000,
         kind: "message",
-        payload: { requestId: "uuid", message: "unresolved child text" },
+        payload: {
+          requestId: "00000000-0000-4000-8000-000000000001",
+          message: "unresolved child text",
+          inputMode: "text",
+        },
       }),
     );
     render(<PendingRetention />);
-    act(() => vi.advanceTimersByTime(RETENTION_MS));
-    expect(sessionStorage.getItem(PENDING_KEY)).not.toContain("unresolved child text");
-    expect(JSON.parse(sessionStorage.getItem(PENDING_KEY) || "{}").kind).toBe("expired");
+    act(() => vi.advanceTimersByTime(250));
+    savePending({
+      version: 1,
+      owner: "adult",
+      profile: "profile",
+      session: "B",
+      createdAt: Date.now(),
+      kind: "message",
+      payload: {
+        requestId: "00000000-0000-4000-8000-000000000002",
+        message: "other unresolved text",
+        inputMode: "text",
+      },
+    });
+    act(() => vi.advanceTimersByTime(RETENTION_MS - 250));
+    expect(
+      sessionStorage.getItem(
+        pendingKey({ owner: "adult", profile: "profile", session: "session" }),
+      ),
+    ).not.toContain("unresolved child text");
+    expect(readPending(sessionStorage, "adult", "profile", "session")?.kind).toBe("expired");
+    expect(readPending(sessionStorage, "adult", "profile", "B")?.kind).toBe("message");
+    act(() => vi.advanceTimersByTime(250));
+    expect(readPending(sessionStorage, "adult", "profile", "B")?.kind).toBe("expired");
+    expect(Object.values(sessionStorage).join("")).not.toContain("unresolved");
   });
 });

@@ -40,9 +40,11 @@ test("lost start response replays the same UUID without another session", async 
   expect(progress.data.recentSessions).toHaveLength(1);
   expect(progress.data.xpTotal).toBe(0);
 });
-test("lost message response survives reload and replay awards XP once", async ({ page }) => {
+test("lost committed message survives home/rewards navigation and reload; replay awards XP once", async ({
+  page,
+}) => {
   const profile = await createProfile(page);
-  await startFree(page);
+  const session = await startFree(page);
   const bodies: string[] = [];
   await page.route("**/api/conversations/sessions/*/messages", async (route) => {
     bodies.push(route.request().postData() || "");
@@ -55,6 +57,10 @@ test("lost message response survives reload and replay awards XP once", async ({
   await page.getByRole("button", { name: "Enviar mensaje" }).dblclick();
   await expect(page.getByRole("button", { name: "Reintentar mensaje" })).toBeVisible();
   expect(bodies).toHaveLength(1);
+  await page.getByRole("link", { name: "← Mi rincón" }).click();
+  await expect(page.getByRole("button", { name: "Conversación libre", exact: true })).toBeEnabled();
+  await page.getByRole("link", { name: "Mis recompensas", exact: true }).click();
+  await page.goto(`/child/${profile}/sessions/${session}`);
   await page.reload();
   await expect(page.getByRole("button", { name: "Reintentar mensaje" })).toBeVisible();
   await expect(page.locator(".bubble")).toHaveCount(3);
@@ -63,7 +69,11 @@ test("lost message response survives reload and replay awards XP once", async ({
   expect(bodies[1]).toBe(bodies[0]);
   await expect(page.locator(".bubble")).toHaveCount(3);
   expect((await bff(page, `/child-profiles/${profile}/progress`)).data.xpTotal).toBe(5);
-  expect(await page.evaluate(() => sessionStorage.getItem("talkytown.pending.v1"))).toBeNull();
+  expect(
+    await page.evaluate(() =>
+      Object.keys(sessionStorage).filter((key) => key.startsWith("talkytown.pending.")),
+    ),
+  ).toHaveLength(0);
   await page.reload();
   await expect(page.locator(".bubble")).toHaveCount(3);
   await expect(page.locator(".celebration")).toHaveCount(0);
@@ -97,6 +107,77 @@ test("free talk end retry stays at 25 XP and terminal restore stays read-only", 
     (await bff(page, `/conversations/sessions/${session}/end`, "POST")).data.completionRewardXp,
   ).toBe(10);
 });
+
+test("two sessions retain independent retries when A completes late while B is pending", async ({
+  page,
+}) => {
+  const profile = await createProfile(page);
+  const a = await startFree(page);
+  let committed!: () => void;
+  const aCommitted = new Promise<void>((resolve) => {
+    committed = resolve;
+  });
+  let release!: () => void;
+  const releaseA = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let delivered!: () => void;
+  const aDelivered = new Promise<void>((resolve) => {
+    delivered = resolve;
+  });
+  const bodies = new Map<string, string[]>();
+  await page.route("**/api/conversations/sessions/*/messages", async (route) => {
+    const id = route.request().url().split("/").at(-2)!;
+    const attempts = bodies.get(id) || [];
+    attempts.push(route.request().postData()!);
+    bodies.set(id, attempts);
+    if (attempts.length > 1) return route.continue();
+    const response = await route.fetch();
+    expect(response.ok()).toBe(true);
+    if (id === a) {
+      committed();
+      await releaseA;
+      await route.fulfill({ response });
+      delivered();
+    } else await route.abort("failed");
+  });
+  await page.getByLabel("Tu mensaje en inglés").fill("dog");
+  await page.getByRole("button", { name: "Enviar mensaje" }).click();
+  await aCommitted;
+  await page.getByRole("link", { name: "← Mi rincón" }).click();
+  const b = await startFree(page);
+  await page.getByLabel("Tu mensaje en inglés").fill("cat");
+  await page.getByRole("button", { name: "Enviar mensaje" }).click();
+  await expect(page.getByRole("button", { name: "Reintentar mensaje" })).toBeVisible();
+  expect(
+    await page.evaluate(() =>
+      Object.keys(sessionStorage).filter((key) => key.startsWith("talkytown.pending.v2:")),
+    ),
+  ).toHaveLength(2);
+  release();
+  await aDelivered;
+  // B's exact stored body survives regardless of whether navigation canceled A's fetch.
+  const storedB = await page.evaluate(
+    (id) =>
+      Object.entries(sessionStorage).find(
+        ([key]) =>
+          key.startsWith("talkytown.pending.v2:") &&
+          JSON.parse(sessionStorage.getItem(key)!).session === id,
+      )?.[1],
+    b,
+  );
+  expect(JSON.parse(storedB!).payload).toEqual(JSON.parse(bodies.get(b)![0]!));
+  await expect(page.getByRole("button", { name: "Reintentar mensaje" })).toBeVisible();
+  await page.getByRole("button", { name: "Reintentar mensaje" }).click();
+  await expect(page.getByLabel("Tu mensaje en inglés")).toBeEnabled();
+  expect(bodies.get(b)![1]).toBe(bodies.get(b)![0]);
+  for (const id of [a, b]) {
+    const turns = (await bff(page, `/conversations/sessions/${id}/turns`)).data.items;
+    expect(turns.filter((turn: { role: string }) => turn.role === "child")).toHaveLength(1);
+    expect((await bff(page, `/conversations/sessions/${id}`)).data.xpEarned).toBe(5);
+  }
+  expect((await bff(page, `/child-profiles/${profile}/progress`)).data.xpTotal).toBe(10);
+});
 test("blocked personal-data and distress text stays absent and grants no learning", async ({
   page,
 }) => {
@@ -116,7 +197,11 @@ test("blocked personal-data and distress text stays absent and grants no learnin
       data.avatarTurn.content,
     );
     await expect(page.getByText(text, { exact: true })).toHaveCount(0);
-    expect(await page.evaluate(() => sessionStorage.getItem("talkytown.pending.v1"))).toBeNull();
+    expect(
+      await page.evaluate(() =>
+        Object.keys(sessionStorage).filter((key) => key.startsWith("talkytown.pending.")),
+      ),
+    ).toHaveLength(0);
     await expect(page.getByLabel("Tu mensaje en inglés")).toBeEnabled();
   }
   expect((await bff(page, `/child-profiles/${profile}/progress`)).data.xpTotal).toBe(0);
@@ -183,7 +268,11 @@ test("expired authentication clears cookie and unresolved text; logout has no br
   expect((await context.cookies()).some((cookie) => cookie.name === "talkytown_session")).toBe(
     false,
   );
-  expect(await page.evaluate(() => sessionStorage.getItem("talkytown.pending.v1"))).toBeNull();
+  expect(
+    await page.evaluate(() =>
+      Object.keys(sessionStorage).filter((key) => key.startsWith("talkytown.pending.")),
+    ),
+  ).toHaveLength(0);
   await page.getByRole("link", { name: "Entrar de nuevo" }).click();
   await page.getByRole("button", { name: "Entrar en la demo" }).click();
   await expect(page).toHaveURL(/profiles$/);

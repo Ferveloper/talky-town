@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { BookOpen, LogOut, ShieldCheck, Users } from "lucide-react";
 import type { AdultIdentity } from "@talkytown/shared";
 import { api, errorText } from "@/lib/api";
-import { clearBrowserSession } from "@/lib/pending";
+import { clearBrowserSession, sweepPending } from "@/lib/pending";
 type AppState = { adult: AdultIdentity; vocabulary: Map<string, string[]> };
 const Context = createContext<AppState | null>(null);
 export function useAdult() {
@@ -18,6 +18,14 @@ export function AppShell({ adult, children }: { adult: AdultIdentity; children: 
   const vocabulary = useRef(new Map<string, string[]>()).current;
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    try {
+      sweepPending(sessionStorage, Date.now(), adult.id);
+    } catch {
+      /* Storage unavailable. */
+    }
+    vocabulary.clear();
+  }, [adult.id, vocabulary]);
   useEffect(() => {
     const clear = () => vocabulary.clear();
     window.addEventListener("talkytown:auth-expired", clear);

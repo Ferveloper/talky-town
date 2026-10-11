@@ -1,7 +1,7 @@
 # Phase 8 — Functional Child Frontend implementation report
 
 Date: 11 October 2026. Branch: `feature/phase-8-child-frontend`. Starting HEAD:
-`b0a120f2e986cd2cd36a6e3835c5d280e4aded32`. Changes remain uncommitted for review.
+`b0a120f2e986cd2cd36a6e3835c5d280e4aded32` for the original implementation. The final reliability correction starts from committed baseline `aa320e395a6126e4637049446de8569f621f78e6`; its changes remain uncommitted for review.
 
 ## Delivered behavior
 
@@ -51,9 +51,9 @@ frontend types only name wrappers already returned by the API. Provider emotion
 is not invented as a public response field: visual states reflect actual UI
 operations. English proficiency and numerical game level remain distinct.
 
-## Files changed
+## Original implementation inventory
 
-The working-tree change covers 19 existing paths (including one removed page)
+The original Phase 8 implementation covered 19 existing paths (including one removed page)
 and 80 new files, including eight durable browser screenshots. The grouped
 inventory below identifies the implementation and review entry points.
 
@@ -110,10 +110,10 @@ bounded to 16 KiB. Demo login, end, provider test and logout accept an empty bod
 JWTs and API credentials are absent from frontend-visible storage and URLs.
 Upstream failures expose controlled codes, not raw rejected content or secrets.
 
-One unresolved start/message is stored in `sessionStorage`, with strict
+One unresolved start/message per context is stored in operation-scoped `sessionStorage` keys, with strict
 adult/profile/session identity checks and a maximum fifteen-minute lifetime
 from the original attempt. Retries do not extend it. Success, logout, login
-entry/auth expiry, mismatch and safety review remove it. No complete transcript
+entry/auth expiry remove all operations; safety review removes the affected context. Reading another profile/session preserves valid operations. Clears require the context and original UUID, including late asynchronous completions. No complete transcript
 is persisted in browser storage. At the deadline, raw payload is replaced by
 metadata; suspended/closed browsers purge on resume/reopen before offering retry,
 because timers cannot execute while the browser process is stopped.
@@ -135,7 +135,7 @@ fictional data. An unrestricted Phase 13 deployment must isolate visitor demo
 accounts or restrict access. Logout removes the browser cookie; it does not add
 server-side JWT revocation to the existing backend.
 
-## Validation results
+## Original implementation validation (superseded by final correction results below)
 
 Final five-viewport Node 20/Linux matrix: **41 passed, 4 intentional skips**, zero failures or flakes. The final ownership/auth cleanup also passed a rebuilt Linux desktop regression run: **9 passed**. Its updated 22 frontend tests, lint, typechecking, build and formatting passed; the final Windows build and frontend tests passed as well.
 
@@ -179,3 +179,47 @@ The reported `v0.6-gamification` tag is absent both locally and from origin's ta
 refs, verified again on 11 October. No tag was created or changed. No commit,
 push or pull request was performed. A Phase 8 release/tag can be reviewed after
 these uncommitted changes are accepted; this report does not create one.
+
+## Final reliability correction
+
+Baseline reproduction executed the actual pending.ts from aa320e3: after storing session A and reading the home start context, homeReadDeletedA=true and retryA=null. The corrected unit tests preserve A across home, profile and session reads; clear/expiry requires context plus UUID, and retries cannot change body or original retention timestamp. All keys are swept, including legacy migration, and foreign adult identities are purged.
+
+Component regressions cover late A completion while B remains pending, logout during an in-flight response, separate XP/badge announcements with replay suppression, six exact profile-attribute comparisons, uniqueness errors and late profile lookups. Profile recovery reads only owned profiles and requires explicit confirmation without repeating POST.
+
+Real browser regressions commit then abort the message response, navigate through home and rewards, return and reload, and replay the identical UUID/body with one accepted child turn and one 5-XP award. A second regression starts A and B, delays A's committed response while B loses its response, and verifies B's exact replay with one child turn/5 XP per session. Profile creation commits in PostgreSQL then loses its response; the adult explicitly confirms the owned exact match, with one POST and one profile.
+
+### Correction inventory (14 files: 11 modified, 3 added)
+
+- apps/web/lib/pending.ts; apps/web/lib/use-operation-scope.ts
+- apps/web/components/safety/pending-retention.tsx; apps/web/components/layout/app-shell.tsx
+- apps/web/components/conversation/conversation-screen.tsx; apps/web/components/profiles/screens.tsx
+- apps/web/test/pending.test.ts; apps/web/test/conversation.test.tsx; apps/web/test/profile-recovery.test.tsx
+- apps/web/e2e/child-reliability.spec.ts; apps/web/e2e/profile-recovery.spec.ts
+- docs/architecture/adr/0014-frontend-replay-and-celebrations.md; docs/setup/phase8-frontend-walkthrough.md; this report
+
+### Final acceptance results
+
+Final acceptance passes on Windows (Node 24.19.0) and Debian Linux (Node 20.20.2), using pnpm 9.15.0. Both matrices exercise the corrected source; SHA-256 comparisons verified identical pending, conversation and browser regression files. The production backend, Prisma schema, AI core and shared contracts have no correction diff.
+
+| Gate                             | Windows                                                             | Node 20 / Linux                                                     |
+| -------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Unit / HTTP / component tests    | 558 passed                                                          | 558 passed                                                          |
+| Web breakdown                    | BFF 11; pending 12; conversation 8; profile recovery 12             | Same 43 passed                                                      |
+| Backend / packages breakdown     | API 469; AI core 41; shared 5                                       | Same 515 passed                                                     |
+| PostgreSQL integration           | 150 passed                                                          | 150 passed                                                          |
+| PostgreSQL suites                | Safety 122; gamification 8; real-provider 8; functional 7; domain 5 | Same five suites passed                                             |
+| Five-viewport browser acceptance | 51 passed, 4 intentional skips; 4.8 minutes                         | 51 passed, 4 intentional skips; 3.8 minutes                         |
+| Lint / typecheck / formatting    | Passed                                                              | Passed                                                              |
+| Prisma validation                | Passed                                                              | Passed; existing migration deploy, seed and fingerprint also passed |
+| Production build                 | All four packages passed                                            | All four packages passed                                            |
+| Installation                     | Existing installed workspace                                        | Frozen-lockfile install passed                                      |
+
+The four intentional skips are the existing non-desktop provider adapter scenario. All five projects exercise the journey, response-loss/navigation replay, two-session isolation, profile recovery, safety, auth expiry, logout and responsive/accessibility checks. Animal Adventure remains 45 XP and exactly four badges. Axe reports zero WCAG 2 A/AA violations on the twelve existing screens per viewport and the new profile-recovery panel. The final matrices have zero failures and no automatic retries. Provider pinning and shared-demo privacy remain verified.
+
+Validation used real Next/Nest production servers, deterministic Mock or the controlled HTTP provider, blank real AI keys, and only test-owned adults/profiles. Linux browser acceptance ultimately used a dedicated PostgreSQL 16.14 container with a temporary memory-backed data directory and loopback port 55433. It applied the existing two migrations to talkytown_reliability_e2e; no schema or production timeout was changed. PostgreSQL integration tests also passed against the regular isolated disk-backed regression database. The developer database was never reset.
+
+Earlier runs are recorded rather than hidden: Windows browser setup under concurrent validation produced 46 passes / 5 failures / 4 skips, followed by a complete rebuilt serialized 51-pass run. Linux's shared PostgreSQL instance produced 50 passes / 1 failure and then 49 passes / 2 failures, with four skips each; logs showed Prisma P2028 five-second transaction expiration in different operations. A complete dedicated-database matrix then passed 51 / 4 skips. An initial Windows build also encountered Prisma DLL EPERM while database tests were running; serialization resolved it. These infrastructure retries changed neither NestJS functionality nor transaction limits.
+
+Final local evidence remains in ignored .temp/phase8-reliability-unit-final.log, phase8-reliability-db-windows.log, phase8-reliability-e2e-final.log, phase8-reliability-linux-final.log and phase8-reliability-linux-e2e-dedicated.log. The Windows HTML report is playwright-report/index.html; the copied final Linux HTML report is .temp/phase8-linux-final-browser-report/index.html. Earlier failed Linux HTML reports are retained separately. Temporary validation containers were removed after exporting evidence.
+
+Correction changes remain uncommitted on aa320e395a6126e4637049446de8569f621f78e6. No commit, push, PR or tag was performed. The three reliability issues are corrected and all requested final gates pass: PHASE 8 READY FOR PR.
