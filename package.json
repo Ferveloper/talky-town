@@ -27,10 +27,11 @@
     "gamification:reconcile": "dotenv -e .env -e .env.example -- pnpm --filter @talkytown/api exec tsx prisma/reconcile-gamification.ts",
     "db:validate": "dotenv -e .env -e .env.example -- prisma validate --schema apps/api/prisma/schema.prisma",
     "db:studio": "dotenv -e .env -e .env.example -- prisma studio --schema apps/api/prisma/schema.prisma",
-    "e2e": "playwright test",
+    "e2e": "node scripts/run-e2e.mjs",
     "clean": "turbo clean && rm -rf node_modules"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.18.0",
     "@playwright/test": "^1.49.1",
     "dotenv-cli": "^7.4.4",

@@ -1,5 +1,19 @@
 # TalkyTown — UX Flow
 
+The current Phase 8 flow is: landing → adult demo login → select/create a fictional
+profile → child home/eligible mission → text conversation → stored summary/rewards.
+Adultos links to profile progress and explicit provider save/activate/test actions.
+Login preserves provider selection. The demo account and profiles are shared.
+The detailed voice/map concepts below remain future design, not current controls.
+
+Conversation states cover restoration, ready, sending, explicit retry, expired auth,
+safety review, ending and completed/abandoned. Restore every history page before
+composition. Display only accepted backend turns and exact support text. A failed
+write can already be committed: reuse its UUID/body. Pending text expires in fifteen
+minutes and is deleted on resolution/logout. Safety review hides all cached history.
+Summaries are read-only; restored rewards have no celebrations. Voice is disabled
+until Phase 9. See [replay ADR](architecture/adr/0014-frontend-replay-and-celebrations.md).
+
 ## 1. Propósito del documento
 
 Este documento define la experiencia de usuario del MVP de **TalkyTown**, una aplicación web gamificada para que niños de 5 a 12 años practiquen idiomas conversando con avatares impulsados por IA.

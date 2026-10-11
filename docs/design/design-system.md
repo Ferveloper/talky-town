@@ -1,10 +1,18 @@
 # TalkyTown design system
 
-The current web shell uses Tailwind and shadcn-style components: cream background,
-sky-blue primary, warm yellow secondary, mint accents and dark readable text.
+The Phase 8 frontend uses Tailwind and the existing shadcn-style Button/CVA:
+cream #fff9f0, sky #40c4ff, yellow #ffcc33, green #88cc44 and dark text #333333.
+Primary interactive controls use dark blue #00668a with white text for contrast;
+bright blue is a decorative accent.
 Large rounded controls and friendly town cards support the child flow. Adult
 screens should favor clear summaries and restrained decoration. Voice failures
-must retain a usable text path. Phase 7 changes no frontend code.
+must retain a usable text path. Phase 8 exposes text only; microphone is disabled.
+
+Local Quicksand 500/600/700, 24px card corners, 32px buttons, at least 48px touch
+targets, visible focus, live operation feedback and reduced-motion CSS support
+desktop, tablet and 360/390px mobile screens. Adult views use simple data tables.
+Mission pictograms are OS emoji. Luna's source has an opaque white background;
+Max is a dedicated transparent fox explorer. See [asset provenance](phase8-avatar-provenance.md).
 
 For Phase 8, render server-provided gamificationLevel separately from English
 learningLevel. Present level progress as XP into the next 50-XP step; an exact

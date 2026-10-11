@@ -1,5 +1,14 @@
 # TalkyTown — Product Scope
 
+Phase 8 implements a Spanish text-only browser demo over the existing backend.
+Current routes cover profiles, missions, conversations, summaries, rewards, adult
+progress and provider settings. The following vision also describes future work:
+speech starts in Phase 9; a town map, lessons, avatar editing, private visitor
+accounts and advanced analytics are not Phase 8 features. The shared demo adult
+uses fictional data and offers no privacy isolation between visitors. Before
+unrestricted Phase 13 deployment, isolate visitor accounts or restrict access.
+See the [functional walkthrough](setup/phase8-frontend-walkthrough.md).
+
 ## 1. Propósito del documento
 
 Este documento define el alcance inicial del MVP de **TalkyTown**, una aplicación web gamificada para que niños de 5 a 12 años puedan practicar idiomas mediante conversaciones con avatares impulsados por IA.

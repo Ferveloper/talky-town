@@ -159,22 +159,22 @@ Existing `.env` files from Phase 2 must update their database URL from port 5432
 
 ## 6. Root scripts
 
-| Script                | Purpose                                       |
-| --------------------- | --------------------------------------------- |
-| `pnpm dev`            | Start all development apps                    |
-| `pnpm build`          | Build all apps/packages                       |
-| `pnpm test`           | Run all tests                                 |
-| `pnpm test:db`        | Verify PostgreSQL constraints and seed reruns |
-| `pnpm lint`           | Run linting                                   |
-| `pnpm format`         | Format the repository                         |
-| `pnpm db:migrate`     | Run Prisma migrations in the API app          |
-| `pnpm db:migrate:dev` | Create/apply a development Prisma migration   |
-| `pnpm db:seed`        | Seed demo data                                |
-| `pnpm db:verify`      | Check demo relationships, counters and XP     |
-| `pnpm db:validate`    | Validate the Prisma schema                    |
-| `pnpm db:studio`      | Open Prisma Studio                            |
-| `pnpm typecheck`      | Run TypeScript checks                         |
-| `pnpm e2e`            | Run Playwright tests when E2E specs exist     |
+| Script                | Purpose                                                                    |
+| --------------------- | -------------------------------------------------------------------------- |
+| `pnpm dev`            | Start all development apps                                                 |
+| `pnpm build`          | Build all apps/packages                                                    |
+| `pnpm test`           | Run all tests                                                              |
+| `pnpm test:db`        | Verify PostgreSQL constraints and seed reruns                              |
+| `pnpm lint`           | Run linting                                                                |
+| `pnpm format`         | Format the repository                                                      |
+| `pnpm db:migrate`     | Run Prisma migrations in the API app                                       |
+| `pnpm db:migrate:dev` | Create/apply a development Prisma migration                                |
+| `pnpm db:seed`        | Seed demo data                                                             |
+| `pnpm db:verify`      | Check demo relationships, counters and XP                                  |
+| `pnpm db:validate`    | Validate the Prisma schema                                                 |
+| `pnpm db:studio`      | Open Prisma Studio                                                         |
+| `pnpm typecheck`      | Run TypeScript checks                                                      |
+| `pnpm e2e`            | Build and run isolated real browser acceptance (E2E_DATABASE_URL required) |
 
 ---
 
@@ -255,7 +255,7 @@ The final delivery should include:
 
 ## 11. Current phase
 
-Current phase: **Phase 7 - Gamification MVP**
+Current phase: **Phase 8 - Functional Child Frontend**
 
 Expected outcome:
 
@@ -267,7 +267,11 @@ Expected outcome:
 - Database-authoritative provider configuration/selection and controlled runtime errors.
 - Real cloud/local inference, strict pedagogical JSON validation and safe native fetch.
 - Provider/model pinning, active-session URL protection and deterministic offline tests.
-- Existing Prisma schema/migrations/seed preserved; frontend screens unchanged.
+- Existing Prisma schema, mission/reward/safety/provider architecture preserved.
+- Spanish functional frontend: demo login, profiles, missions, text conversation, summary, rewards and adult views.
+- HttpOnly-cookie BFF, bounded immutable retries, safe history restoration and deduplicated celebrations.
+- Adult provider save, activate and live test as separate explicit actions; login preserves selection.
+- Local Quicksand/Luna/Max assets, responsive keyboard-accessible screens and reduced motion.
 - Contextual EN/ES guardrails, Spanish distress support and safe historical response boundaries.
 - Derived numeric levels, Madrid streaks, seven event-based badges and stable completion rewards.
 - Independent badge catalog synchronization and dry-run/apply historical reconciliation.
@@ -285,14 +289,26 @@ The demo seed includes Sofia (age 9, 120 XP), Leo (age 6, 35 XP), Luna, Max,
 four missions and seven badge definitions, plus four sessions, 22 turns, 14 XP
 events, seven badge awards and six vocabulary items. Historical practice dates are
 fixed in May 2026; current streaks are derived using Europe/Madrid calendar dates.
-Phase 4 added functional backend APIs. Phase 5 adds real provider execution while
-frontend integration remains deferred. Automated acceptance is separate from the
+Phase 4 added functional backend APIs. Phase 5 added real provider execution.
+Phase 8 integrates the functional frontend. Automated acceptance is separate from the
 required manual real-runtime validation; do not claim final Phase 5 completion
 until that evidence is recorded.
 learningLevel is learner proficiency and never recalculated from XP. Phase 7 adds
 separate numeric gamification levels, current streaks and seven event-based badges.
-XP remains ledger-authoritative; badges grant no bonus XP. Frontend integration is
-deferred to Phase 8.
+XP remains ledger-authoritative; badges grant no bonus XP. Speech remains deferred to Phase 9.
+
+The demo adult is shared, with fictional profiles and no visitor privacy isolation.
+Before unrestricted Phase 13 deployment, isolate visitor accounts or restrict demo access.
+Login never activates Mock implicitly. Existing conversations keep their provider/model.
+See the [frontend walkthrough](docs/setup/phase8-frontend-walkthrough.md),
+[Phase 8 implementation report and evidence](docs/development/phase8-implementation-report.md),
+[BFF decision](docs/architecture/adr/0013-frontend-bff-and-demo-session.md) and
+[retry/retention decision](docs/architecture/adr/0014-frontend-replay-and-celebrations.md).
+
+Browser acceptance requires a separate loopback PostgreSQL database ending in \_e2e:
+set E2E_DATABASE_URL, install Chromium with pnpm exec playwright install chromium,
+then run pnpm e2e. The runner builds real apps on ports 3100/3101 and cleans only
+its uniquely owned fictional fixtures. Do not reset the development database.
 
 Phase 7: [API and badge criteria](docs/api/phase7-gamification-contracts.md),
 [Mock walkthrough and administration](docs/setup/phase7-gamification-walkthrough.md),

@@ -2,6 +2,24 @@
 
 Este inventario organiza las pantallas generadas con Google Stitch y las clasifica para su uso en desarrollo asistido por IA.
 
+## Estado de implementación — Phase 8
+
+Las referencias 01–13 están conectadas al backend real mediante componentes
+Next.js reutilizables. La corrección 08 es un estado de la conversación; 07b es
+su variante responsive. La referencia 14 se representa honestamente como voz
+deshabilitada hasta Phase 9; 15 es un estado de error/reintento sin cambio
+automático a Mock. No se ha copiado el HTML generado como código de producción.
+
+El selector 03 se reconstruyó con su HTML y las pantallas vecinas porque el PNG
+era incompleto. Luna conserva su fondo blanco opaco original; Max ahora tiene
+una ilustración propia de zorro explorador transparente, vinculada al código
+`max`. Leo no se usa como sustituto de Max.
+
+Consulta la matriz de rutas/API, pruebas y capturas en
+[`docs/development/phase8-implementation-report.md`](../../../docs/development/phase8-implementation-report.md)
+y la procedencia de los assets en
+[`docs/design/phase8-avatar-provenance.md`](../../../docs/design/phase8-avatar-provenance.md).
+
 ## Pantallas principales y estados MVP
 
 | Archivo | Tipo | Pantalla | Tamaño | Peso | HTML | Uso | Observaciones |

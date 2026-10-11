@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
+import { PendingRetention } from "@/components/safety/pending-retention";
 
 import "./globals.css";
+import "@fontsource/quicksand/500.css";
+import "@fontsource/quicksand/600.css";
+import "@fontsource/quicksand/700.css";
 
 export const metadata: Metadata = {
   title: "TalkyTown",
@@ -13,8 +17,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="es">
+      <body>
+        <PendingRetention />
+        <a className="skip-link" href="#main-content">
+          Saltar al contenido
+        </a>
+        {children}
+      </body>
     </html>
   );
 }
