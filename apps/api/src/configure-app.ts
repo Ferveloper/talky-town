@@ -18,7 +18,7 @@ export function configureApp(app: INestApplication) {
         return new BadRequestException({
           code: "VALIDATION_ERROR",
           fields: errors.map((error) => ({
-            field: error.property,
+            field: error.constraints?.whitelistValidation ? "unknown" : error.property,
             rules: Object.keys(error.constraints ?? {}),
           })),
         });
@@ -28,8 +28,8 @@ export function configureApp(app: INestApplication) {
   app.useGlobalFilters(new ApiExceptionFilter());
   const config = new DocumentBuilder()
     .setTitle("TalkyTown API")
-    .setDescription("Phase 5 backend with Mock and real OpenAI-compatible runtimes.")
-    .setVersion("0.5.0")
+    .setDescription("Phase 6 backend with contextual child safety and Mock/cloud/local runtimes.")
+    .setVersion("0.6.0")
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

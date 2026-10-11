@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { AgeBand, LearningLevel, PracticeMode } from "@talkytown/shared";
+import type { AgeBand, LearningLevel, MessageResponse, PracticeMode } from "@talkytown/shared";
 import { PrismaService } from "../prisma/prisma.service";
 import { ProfileOwnershipService } from "../child-profiles/profile-ownership.service";
 import { PersistenceIds } from "../common/persistence-ids.service";
@@ -10,7 +10,7 @@ import { AiProvidersService, providerFingerprint } from "../ai-providers/ai-prov
 import { MissionEvaluationService } from "../missions/mission-evaluation.service";
 import { MissionsService } from "../missions/missions.service";
 import { SafetyService } from "../safety/safety.service";
-import { SAFE_REDIRECTION } from "../safety/safety-rules";
+import type { PreparedOperation } from "./prepared-operation";
 import {
   ConversationStoreService,
   snapshotFingerprint,
@@ -36,7 +36,7 @@ export class ConversationsService {
     if (input.mode === "free-talk" && input.missionCode !== undefined)
       fail(400, "MISSION_NOT_ALLOWED");
     const id = this.ids.session(userId, input.childProfileId, input.requestId);
-    return this.db.$transaction(async (db) => {
+    const { avatarName, ...result } = await this.db.$transaction(async (db) => {
       const profile = await this.ownership.lock(userId, input.childProfileId, db);
       const existing = await db.conversationSession.findUnique({
         where: { id },
@@ -55,6 +55,7 @@ export class ConversationsService {
           created: false,
           session: sessionResponse(existing),
           openingTurn: turnResponse(opening),
+          avatarName: existing.avatar?.name,
         };
       }
       if (!profile.avatar?.isActive) fail(422, "AVATAR_UNAVAILABLE");
@@ -95,14 +96,18 @@ export class ConversationsService {
         created: true,
         session: sessionResponse(session),
         openingTurn: turnResponse(opening),
+        avatarName: profile.avatar.name,
       };
     });
+    // Response review happens after commit, never in transaction/replay lookup.
+    this.safety.assertReturnedTurnsSafe([result.openingTurn], avatarName);
+    return result;
   }
   async get(userId: string, id: string) {
     return sessionResponse(await this.store.read(userId, id));
   }
   async turns(userId: string, id: string, query: ListTurnsQueryDto) {
-    await this.store.read(userId, id);
+    const session = await this.store.read(userId, id);
     if (query.cursor) {
       const cursor = await this.db.conversationTurn.findFirst({
         where: { id: query.cursor, sessionId: id },
@@ -116,8 +121,10 @@ export class ConversationsService {
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
     });
     const page = turns.slice(0, query.limit);
+    const items = page.map(turnResponse);
+    this.safety.assertReturnedTurnsSafe(items, session.avatar?.name);
     return {
-      items: page.map(turnResponse),
+      items,
       nextCursor: turns.length > query.limit ? page.at(-1)!.id : null,
     };
   }
@@ -125,16 +132,25 @@ export class ConversationsService {
     const operationId = this.ids.operation(id, input.requestId);
     for (let attempt = 0; attempt < 3; attempt++) {
       const replay = await this.store.replay(userId, id, operationId);
-      if (replay) return replay;
+      if (replay) return this.reviewMessageResponse(userId, id, replay);
       const session = await this.store.read(userId, id);
       this.store.assertActive(session);
-      const selected = await this.providers.forSession(userId, session);
-      const decision = this.safety.screen(input.message);
-      const history = session.turns
-        .filter((turn) => turn.role !== "system" && !this.safety.screen(turn.content).flagged)
-        .slice(-20);
-      const projected =
-        !decision.flagged && session.mission
+      const decision = this.safety.screen(input.message, {
+        source: "child-input",
+        avatarName: session.avatar!.name,
+      });
+      const snapshot = snapshotFingerprint(session);
+      let prepared: PreparedOperation;
+      if (decision.flagged) {
+        prepared = { kind: "blocked-input", snapshot, decision };
+      } else {
+        const selected = await this.providers.forSession(userId, session);
+        const history = session.turns
+          .filter((turn) => this.safety.isStoredTurnSafe(turn, session.avatar!.name))
+          .slice(-20);
+        // Mission history is previously accepted domain evidence. Do not reinterpret it
+        // with today's moderation rules: Animal Adventure depends on its first animal.
+        const projected = session.mission
           ? this.evaluation.evaluate(
               session.mission.code,
               session.missionProgress,
@@ -144,38 +160,47 @@ export class ConversationsService {
                 .map((turn) => turn.content),
             ).progress
           : session.missionProgress;
-      const output = decision.flagged
-        ? {
-            reply: SAFE_REDIRECTION,
-            newVocabulary: [],
-            avatarEmotion: "encouraging" as const,
-            safety: { flagged: true as const, reason: "other" as const },
-          }
-        : await this.providers.generate(userId, selected, {
-            ageBand: session.childProfile.ageBand as AgeBand,
-            learningLevel: session.childProfile.level as LearningLevel,
-            mode: session.mode as PracticeMode,
-            message: input.message,
-            avatar: { name: session.avatar!.name, personality: session.avatar!.personality },
-            ...(session.mission
-              ? this.evaluation.context(session.mission.code, session.missionProgress, projected)
-              : {}),
-            previousTurns: history.map((turn) => ({
-              role: turn.role as "child" | "avatar" | "system",
-              content: turn.content,
-            })),
-          });
-      const outputDecision = decision.flagged ? decision : this.safety.screenOutput(output);
-      try {
-        return await this.store.persist(userId, id, operationId, input, {
-          snapshot: snapshotFingerprint(session),
-          provider: providerFingerprint(selected),
-          output,
-          safety:
-            outputDecision.flagged && !decision.flagged
-              ? { ...outputDecision, reason: "unsafe-provider-output", category: "provider-output" }
-              : outputDecision,
+        const output = await this.providers.generate(userId, selected, {
+          ageBand: session.childProfile.ageBand as AgeBand,
+          learningLevel: session.childProfile.level as LearningLevel,
+          mode: session.mode as PracticeMode,
+          message: input.message,
+          avatar: { name: session.avatar!.name, personality: session.avatar!.personality },
+          ...(session.mission
+            ? this.evaluation.context(session.mission.code, session.missionProgress, projected)
+            : {}),
+          previousTurns: history.map((turn) => ({
+            role: turn.role as "child" | "avatar" | "system",
+            content: turn.content,
+          })),
         });
+        const outputDecision = this.safety.screenOutput(output, session.avatar!.name);
+        const provider = providerFingerprint(selected);
+        prepared = outputDecision.flagged
+          ? {
+              kind: "blocked-output",
+              snapshot,
+              provider,
+              decision: {
+                ...outputDecision,
+                reason: "unsafe-provider-output",
+                category: "provider-output",
+                action: "redirect",
+                template: "redirect",
+              },
+            }
+          : {
+              kind: "accepted",
+              snapshot,
+              provider,
+              message: input.message,
+              inputMode: input.inputMode,
+              output,
+            };
+      }
+      try {
+        const result = await this.store.persist(userId, id, operationId, prepared);
+        return await this.reviewMessageResponse(userId, id, result);
       } catch (error) {
         if (!(error instanceof StaleConversation)) throw error;
       }
@@ -184,5 +209,13 @@ export class ConversationsService {
   }
   end(userId: string, id: string) {
     return this.store.end(userId, id);
+  }
+  private async reviewMessageResponse(userId: string, id: string, result: MessageResponse) {
+    const session = await this.store.read(userId, id);
+    this.safety.assertReturnedTurnsSafe(
+      result.childTurn ? [result.childTurn, result.avatarTurn] : [result.avatarTurn],
+      session.avatar?.name,
+    );
+    return result;
   }
 }

@@ -18,13 +18,16 @@ export class ChildProfilesService {
       include: profileInclude,
       orderBy: [{ createdAt: "asc" }, { id: "asc" }],
     });
+    profiles.forEach((profile) => this.safety.assertAliasSafeToReturn(profile.alias));
     return { items: profiles.map(profileResponse) };
   }
   async get(userId: string, profileId: string) {
-    return profileResponse(await this.ownership.get(userId, profileId));
+    const profile = await this.ownership.get(userId, profileId);
+    this.safety.assertAliasSafeToReturn(profile.alias);
+    return profileResponse(profile);
   }
   async create(userId: string, input: CreateChildProfileDto) {
-    if (this.safety.screen(input.alias).flagged) fail(400, "UNSAFE_ALIAS");
+    if (this.safety.screen(input.alias, { source: "alias" }).flagged) fail(400, "UNSAFE_ALIAS");
     return this.db.$transaction(async (db) => {
       const avatar = await db.avatar.findUnique({ where: { code: input.avatarCode } });
       if (!avatar?.isActive) fail(422, "AVATAR_UNAVAILABLE");

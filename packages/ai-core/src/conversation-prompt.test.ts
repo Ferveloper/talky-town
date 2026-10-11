@@ -11,6 +11,20 @@ const input: ConversationRequest = {
   missionPrompt: "What animal do you like?",
 };
 describe("prompt composition", () => {
+  it("keeps fictional identity, relationship boundaries and distress policy separate", () => {
+    const system = composeConversationPrompt(input)[0]!.content;
+    for (const policy of [
+      "trusted fictional avatar name",
+      "only friend",
+      "secrecy",
+      "simple Spanish",
+      "never infer child distress",
+      "contact parents or emergency services",
+    ])
+      expect(system).toContain(policy);
+    expect(system).toContain("untrusted practice");
+    expect(system).toContain("Do not grant or discuss XP");
+  });
   it.each(["5-7", "8-10", "11-12"] as const)(
     "includes age, proficiency, avatar and authoritative objectives: %s",
     (ageBand) => {

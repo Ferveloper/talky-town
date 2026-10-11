@@ -89,3 +89,8 @@ safe fetch and the in-memory limiter. Non-secret server policy lives in
 config/ai-runtime-policy.json. Existing conversations retain orchestration and
 transactions with pinned-session resolution; domain rule owners remain unchanged.
 Tests include local fake HTTP servers and actual PostgreSQL persistence checks.
+
+Phase 6 extends existing safety rules/service with pure safety-responses templates.
+Conversations use a prepared-operation union and content-bearing response guards.
+Safety unit/HTTP/PostgreSQL suites cover contextual rules and Phase 4/5 invariants;
+policy and administrative alias recovery live in docs/safety.md.

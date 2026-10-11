@@ -31,7 +31,11 @@ export class MockAiProvider implements AiProvider {
     return { available: true, providerId: this.id, detail: "Mock requires no API keys." };
   }
   async generateConversationReply(input: ConversationRequest): Promise<AiConversationResponse> {
-    if (/\b(address|phone|full name|school name|where do you live)\b/i.test(input.message)) {
+    if (
+      /\b(your phone number|my phone number|your address|my address|full name|school name)\b/i.test(
+        input.message,
+      )
+    ) {
       return {
         reply: "Let's talk about something fun and safe.",
         newVocabulary: [],

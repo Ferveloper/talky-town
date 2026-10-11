@@ -255,7 +255,7 @@ The final delivery should include:
 
 ## 11. Current phase
 
-Current phase: **Phase 5 - Real OpenAI-Compatible AI Providers**
+Current phase: **Phase 6 - Child Safety and Guardrails**
 
 Expected outcome:
 
@@ -268,6 +268,10 @@ Expected outcome:
 - Real cloud/local inference, strict pedagogical JSON validation and safe native fetch.
 - Provider/model pinning, active-session URL protection and deterministic offline tests.
 - Existing Prisma schema/migrations/seed preserved; frontend screens unchanged.
+- Contextual EN/ES guardrails, Spanish distress support and safe historical response boundaries.
+
+See [safety policy and historical alias recovery](docs/safety.md) and
+[Phase 6 acceptance](docs/development/phase6-child-safety-checklist.md).
 
 See [domain model](docs/architecture/domain-model.md),
 [Phase 4 checklist](docs/development/phase4-functional-backend-checklist.md),

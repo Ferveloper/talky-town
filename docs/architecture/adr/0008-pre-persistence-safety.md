@@ -22,3 +22,11 @@ ADR 0009 adds real runtimes without changing these safety boundaries. Strict Zod
 response parsing precedes SafetyService. Invalid real output may be regenerated
 once; failure writes nothing and never selects Mock. Provider/model are pinned by
 ADR 0010. Safe history alone leaves the process; no aliases/IDs or unsafe input.
+
+## Phase 6 extension
+
+ADR 0011 adds source-aware rules, deterministic distress support and prepared-operation
+isolation. Input screening precedes inference configuration; blocked requests need no
+runtime. Provider-history filtering does not reclassify accepted mission evidence.
+Historical content/alias guards run at response boundaries, after commits where
+applicable, never inside snapshot reads or termination. No data migration/redaction.

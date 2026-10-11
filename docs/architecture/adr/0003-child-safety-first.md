@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted — Phase 6; implemented policy and limits in [docs/safety.md](../../safety.md).
 
 ## Context
 
