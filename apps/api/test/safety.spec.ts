@@ -1,15 +1,63 @@
 import { describe, expect, it } from "vitest";
 import { SafetyService } from "../src/safety/safety.service";
 import { screenText } from "../src/safety/safety-rules";
-import { allowedFixtures, blockedFixtures } from "./helpers/safety-fixtures";
+import {
+  allowedFixtures,
+  blockedFixtures,
+  reviewedProviderFixtures,
+} from "./helpers/safety-fixtures";
 describe("mandatory safety", () => {
-  it.each(blockedFixtures)("classifies $id", ({ text, reason }) => {
+  it.each(blockedFixtures)("classifies $id", ({ text, reason, support }) => {
     expect(screenText(text)).toMatchObject({ flagged: true, reason });
+    if (support) {
+      expect(screenText(text)).toEqual({
+        flagged: true,
+        category: "wellbeing",
+        reason,
+        severity: support === "self-harm" ? "critical" : "warning",
+        action: "support",
+        template: support,
+      });
+      const sources =
+        support === "self-harm"
+          ? (["provider-output", "alias"] as const)
+          : (["provider-output"] as const);
+      for (const source of sources)
+        expect(screenText(text, { source })).toMatchObject({
+          flagged: true,
+          action: "redirect",
+          template: "redirect",
+        });
+    }
   });
-  it.each(allowedFixtures)("allows educational $id", ({ text }) => {
+  it.each(allowedFixtures)("allows educational $id", ({ id, text }) => {
     expect(screenText(text, { source: "child-input", avatarName: "Luna" })).toEqual({
       flagged: false,
     });
+    if (!id.startsWith("avatar-name"))
+      expect(screenText(text, { source: "provider-output", avatarName: "Luna" })).toEqual({
+        flagged: false,
+      });
+  });
+  it.each(reviewedProviderFixtures)("blocks reviewed output $id", ({ text, category, reason }) => {
+    expect(screenText(text, { source: "provider-output", avatarName: "Luna" })).toMatchObject({
+      flagged: true,
+      category,
+      reason,
+      severity: "warning",
+      action: "redirect",
+    });
+    expect(
+      new SafetyService().screenOutput(
+        {
+          reply: text,
+          newVocabulary: [],
+          avatarEmotion: "happy",
+          safety: { flagged: false },
+        },
+        "Luna",
+      ),
+    ).toMatchObject({ flagged: true, category, reason, action: "redirect" });
   });
   it("separates avatar introductions, child disclosures and provider requests", () => {
     expect(

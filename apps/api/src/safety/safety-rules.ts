@@ -52,6 +52,9 @@ type Rule = {
   severity?: FlaggedSafetyDecision["severity"];
   template?: SafetyTemplate;
 };
+// Direct mistreatment disclosures: child support, provider redirection below.
+const mistreatmentDisclosure =
+  /\b(they are hurting me|my (parents|mom|dad|mother|father) (hit|hurt|hurts) me|me (hacen dano|lastiman) en casa|mis padres me (pegan|hacen dano)|mi (madre|padre|mama|papa) me (pega|hace dano))\b/;
 // Priority order. Finite reviewed rules, not comprehensive semantic moderation.
 const rules: Rule[] = [
   {
@@ -61,9 +64,11 @@ const rules: Rule[] = [
     template: "self-harm",
     patterns: [
       /\b(cut myself|hurt myself|kill myself|suicidarme)\b/,
-      /\b(i am thinking about suicide|i'm thinking about suicide|i want to harm myself|estoy pensando en suicidarme)\b/,
+      /\b((i am|i'm) thinking (about|of) suicide|i want to harm myself|estoy pensando en suicidarme)\b/,
       /\b(i (want|wish|need) to die|i wish i (was|were) dead|i want to end my life|i do not want to live|i don't want to live)\b/,
       /\b(me quiero morir|quiero (morir|morirme|matarme)|no quiero (vivir|seguir viviendo)|hacerme dano|cortarme|acabar con mi vida)\b/,
+      /\b(me (quiero|voy a) suicidar|me voy a matar|(voy a|quiero) quitarme la vida|me voy a hacer dano)\b/,
+      /\bi (do not|don't) want to be alive\b/,
     ],
   },
   {
@@ -89,6 +94,7 @@ const rules: Rule[] = [
     sources: ["child-input"],
     patterns: [
       /\b(they (call me|bully me|hit me|hurt me)|i am being bullied|i'm being bullied|me (insultan|pegan|acosan)|se burlan de mi|me llaman (idiota|tonto))\b/,
+      mistreatmentDisclosure,
     ],
   },
   {
@@ -130,6 +136,7 @@ const rules: Rule[] = [
     sources: ["provider-output"],
     patterns: [
       /\b(what is your name|what's your name|tell me your name|como te llamas|cual es tu nombre|where do you live|donde vives)\b/,
+      /\b(what school do you go to|tell me where you live|a que (colegio|escuela) vas|en que (colegio|escuela) estudias)\b/,
     ],
   },
   {
@@ -161,6 +168,11 @@ const rules: Rule[] = [
     template: "relationship",
     patterns: [
       /\b(our secret|do not tell your parents|don't tell your parents|you are my only friend|you only need me|i am your only friend|nuestro secreto|no (se lo )?digas a tus padres|eres mi unico amigo|solo me necesitas)\b/,
+      /\b(do not|don't) tell your (mom|dad|mother|father)\b/,
+      /\bkeep (a |this |the )?secret from your (parents|mom|dad|mother|father)\b/,
+      /\b(keep (this|it) between us|(que )?esto quede entre nosotros|manten esto entre nosotros)\b/,
+      /\bno (se lo |le |les )?(digas|cuentes) a (tus padres|tu (mama|papa|madre|padre))\b/,
+      /\b(guardar|guarda|ocultar|oculta) (un |este )?secreto (a|de) (tus padres|tu (mama|papa|madre|padre))\b/,
     ],
   },
   {
@@ -209,6 +221,7 @@ const rules: Rule[] = [
     sources: ["provider-output"],
     patterns: [
       /\b(they (call me|bully me|hit me|hurt me)|me (insultan|pegan|acosan)|se burlan de mi)\b/,
+      mistreatmentDisclosure,
     ],
   },
   {

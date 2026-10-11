@@ -15,7 +15,7 @@
 - [x] Preserve Phase 4/5 pinning, rewards, replay and real-provider error behavior.
 - [x] No frontend, schema, migration, seed, CI or real-audio changes.
 
-## Validation record
+## Initial validation record
 
 Validation date: 2026-10-11. Local Windows, Node 24.19.0, pnpm 9.15.0,
 Compose PostgreSQL 16. No skipped tests. No CI configuration changes.
@@ -50,8 +50,43 @@ usable session metadata/termination. It used a temporary adult with Mock selecti
 all owned records were removed afterward. Seed verification retained the same
 fingerprint. The temporary API process was stopped after validation.
 
-Final status: approved Phase 6 local demo acceptance passed. No commits, pushes,
+Initial status: approved Phase 6 local demo acceptance passed. No commits, pushes,
 pull requests or tags were created.
+
+## Final targeted correction validation
+
+The independent review found missed self-harm intentions, provider school/home
+requests, parental secrecy and direct mistreatment disclosures. Reviewed fixtures
+now assert child support versus provider redirection, exact existing responses,
+pre-inference rejection, no learning rewards and idempotent coded persistence.
+Eleven additional benign examples cover school, family, fictional/educational secrets
+and neutral politics in unit/HTTP tests and against PostgreSQL with a fake provider.
+
+Only seven files change relative to the preserved Phase 6 commit `e3c52d8`:
+`safety-rules.ts`, the reviewed fixture helper, safety unit/HTTP/database tests,
+`docs/safety.md` and this checklist. SafetyService, deterministic response strings,
+transactions, public contracts and provider infrastructure are unchanged.
+
+| Gate                                                  | Result                                                                            |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Targeted safety unit/HTTP suite                       | 353 passed: rules 127, responses 4, HTTP 222                                      |
+| Targeted PostgreSQL safety suite, three isolated runs | 122/122 each; consecutive standalone runs with owned UUID records and cleanup     |
+| Format, forced lint and typecheck                     | Passed; lint/typecheck without cache                                              |
+| Forced general suite                                  | 479 passed: API 433, ai-core 41, shared 5                                         |
+| Full PostgreSQL suite                                 | 142 passed: domain 5, Phase 4 7, Phase 5 8, Phase 6 122                           |
+| Forced build                                          | Passed; all four packages without cache                                           |
+| Seed verification before/after and diff scope         | Passed; initial fingerprint/counts preserved, seven-file scope, no staged changes |
+
+Validation date: 2026-10-11. No skipped tests, model downloads or real/paid inference.
+Run the targeted database suite with `pnpm run test:db test/safety.database-spec.ts`;
+each execution creates and removes its own adult/profile/session records, without resets.
+All 14 reported English/Spanish counterexamples and additional reviewed variants pass.
+General harmful-topic requests retain redirection; provider-generated disclosures
+never select the child-support response. The previous 31-file implementation remains
+preserved in `e3c52d8`. No commits, pushes, pull requests or tags were created for
+this correction.
+
+Final status: **PHASE 6 READY FOR PR**, within the documented demo-level limitations.
 
 ## Changed files
 

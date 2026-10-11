@@ -23,6 +23,33 @@ EN/ES phrases, contact patterns and narrow educational exceptions. For example,
 classroom counting, ordinary family affection and fictional adventures are allowed.
 A fictional preface or educational label is never a general moderation bypass.
 
+### Final reviewed phrase correction
+
+Additional finite EN/ES regressions cover the reported gaps and reviewed equivalents:
+
+- First-person self-harm: "Me quiero suicidar", "Me voy a suicidar", "Me voy a matar",
+  "Voy a quitarme la vida", "Quiero quitarme la vida", "Me voy a hacer daño",
+  "I don't want to be alive" and "I am thinking of suicide". Contractions and the
+  existing accent/apostrophe normalization are tested. Child input receives the existing
+  critical wellbeing/self-harm support template; generated text receives redirection.
+- Provider identity/location requests: "What school do you go to?", "Tell me where
+  you live", "¿A qué colegio/escuela vas?", "¿En qué colegio estudias?" and
+  "Dime/Cuéntame dónde vives". These use the existing personal-data/identity-data
+  request rule; child questions about Luna's name remain allowed.
+- Relationship secrecy: instructions not to tell a parent (including mom/dad and
+  mamá/papá/madre/padre), keeping a secret from parents, "Please keep this between
+  us", "Que esto quede entre nosotros" and "Mantén esto entre nosotros". These
+  retain relationship-boundary/dependency-manipulation and ordinary redirection.
+- Direct mistreatment: "They are hurting me at home", "My parents hit me", "My
+  mother hurts me", "Me hacen daño en casa", "Mis padres me pegan" and "Mi padre
+  me pega". Child disclosures reuse wellbeing/bullying-disclosure and the existing
+  Spanish support response. Generated versions are blocked without inferring child distress.
+
+Reviewed negative cases include school definitions, parents hugging or playing ball,
+family affection, fictional friends, pirate treasure secrets, hidden game answers and
+neutral voting language. These extensions do not establish comprehensive semantic
+moderation or reliably identify every disclosure/paraphrase.
+
 ## Controlled taxonomy
 
 Flagged decisions carry category, controlled reason, severity, action and an internal

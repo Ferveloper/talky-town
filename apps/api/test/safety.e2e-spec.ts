@@ -12,7 +12,12 @@ import { ProviderDnsResolver } from "../src/ai-providers/provider-url-policy.ser
 import { ConversationStoreService } from "../src/conversations/conversation-store.service";
 import { PersistenceIds } from "../src/common/persistence-ids.service";
 import { safetyResponse } from "../src/safety/safety-responses";
-import { allowedFixtures, blockedFixtures } from "./helpers/safety-fixtures";
+import {
+  allowedFixtures,
+  blockedFixtures,
+  reviewedDisclosureFixtures,
+  reviewedProviderFixtures,
+} from "./helpers/safety-fixtures";
 import { fakeOpenAiServer } from "./helpers/fake-openai-server";
 import { testApp } from "./helpers/test-app";
 
@@ -46,6 +51,10 @@ const unsafeOutputs: { id: string; output: AiConversationResponse }[] = [
   },
   { id: "provider-self-harm", output: { ...safeOutput, reply: "I want to die" } },
   { id: "provider-safety", output: { ...safeOutput, safety: { flagged: true, reason: "other" } } },
+  ...[...reviewedProviderFixtures, ...reviewedDisclosureFixtures].map(({ id, text }) => ({
+    id,
+    output: { ...safeOutput, reply: text },
+  })),
 ];
 
 describe("Phase 6 contextual HTTP safety boundaries", () => {
@@ -116,7 +125,7 @@ describe("Phase 6 contextual HTTP safety boundaries", () => {
   );
   it.each(blockedFixtures)(
     "blocks $id before inference and persistence",
-    async ({ text, reason }) => {
+    async ({ text, reason, support }) => {
       const id = (await start(true).expect(201)).body.session.id;
       const mock = vi.spyOn(fixture.app.get(MockAiProvider), "generateConversationReply");
       const persistence = vi.spyOn(fixture.app.get(ConversationStoreService), "persist");
@@ -142,6 +151,15 @@ describe("Phase 6 contextual HTTP safety boundaries", () => {
       expect(JSON.stringify(persistence.mock.calls[0]![3])).not.toContain(text);
       expect(learningState()).toEqual(before);
       expect(fixture.rows("safetyEvent")).toHaveLength(1);
+      if (support) {
+        expect(result.body.avatarTurn.content).toBe(safetyResponse(support, "8-10"));
+        expect(fixture.rows("safetyEvent")[0]).toMatchObject({
+          category: "wellbeing",
+          reason,
+          severity: support === "self-harm" ? "critical" : "warning",
+          action: "support",
+        });
+      }
     },
   );
   it("allows only trusted avatar identity and rejects requests for child identity", async () => {
@@ -414,6 +432,8 @@ describe("Phase 6 contextual HTTP safety boundaries", () => {
         expect(result.body).toMatchObject({
           childTurn: null,
           xpAwarded: 0,
+          practicedVocabulary: [],
+          awardedBadges: [],
           safety: { flagged: true, reason: "unsafe-provider-output" },
         });
         expect(result.body.avatarTurn.content).toBe(safetyResponse("redirect", "8-10"));
@@ -421,6 +441,9 @@ describe("Phase 6 contextual HTTP safety boundaries", () => {
         const prepared = persistence.mock.calls[0]![3];
         expect(Object.keys(prepared).sort()).toEqual(["decision", "kind", "provider", "snapshot"]);
         expect(prepared.kind).toBe("blocked-output");
+        expect(JSON.stringify(prepared)).not.toContain(output.reply);
+        expect(JSON.stringify(fixture.rows("conversationTurn"))).not.toContain(output.reply);
+        expect(fixture.rows("safetyEvent")).toHaveLength(1);
         expect(fixture.rows("safetyEvent")[0]!.action).toBe("redirect");
         if (providerType === "openai-compatible-cloud") expect(calls).toHaveLength(1);
         if (providerType === "local-openai-compatible") expect(fake!.requests).toHaveLength(1);

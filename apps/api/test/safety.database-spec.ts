@@ -14,7 +14,12 @@ import { PersistenceIds } from "../src/common/persistence-ids.service";
 import { ConversationStoreService } from "../src/conversations/conversation-store.service";
 import { safetyResponse } from "../src/safety/safety-responses";
 import { fakeOpenAiServer } from "./helpers/fake-openai-server";
-import { blockedFixtures } from "./helpers/safety-fixtures";
+import {
+  blockedFixtures,
+  reviewedAllowedFixtures,
+  reviewedDisclosureFixtures,
+  reviewedProviderFixtures,
+} from "./helpers/safety-fixtures";
 
 const safe: AiConversationResponse = {
   reply: "Great practice!",
@@ -134,7 +139,7 @@ describe("Phase 6 actual PostgreSQL safety invariants", () => {
   }
   it.each(blockedFixtures)(
     "blocks $id with only coded auditing and a controlled turn",
-    async ({ text, reason }) => {
+    async ({ text, reason, support }) => {
       const id = (await start().expect(201)).body.session.id;
       const before = await learningState(id);
       const requestId = randomUUID();
@@ -156,6 +161,15 @@ describe("Phase 6 actual PostgreSQL safety invariants", () => {
       });
       expect(events).toHaveLength(1);
       expect(JSON.stringify(events)).not.toContain(text);
+      if (support) {
+        expect(result.body.avatarTurn.content).toBe(safetyResponse(support, "8-10"));
+        expect(events[0]).toEqual({
+          category: "wellbeing",
+          reason,
+          severity: support === "self-harm" ? "critical" : "warning",
+          action: "support",
+        });
+      }
       const turns = await db.conversationTurn.findMany({
         where: { sessionId: id },
         select: { role: true, content: true, correctedContent: true, correctionExplanation: true },
@@ -165,6 +179,18 @@ describe("Phase 6 actual PostgreSQL safety invariants", () => {
       expect(JSON.stringify(turns)).not.toContain(text);
     },
   );
+  it.each(reviewedAllowedFixtures)("accepts benign child and provider $id", async ({ text }) => {
+    const id = (await start().expect(201)).body.session.id;
+    fake.state.response = { ...safe, reply: text };
+    const result = await send(id, text).expect(200);
+    expect(result.body.safety).toEqual({ flagged: false });
+    expect(result.body.childTurn.content).toBe(text);
+    expect(result.body.avatarTurn.content).toBe(text);
+    expect(result.body.xpAwarded).toBe(5);
+    expect(fake.requests).toHaveLength(1);
+    expect(await db.safetyEvent.count({ where: { sessionId: id } })).toBe(0);
+    expect(await db.xpEvent.count({ where: { sessionId: id } })).toBe(1);
+  });
   it.each([
     { id: "reply", response: { ...safe, reply: "What is your name?" } },
     {
@@ -191,6 +217,10 @@ describe("Phase 6 actual PostgreSQL safety invariants", () => {
       id: "provider-flag",
       response: { ...safe, safety: { flagged: true as const, reason: "other" as const } },
     },
+    ...[...reviewedProviderFixtures, ...reviewedDisclosureFixtures].map(({ id, text }) => ({
+      id,
+      response: { ...safe, reply: text },
+    })),
   ])(
     "discards generated $id through the actual adapter/schema and PostgreSQL",
     async ({ response }) => {
@@ -199,7 +229,15 @@ describe("Phase 6 actual PostgreSQL safety invariants", () => {
       fake.state.response = response;
       const requestId = randomUUID();
       const result = await send(id, "dog", requestId).expect(200);
-      await send(id, "dog", requestId).expect(200);
+      const replay = await send(id, "dog", requestId).expect(200);
+      expect(replay.body).toEqual(result.body);
+      expect(result.body).toMatchObject({
+        childTurn: null,
+        xpAwarded: 0,
+        practicedVocabulary: [],
+        awardedBadges: [],
+        safety: { flagged: true, reason: "unsafe-provider-output" },
+      });
       expect(result.body.avatarTurn.content).toBe(safetyResponse("redirect", "8-10"));
       expect(await learningState(id)).toEqual(before);
       expect(fake.requests).toHaveLength(1);
@@ -208,6 +246,7 @@ describe("Phase 6 actual PostgreSQL safety invariants", () => {
         reason: "unsafe-provider-output",
         action: "redirect",
       });
+      expect(await db.safetyEvent.count({ where: { sessionId: id } })).toBe(1);
       const turns = await db.conversationTurn.findMany({ where: { sessionId: id } });
       expect(turns).toHaveLength(2);
       expect(
@@ -215,6 +254,7 @@ describe("Phase 6 actual PostgreSQL safety invariants", () => {
           (turn) => turn.role === "avatar" && !turn.correctedContent && !turn.correctionExplanation,
         ),
       ).toBe(true);
+      expect(JSON.stringify(turns)).not.toContain(response.reply);
     },
   );
   it("deduplicates concurrent blocked requests and retries distinct stale snapshots", async () => {
