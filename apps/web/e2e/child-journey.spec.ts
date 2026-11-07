@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./speech-test";
 async function createProfile(page: Page) {
   await page.goto("/login");
   await page.getByRole("button", { name: "Entrar en la demo" }).click();

@@ -179,6 +179,30 @@ export function SafetyScreen() {
           Antes de abrir la demo al público sin restricciones deben aislarse las cuentas de
           visitantes o restringirse el acceso.
         </p>
+        <h3>Micrófono y voz</h3>
+        <p>
+          El micrófono se activa con un botón y escucha como máximo 30 segundos. La opción
+          predeterminada solo usa reconocimiento local verificable con el idioma instalado. No se
+          descargan idiomas ni se cambia a un servicio remoto automáticamente.
+        </p>
+        <p>
+          Un adulto puede elegir el servicio del navegador para esta pestaña; el audio puede salir
+          del dispositivo y procesarse por su proveedor. Es una elección informada para la demo, no
+          una acreditación de consentimiento parental legal. Se olvida al recargar, salir o cambiar
+          de identidad.
+        </p>
+        <p>
+          TalkyTown no guarda grabaciones. La transcripción sin confirmar vive solo en memoria. El
+          texto revisado, confirmado y enviado se trata como un mensaje normal: puede guardarse en
+          el servidor y, si queda pendiente, durante un máximo de 15 minutos en sessionStorage.
+          Nunca se guardan historiales completos en el navegador.
+        </p>
+        <p>
+          Las respuestas se escuchan solo al pulsar reproducir, con voces locales disponibles. Si
+          falta una voz adecuada en inglés o español, puedes leer. El reconocimiento puede cambiar
+          palabras y no evalúa pronunciación. Esta demo no es un sistema certificado de tratamiento
+          de audio infantil.
+        </p>
       </TalkyCard>
       <Link className="talky-button" href="/login">
         Entrar en la demo

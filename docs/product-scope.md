@@ -676,7 +676,7 @@ La app debe usar textos legibles, contrastes adecuados y botones grandes.
 
 ### RNF-003 Privacidad
 
-La app no debe almacenar audio bruto por defecto ni pedir datos personales al niño.
+La app no debe almacenar audio bruto ni pedir datos personales al niño.
 
 ### RNF-004 Seguridad
 
@@ -862,3 +862,7 @@ Canonical catalog initialization is independent of demo seed. Historical repair
 is an explicit administrative dry-run/apply workflow. No frontend or migrations.
 See [Phase 7 contracts](api/phase7-gamification-contracts.md); Phase 8 owns visual
 integration and deduplication of reward celebrations.
+
+## Phase 9 implemented scope
+
+Level 1 adds native browser STT/TTS, explicit review/confirmation, manual safe avatar playback, actual listening/speaking states, controlled failures and complete text fallback. Local-only capability verification is mandatory; informed browser-service selection is ephemeral and adult-facing. English en-US and explicit Spanish es-ES recognition are independent. No speech-to-speech AI, pronunciation scoring, voice reward bonus, audio storage, Prisma changes or model/cloud dependency. Level 2 is deferred until Level 1 acceptance and separate authorization. See the Phase 9 implementation report for actual validation status.

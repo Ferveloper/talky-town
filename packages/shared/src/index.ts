@@ -4,6 +4,7 @@ export * from "./api-contracts";
 export * from "./conversation-contracts";
 export * from "./provider-contracts";
 export * from "./frontend-contracts";
+export * from "./safety-response-templates";
 
 export type LearningLevel = "starter" | "explorer" | "hero";
 

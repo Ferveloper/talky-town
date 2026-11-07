@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./speech-test";
 import AxeBuilder from "@axe-core/playwright";
 import { createProfile, startFree, bff } from "./helpers";
 async function capture(page: Page, name: string, axe = true) {
@@ -37,7 +37,10 @@ test("local assets, responsive screens, keyboard access and reduced motion", asy
   const session = await startFree(page);
   await capture(page, "conversation");
   await expect(page.getByLabel("Tu mensaje en inglés")).toBeFocused();
-  await expect(page.getByRole("button", { name: "Voz disponible en fase 9" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Usar micrófono" })).toBeVisible();
+  await expect(page.getByRole("combobox", { name: "Idioma del micrófono" })).toHaveValue("en-US");
+  // Playback must receive pointer input, rather than be covered by a tall mobile composer.
+  await page.getByRole("button", { name: "Escuchar respuesta" }).click({ trial: true });
   await page.getByRole("button", { name: "Terminar conversación", exact: true }).click();
   await page.getByRole("link", { name: "Ver resumen" }).click();
   await capture(page, "summary");

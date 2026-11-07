@@ -130,3 +130,9 @@ developer database. Fixtures are qualified by the run's unique adult email.
 - API: http://localhost:3001
 - API docs: http://localhost:3001/docs
 - Health: http://localhost:3001/health
+
+## Browser voice setup
+
+No speech packages, models or keys are required. Use localhost or HTTPS and an available supported desktop Chrome. Local-only recognition requires a real on-device API and an already-installed English/Spanish pack; unsupported/policy-blocked/missing-pack states keep typing available. To demonstrate recognition when local is unavailable, use **Adultos**, read the vendor-processing notice and explicitly select browser-service mode. Return using in-app links; reload resets this choice. Browser microphone permissions and vendor/network availability still determine whether recognition works. No automatic pack installation or remote fallback.
+
+Install local OS English/Spanish voices only through normal adult-managed OS setup if desired; the app never downloads voices. Missing local voices keep replies readable. Follow [Phase 9 walkthrough](phase9-voice-walkthrough.md); record real microphone/audio results separately from mocked CI. All automated acceptance uses isolated databases and Mock/fake HTTP AI, never real speech APIs or ML models.

@@ -1,5 +1,5 @@
-export const SAFE_REDIRECTION =
-  "Let's talk about something fun and safe. How about animals, space or games?";
+import { SAFE_REDIRECTION } from "@talkytown/shared";
+export { SAFE_REDIRECTION };
 export type SafetyContext = {
   source: "child-input" | "provider-output" | "alias";
   /** Trusted catalogue data only. Never read this from child text. */

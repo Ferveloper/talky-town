@@ -49,7 +49,7 @@ function parse(raw: string | null, now: number): Pending | null {
       (typeof value.payload.message !== "string" ||
         !value.payload.message.trim() ||
         value.payload.message.length > 500 ||
-        value.payload.inputMode !== "text")
+        (value.payload.inputMode !== "text" && value.payload.inputMode !== "voice"))
     )
       return null;
     if (

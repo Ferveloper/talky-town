@@ -7,6 +7,7 @@ import type {
   ProgressResponse,
 } from "@talkytown/shared";
 import { api, errorText } from "@/lib/api";
+import { VoicePreferences } from "./voice-preferences";
 import {
   FallbackStateCard,
   LoadingCard,
@@ -49,6 +50,7 @@ export function AdultDashboard() {
         </Link>
       </div>
       <p>Perfiles y progreso compartidos de una demostración con datos ficticios.</p>
+      <VoicePreferences />
       {error ? (
         <FallbackStateCard text={error} retry={load} />
       ) : !items ? (
